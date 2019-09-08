@@ -1,0 +1,65 @@
+<div class="main_body" id="main_body">
+    <div class="breadcrub">
+        当前位置：文章管理>文章列表
+    </div>
+    <div class="pannel">
+        <span class="sel_label">请选择文章分类：</span>
+        <select name="select" id="select" class="sel_opt">
+            {{if .selectValue | showDefaultType}}
+                <option value="" selected="selected">全部</option>
+            {{else}}
+                <option value="">全部</option>
+            {{end}}
+            {{range  .article_types}}
+                {{if true}}
+                    <option value="{{.TypeName}}" selected="selected" >{{.TypeName}}</option>
+                {{else}}
+                    <option value="{{.TypeName}}" >{{.TypeName}}</option>
+                {{end}}
+            {{end}}
+        </select>
+        <table class="common_table">
+            <tr>
+                <th width="43%">文章标题</th>
+                <th width="10%">文章内容</th>
+                <th width="16%">添加时间</th>
+                <th width="7%">阅读量</th>
+                <th width="7%">删除</th>
+                <th width="7%">编辑</th>
+                <th width="10%">文章类型</th>
+            </tr>
+
+            {{range .articles}}
+                <tr>
+                    <td>{{.ArtiName}}</td>
+                    <td><a href="/article/show?id={{.Id}}">查看详情</a></td>
+                    <td> {{.Atime.Format "2006-01-02"}}</td>
+                    <td>{{.Account}}</td>
+                    <td><a href="/article/{{.Id}}" method="delete" class="dels">删除</a></td>
+                    <td><a href="/article/update?id={{.Id}}">编辑</a></td>
+                    <td>{{.ArticleType.TypeName}}</td>
+                </tr>
+            {{end}}
+        </table>
+
+        <ul class="pagenation">
+            <li><a href="/?pageIndex=1">首页</a></li>
+            {{if compare .firstPage true}}
+                <li><a href="javascript:void(0);">上一页</a></li>
+            {{else}}
+                <li><a href="/?pageIndex={{(.pageIndex | ShowPerPage)}}&select_value={{.selectValue}}">上一页</a></li>
+            {{end}}
+            <li><a href="/?pageIndex={{(.pageIndex | showNextPage)}}">下一页</a></li>
+            <li><a href="/?pageIndex={{.pageCount}}">末页</a></li>
+            <li>共{{.count}}条记录/共{{.pageCount}}页/当前{{.pageIndex}}页</li>
+        </ul>
+    </div>
+</div>
+<script>
+    $(document).ready(function () {
+        $('.sel_opt').on('change', function () {
+            console.log($(this).val());
+            window.location = '/?select_value=' + $(this).val();
+        })
+    });
+</script>
