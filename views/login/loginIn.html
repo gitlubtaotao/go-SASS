@@ -1,0 +1,50 @@
+<div id="login-box" class="login-box visible widget-box no-border">
+    <div class="widget-body">
+        <div class="widget-main">
+            <h4 class="header blue lighter bigger">
+                <i class="ace-icon fa fa-coffee green"></i>
+                输入账号和密码
+            </h4>
+            <div class="space-6"></div>
+            <form class="" name="login" method="post" action="/login">
+                <fieldset>
+                    {{ .xsrfdata }}
+                    <label class="block clearfix">
+                                                <span class="block input-icon input-icon-right">
+                                                <input type="text" class="form-control" name="userName"
+                                                       value="{{.userName}}" placeholder="请输入账号">
+                                                  <i class="ace-icon fa fa-user"></i>
+                                                </span>
+                    </label>
+                    <label class="block clearfix">
+														<span class="block input-icon input-icon-right">
+															<input type="password" class="form-control"
+                                                                   placeholder="请输入密码" name="password">
+															<i class="ace-icon fa fa-lock"></i>
+														</span>
+                    </label>
+                    <div class="space"></div>
+                    <div class="clearfix"></div>
+                    <label class="inline">
+                        <input type="checkbox" name="remember" class="ace"
+                               value="true" {{.remember}} >
+                        <span class="lbl">记住我</span>
+                    </label>
+                    <button type="submit"
+                            class="width-35 pull-right btn btn-sm btn-primary">
+                        <i class="ace-icon fa fa-key"></i>
+                        <span class="bigger-110">登录</span>
+                    </button>
+                </fieldset>
+            </form>
+        </div>
+        <div class="toolbar clearfix">
+            <div>
+                <a href="#" data-target="#forgot-box" class="forgot-password-link">
+                    <i class="ace-icon fa fa-arrow-left"></i>
+                    忘记密码？
+                </a>
+            </div>
+        </div>
+    </div>
+</div>

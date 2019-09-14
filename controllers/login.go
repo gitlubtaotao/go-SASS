@@ -2,7 +2,6 @@ package controllers
 
 import (
 	"fmt"
-	"github.com/astaxie/beego"
 	"github.com/astaxie/beego/orm"
 	"quickstart/models"
 	"time"
@@ -10,7 +9,7 @@ import (
 
 //LoginController 登录页面
 type LoginController struct {
-	beego.Controller
+	BaseController
 }
 
 //Get 登录页面
@@ -53,12 +52,17 @@ func (c *LoginController) Post() {
 		c.Ctx.SetCookie("Name","",)
 	}
 	c.SetSession("userName",UserName)
-	c.Redirect("/",302)
-	
+	c.SetSession("currentName",user)
+	if c.GetString("url") != ""{
+		c.redirectCustomer(c.GetString("url"))
+	}else {
+		c.Redirect("/", 302)
+	}
 }
 
 //LoginOut 退出登录
 func (c *LoginController) LoginOut() {
 	c.DelSession("userName")
-	c.Redirect("/login",302)
+	c.DelSession("currentUser")
+	c.pageLogin()
 }

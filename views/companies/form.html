@@ -1,0 +1,65 @@
+<div class="page-content">
+    <div class="row">
+        <div class="col-sm-6 col-sm-offset-2 col-xs-12">
+            <form class="form-horizontal" action="/company" method="post">
+                <fieldset>
+                    <div class="form-group">
+                        <label class="control-label col-sm-4">公司名称</label>
+                        <div class="col-sm-8">
+                            <input class="form-control" name="Name" value="{{.Company.Name}}" placeholder="请输入公司名称">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label col-sm-4">公司座机</label>
+                        <div class="col-sm-8">
+                            <input class="form-control" type="tel" name="Telephone" value="{{.Company.Telephone}}"
+                                   placeholder="请输入座机">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label col-sm-4">公司邮箱</label>
+                        <div class="col-sm-8">
+                            <input class="form-control" type="email" name="Email" value="{{.Company.Email}}"
+                                   placeholder="请输入公司邮箱">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label col-sm-4">公司地址</label>
+                        <div class="col-sm-8">
+                            <input class="form-control" name="Address" value="{{.Company.Address}}"
+                                   placeholder="请输入公司地址">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label col-sm-4">公司网站</label>
+                        <div class="col-sm-8">
+                            <input class="form-control" name="Website" value="{{.Company.Website}}"
+                                   placeholder="请输入公司网站">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label col-sm-4">公司备注</label>
+                        <div class="col-sm-8">
+                            <textarea class="form-control" name="Remarks" value="{{.Company.Remarks}}"
+                                      placeholder=""></textarea>
+                        </div>
+                    </div>
+                    <input type="hidden" value="{{.Company.Id}}">
+                </fieldset>
+                <div class="space-6"></div>
+                <div class="clearfix form-group ">
+                    <div class="col-sm-offset-5">
+                    <button class="btn btn-success btn-sm " type="submit">
+                        <i class="ace-icon fa fa-check bigger-110"></i>
+                        保存
+                    </button>
+                    <button class="btn btn-sm" type="reset">
+                        <i class="ace-icon fa fa-undo bigger-110"></i>
+                        取消
+                    </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

@@ -2,7 +2,6 @@ package controllers
 
 import (
 	"fmt"
-	"github.com/astaxie/beego"
 	"github.com/astaxie/beego/logs"
 	"github.com/astaxie/beego/orm"
 	"path"
@@ -12,7 +11,7 @@ import (
 
 //ArticleController 文章controller
 type ArticleController struct {
-	beego.Controller
+	BaseController
 }
 
 func (c *ArticleController) Get() {

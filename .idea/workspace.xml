@@ -1,7 +1,70 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="838ebdf7-2a9a-46de-bd28-1b696bfa9e32" name="Default Changelist" comment="" />
+    <list default="true" id="838ebdf7-2a9a-46de-bd28-1b696bfa9e32" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/.idea/jsLibraryMappings.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/controllers/base.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/controllers/home.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/models/common.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/utils/article.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/utils/common.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/views/companies/filter.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/views/companies/form.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/views/companies/index.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/views/companies/new.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/views/home/index.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/views/layouts/breadcrumb.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/views/layouts/footer.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/views/layouts/head.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/views/layouts/loading.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/views/layouts/menuList.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/views/layouts/navbar.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/views/login/forgetPass.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/views/login/header.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/views/login/loginIn.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/quickstart.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/quickstart.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/conf/app.conf" beforeDir="false" afterPath="$PROJECT_DIR$/conf/app.conf" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/controllers/article.go" beforeDir="false" afterPath="$PROJECT_DIR$/controllers/article.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/controllers/article_type.go" beforeDir="false" afterPath="$PROJECT_DIR$/controllers/article_type.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/controllers/default.go" beforeDir="false" afterPath="$PROJECT_DIR$/controllers/default.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/controllers/login.go" beforeDir="false" afterPath="$PROJECT_DIR$/controllers/login.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/main.go" beforeDir="false" afterPath="$PROJECT_DIR$/main.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/models/model.go" beforeDir="false" afterPath="$PROJECT_DIR$/models/model.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/quickstart" beforeDir="false" afterPath="$PROJECT_DIR$/quickstart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/routers/router.go" beforeDir="false" afterPath="$PROJECT_DIR$/routers/router.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/static/add.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/static/addType.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/static/bootstrap-3.3.7-dist/css/bootstrap-theme.css" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/static/bootstrap-3.3.7-dist/css/bootstrap-theme.css.map" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/static/bootstrap-3.3.7-dist/css/bootstrap-theme.min.css" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/static/bootstrap-3.3.7-dist/css/bootstrap-theme.min.css.map" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/static/bootstrap-3.3.7-dist/css/bootstrap.css" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/static/bootstrap-3.3.7-dist/css/bootstrap.css.map" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/static/bootstrap-3.3.7-dist/css/bootstrap.min.css" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/static/bootstrap-3.3.7-dist/css/bootstrap.min.css.map" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/static/bootstrap-3.3.7-dist/fonts/glyphicons-halflings-regular.eot" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/static/bootstrap-3.3.7-dist/fonts/glyphicons-halflings-regular.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/static/bootstrap-3.3.7-dist/fonts/glyphicons-halflings-regular.ttf" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/static/bootstrap-3.3.7-dist/fonts/glyphicons-halflings-regular.woff" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/static/bootstrap-3.3.7-dist/fonts/glyphicons-halflings-regular.woff2" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/static/bootstrap-3.3.7-dist/js/bootstrap.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/static/bootstrap-3.3.7-dist/js/bootstrap.min.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/static/bootstrap-3.3.7-dist/js/npm.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/static/css/main.css" beforeDir="false" afterPath="$PROJECT_DIR$/static/css/main.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/static/index.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/static/index.tpl" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/static/login.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/static/register.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/static/update.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/static/upload项目进度管理.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/views/article_types/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/utils/paginate.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/views/article_types/new.html" beforeDir="false" afterPath="$PROJECT_DIR$/views/article_types/new.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/views/layouts/application.html" beforeDir="false" afterPath="$PROJECT_DIR$/views/layouts/application.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/views/login/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/views/login/index.html" afterDir="false" />
+    </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -15,14 +78,6 @@
         <option value="Go File" />
       </list>
     </option>
-  </component>
-  <component name="FindInProjectRecents">
-    <findStrings>
-      <find>BeeLogger</find>
-      <find>logs</find>
-      <find>filte</find>
-      <find>filter</find>
-    </findStrings>
   </component>
   <component name="GOROOT" path="/usr/local/Cellar/go/1.13/libexec" />
   <component name="Git.Settings">
@@ -47,20 +102,21 @@
     <property name="go.gopath.indexing.explicitly.defined" value="true" />
     <property name="go.import.settings.migrated" value="true" />
     <property name="go.sdk.automatically.set" value="true" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/static" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/assets" />
     <property name="nodejs_interpreter_path.stuck_in_default_project" value="undefined stuck path" />
     <property name="nodejs_npm_path_reset_for_default_project" value="true" />
-    <property name="settings.editor.selected.configurable" value="go.sdk" />
+    <property name="settings.editor.selected.configurable" value="Errors" />
   </component>
   <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/assets" />
+      <recent name="$PROJECT_DIR$/static" />
+      <recent name="$PROJECT_DIR$" />
+    </key>
     <key name="MoveFile.RECENT_KEYS">
       <recent name="$PROJECT_DIR$/static" />
       <recent name="$PROJECT_DIR$/views/articles" />
       <recent name="$PROJECT_DIR$/views" />
-    </key>
-    <key name="CopyFile.RECENT_KEYS">
-      <recent name="$PROJECT_DIR$/static" />
-      <recent name="$PROJECT_DIR$" />
     </key>
   </component>
   <component name="RunDashboard">
@@ -75,7 +131,7 @@
       </list>
     </option>
   </component>
-  <component name="RunManager">
+  <component name="RunManager" selected="JavaScript Debug.index.html">
     <configuration name="go build quickstart" type="GoApplicationRunConfiguration" factoryName="Go Application" temporary="true" nameIsGenerated="true">
       <module name="quickstart" />
       <working_directory value="$PROJECT_DIR$/" />
@@ -85,14 +141,47 @@
       <directory value="$PROJECT_DIR$/" />
       <method v="2" />
     </configuration>
+    <configuration name="index.html" type="JavascriptDebugType" temporary="true" nameIsGenerated="true" uri="http://localhost:63342/quickstart/views/companies/index.html" useBuiltInWebServerPort="true">
+      <method v="2" />
+    </configuration>
     <recent_temporary>
       <list>
+        <item itemvalue="JavaScript Debug.index.html" />
         <item itemvalue="Go Build.go build quickstart" />
       </list>
     </recent_temporary>
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="1" />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State>
+              <option name="COLUMN_ORDER" />
+            </State>
+          </value>
+        </entry>
+      </map>
+    </option>
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" type="DlvLineBreakpoint">
+          <url>file://$PROJECT_DIR$/controllers/article_type.go</url>
+          <line>24</line>
+          <option name="timeStamp" value="1" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="DlvLineBreakpoint">
+          <url>file://$PROJECT_DIR$/controllers/companies.go</url>
+          <line>68</line>
+          <option name="timeStamp" value="2" />
+        </line-breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
   </component>
   <component name="masterDetails">
     <states>

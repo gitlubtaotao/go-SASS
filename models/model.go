@@ -12,6 +12,7 @@ type User struct {
 	Name      string `orm:"unique"`
 	Pwd       string
 	Articles []*Article `orm:"rel(m2m)"`
+	Company *Company `orm:"rel(fk)"`
 }
 //Article 文章标题
 type Article struct {
@@ -32,11 +33,7 @@ type ArticleType struct {
 	Articles []*Article `orm:"reverse(many)"`
 }
 
-func init() {
-	// orm connection
-	orm.RegisterDataBase("default", "mysql",
-		"root:qweqwe123@tcp(127.0.0.1:3306)/go_quick_start?charset=utf8")
+func init()  {
 	orm.RegisterModel(new(Article), new(User),new(ArticleType))
-	orm.RunSyncdb("default", false, true)
-	
 }
+

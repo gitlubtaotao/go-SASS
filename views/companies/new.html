@@ -1,0 +1,12 @@
+<div class="breadcrumbs ace-save-state" id="breadcrumbs">
+    <ul class="breadcrumb">
+        {{template "layouts/breadcrumb.html" .}}
+        <li class="">
+            <a href="/company">公司信息</a>
+        </li>
+        <li class="active">
+            <a href="#">{{.PageTitle}}</a>
+        </li>
+    </ul><!-- /.breadcrumb -->
+</div>
+{{template "companies/form.html" .}}

@@ -9,53 +9,29 @@ import (
 	"github.com/astaxie/beego/logs"
 	
 	"github.com/astaxie/beego"
+	_ "quickstart/utils"
 )
+
 
 func main() {
 	orm.Debug = true
-	_ = beego.AddFuncMap("ShowPerPage", showPerPage)
-	_= beego.AddFuncMap("showNextPage",showNextPage)
-	_= beego.AddFuncMap("showDefaultType",showDefaultType)
-	_ = beego.AddFuncMap("isSelect", isSelect)
 	log := logs.NewLogger(10000)
-	_ = log.SetLogger("console", "")
+	_ = logs.SetLogger(logs.AdapterConsole, `{"level":7,"color":true}`)
 	log.EnableFuncCallDepth(true)
 	log.Async()
 	beego.Run()
 }
 
-// ShowPerPage 显示上一页
-func showPerPage(data int) int {
-	//pageTemp, _ := strconv.Atoi(data)
-	pageIndex := data - 1
-	if pageIndex <= 0{
-		return 1
-	}else {
-		return pageIndex
-	}
-}
-//showNextPage 显示上一页
-func showNextPage(data int) int  {
-	pageIndex := data + 1
-	if pageIndex <= 0{
-		return 1
-	}else {
-		return pageIndex
-	}
-}
-//显示默认的类型
-func showDefaultType(value string) bool  {
-	if value == ""{
-		return true
-	}else{
-		return false
-	}
+
+
+
+func init()  {
+	//链接数据库
+	dataConnection()
 }
 
-func isSelect(params string,value string) bool  {
-	if params == value{
-		return true
-	}else{
-		return false
-	}
+func dataConnection()  {
+	_ = orm.RegisterDataBase("default", "mysql",
+		"root:qweqwe123@tcp(127.0.0.1:3306)/go_quick_start?charset=utf8")
+	_ = orm.RunSyncdb("default", false, true)
 }

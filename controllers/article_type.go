@@ -2,14 +2,13 @@ package controllers
 
 import (
 	"fmt"
-	"github.com/astaxie/beego"
 	"github.com/astaxie/beego/orm"
 	"quickstart/models"
 )
 
 //ArticleTypeController 文章类型
 type  ArticleTypeController struct {
-		beego.Controller
+		BaseController
 }
 
 //Index 显示
@@ -18,16 +17,19 @@ type  ArticleTypeController struct {
 //}
 
 // New : 新增文章类型
-func (c *ArticleTypeController) New()  {
-	c.Layout="layouts/application.html"
+func (this *ArticleTypeController) New()  {
 	o := orm.NewOrm()
 	var article_types []models.ArticleType
 	_,err := o.QueryTable("ArticleType").All(&article_types)
 	if err != nil{
 		fmt.Println("记录为空")
 	}
-	c.Data["article_types"] = article_types
-	c.TplName="article_types/new.html"
+	this.Data["article_types"] = article_types
+	this.namespace = "article"
+	this.Data["Namespace"] = "article"
+	this.Data["PageTitle"] = "文章分类"
+	this.setTpl("article_types/new.html")
+	
 }
 //Create 创建
 func (c *ArticleTypeController) Create()  {

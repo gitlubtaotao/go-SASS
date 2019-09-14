@@ -2,7 +2,6 @@ package controllers
 
 import (
 	"fmt"
-	"github.com/astaxie/beego"
 	"github.com/astaxie/beego/orm"
 	"math"
 	"quickstart/models"
@@ -11,7 +10,7 @@ import (
 
 //MainController init
 type MainController struct {
-	beego.Controller
+	BaseController
 }
 
 //Get method
@@ -106,9 +105,8 @@ func (c *MainController) Get() {
 	}
 	c.Data["article_types"] = articleTypes
 	c.Data["selectValue"] = select_type
-	c.Data["pageTitle"] = "文章列表"
+	c.Data["PageTitle"] = "文章列表"
 	c.LayoutSections = make(map[string]string)
-	c.LayoutSections["ContentHeader"] = "layouts/header.html"
 	c.Layout="layouts/application.html"
 	c.TplName = "index.html"
 }

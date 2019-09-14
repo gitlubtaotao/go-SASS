@@ -1,22 +1,56 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="zh-CN">
 <head>
-    <meta charset="UTF-8">
-    <title>登录</title>
-    <link rel="stylesheet" type="text/css" href="/static/css/reset.css">
-    <link rel="stylesheet" type="text/css" href="/static/css/main.css">
+    <style>
+        .login-container{
+            margin: 100px auto !important;
+        }
+    </style>
+    <title>订单管理系统</title>
+    {{template "login/header.html" .}}
 </head>
-<body>
-<div class="login_logo">
-    <img src="/static/img/logo.png" alt="">
+<body class="login-layout blur-login">
+<div class="main-container">
+    <div class="main-content">
+        <div class="row">
+            <div class="col-sm-10 col-sm-offset-1">
+                <div class="login-container">
+                    <div class="center">
+                        <h1>
+                            <i class="ace-icon fa fa-leaf green"></i>
+                            <span class="white" id="id-text2">订单管理系统</span>
+                        </h1>
+                        <h4 class="light-blue" id="id-company-text">© 徐涛涛</h4>
+                        <div class="space-6"></div>
+                        <div class="position-relative">
+                            {{/*  用户登录模块                          */}}
+                            {{template "login/loginIn.html" .}}
+{{/*                            忘记密码模块*/}}
+                            {{template "login/forgetPass.html" .}}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
-<form class="login_form" name="login" method="post" action="/login">
-    <h1 class="login_title">用户登录</h1>
-    <input type="text" class="input_txt" name="userName" value="{{.userName}}">
-    <input type="password" name="password" class="input_txt">
-    <div class="remember"><input type="checkbox" name="remember" value="true" {{.remember}}><label>记住用户名</label></div>
-    <input type="submit" value="登 录" class="input_sub">
-</form>
-<div class="login_bg"></div>
+<footer>
+    <script type="text/javascript">
+        if ('ontouchstart' in document.documentElement) document.write("<script src='assets/js/jquery.mobile.custom.min.js'>" + "<" + "/script>");
+    </script>
+    <script src="/static/js/jquery-1.12.4.min.js"></script>
+    <script src="/static/bootstrap-3.3.7-dist/js/bootstrap.min.js"></script>
+</footer>
 </body>
 </html>
+
+<script>
+    jQuery(function($) {
+        $(document).on('click', '.toolbar a[data-target]', function(e) {
+            e.preventDefault();
+            var target = $(this).data('target');
+            $('.widget-box.visible').removeClass('visible');//hide others
+            $(target).addClass('visible');//show target
+        });
+    });
+</script>

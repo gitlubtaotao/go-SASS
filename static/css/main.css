@@ -85,7 +85,7 @@ body{
 .menu_con{
 	width:210px;
 	margin-top:10px;
-	overflow:hidden;
+	/*overflow:hidden;*/
 }
 
 .first_menu{
@@ -130,7 +130,7 @@ body{
 }
 
 .icon031{
-	background:url(../img/icons.png) 50px -185px no-repeat;
+	background:url(../img/icons.png) 50px -177px no-repeat;
 }
 
 .icon032{
@@ -273,18 +273,7 @@ body{
 	background:url(../img/login-bg.jpg) no-repeat;
 }
 
-.login_form{
-  width:330px;
-  height:292px;
-  background:#fff;
-  position:fixed;
-  left:50%;
-  top:50%;
-  margin-top:-146px;
-  margin-left:-165px;
-  overflow:hidden;
-  border-radius:6px;
-}
+
 
 .login_form .error_tip{
 	position:absolute;
@@ -331,7 +320,7 @@ body{
   border:1px solid #d0d0d0;
   border-radius:4px;
   outline:none;
-  text-indent:10px; 
+  text-indent:10px;
 }
 
 .forget_pass{
@@ -373,7 +362,7 @@ body{
 	font-size:12px;
 }
 
-.pagenation{      
+.pagenation{
     padding:0px;
     list-style:none;
     width:960px;
@@ -385,9 +374,9 @@ body{
 
 .pagenation li{
     display:inline-block;
-    height:26px;            
+    height:26px;
     font-size:12px;
-    margin:7px 5px 0px;          
+    margin:7px 5px 0px;
 }
 
 .pagenation  a{
@@ -456,7 +445,7 @@ body{
 	float:left;
 	text-indent:10px;
 	outline:none;
-	border-radius:4px;	
+	border-radius:4px;
 	border:1px solid #d0d0d0;
 	box-sizing:border-box;
 }
@@ -617,7 +606,7 @@ body{
   border:1px solid #d0d0d0;
   border-radius:4px;
   outline:none;
-  text-indent:10px; 
+  text-indent:10px;
 }
 
 .mt50{
