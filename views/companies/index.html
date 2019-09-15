@@ -1,11 +1,3 @@
-<div class="page-header">
-    <div class="col-sm-12 col-xs-6">
-        <div class="btn-group">
-            <a href="/company/new" class="btn btn-sm btn-primary"> 新增公司</a>
-        </div>
-    </div>
-    <div class="clearfix"></div>
-</div>
 <div class="breadcrumbs ace-save-state" id="breadcrumbs">
     <ul class="breadcrumb">
         {{template "layouts/breadcrumb.html" .}}
@@ -14,6 +6,15 @@
         </li>
     </ul><!-- /.breadcrumb -->
 </div>
+<div class="page-header">
+    <div class="col-sm-12 col-xs-6">
+        <div class="btn-group">
+            <a href="/company/new" class="btn btn-sm btn-primary"> 新增公司</a>
+        </div>
+    </div>
+    <div class="clearfix"></div>
+</div>
+
 <div class="page-content" id="page_content">
     {{template "companies/filter.html" .}}
     <div class="space-12"></div>
@@ -57,12 +58,23 @@
                 </tr>
                 </tbody>
             </table>
-
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-xs-12 col-sm-6">
+            <template>
+                <pagination
+                        :total="total"
+                        :page.sync="listQuery.page"
+                        :limit.sync="listQuery.limit"
+                        @pagination="getList"/>
+            </template>
         </div>
     </div>
 </div>
 <script type="text/javascript">
-{{/*    加载table的数据*/}}
+    {{/*    加载table的数据*/}}
+    import Pagination from '/assets/widget/paginator'
     var app = new Vue({
         el: '#page_content',
         delimiters: ['{', '}'],
@@ -84,7 +96,8 @@
                     params: hashParams,
                     dataType: 'json',
                 }).then(function (response) {
-                    app.companyList = response['data'];
+                    console.log(response);
+                    app.companyList = response['data']['data'];
                 }).catch(function (error) {
                     console.log(error);
                 });
@@ -98,14 +111,14 @@
                 $('#company_filter')[0].reset();
                 app.getList();
             },
-            editCompany: function(Id,index){
+            editCompany: function (Id, index) {
                 console.log(Id);
 
             },
-            deleteCompany: function (Id,index) {
+            deleteCompany: function (Id, index) {
                 console.log(index);
-                if(confirm("确定删除该记录？")){
-                    axios.delete("/company/"+Id, {
+                if (confirm("确定删除该记录？")) {
+                    axios.delete("/company/" + Id, {
                         headers: {'X-Requested-With': 'XMLHttpRequest'},
                         dataType: 'json',
                     }).then(function (response) {

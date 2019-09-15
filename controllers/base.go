@@ -108,3 +108,5 @@ func (this *BaseController) setTpl(template ...string) {
 	//设置模版名称
 	this.TplName = tplName
 }
+
+

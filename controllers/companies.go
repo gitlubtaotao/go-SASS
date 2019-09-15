@@ -4,8 +4,11 @@ import (
 	"fmt"
 	"github.com/astaxie/beego/logs"
 	"github.com/astaxie/beego/orm"
+	
 	"quickstart/models"
 	"strconv"
+	
+ 
 )
 
 // CompaniesController operations for Companies
@@ -62,21 +65,33 @@ func (c *CompaniesController) Get() {
 			"Email":     c.GetString("Email"),
 			"Address":   c.GetString("Address"),
 		}
-		logs.Info(companyFiler)
 		fields := [] string{"Id", "Name", "Telephone", "Address",
 			"Email", "Website", "Remarks", "CreatedAt"}
 		sortBy := make([]string, 1)
 		order := make([]string, 1)
-		
 		sortBy[0] = "Id"
 		order[0] = "desc"
-		companies, err := models.GetAllCompany(companyFiler, fields, sortBy, order, 0, 1000)
+		//进行数据的分页
+		
+		perPage := 2
+		page, _ := strconv.Atoi(c.GetString("page","1"))
+		count := int(models.ModelCount("company"))
+		p := models.CustomerPage{Page: page,Per: perPage,Count: count }
+		pageResult  := p.SetPaginator()
+		pageResult["PerPage"] = perPage
+		pageResult["Count"] = count
+		
+		logs.Info(pageResult)
+		companies, err := models.GetAllCompany(companyFiler, fields, sortBy, order, int64(pageResult["Offset"]), int64(perPage))
+		
 		if err != nil {
 			logs.Error(err)
 			c.ServeJSON()
 		} else {
-			logs.Info(companies)
-			c.Data["json"] = companies
+			c.Data["json"] = map[string]interface{}{
+				"pageResult": pageResult,
+				"data": companies,
+			}
 			c.ServeJSON()
 		}
 	} else {
@@ -150,3 +165,5 @@ func (c *CompaniesController) Delete() {
 		c.redirectCustomer("/company")
 	}
 }
+
+
