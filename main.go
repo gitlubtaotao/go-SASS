@@ -27,6 +27,8 @@ func main() {
 
 func init()  {
 	beego.BConfig.WebConfig.DirectoryIndex=true
+	beego.SetStaticPath("/static","static")
+	beego.SetStaticPath("/assets","assets")
 	//链接数据库
 	dataConnection()
 }

@@ -30,8 +30,10 @@
 </div>
 <footer>
     {{template "layouts/footer.html" .}}
-    {{.Scripts}}
-    <script>
+    <script src="/assets/page_assets/{{.Namespace}}.js"></script>
+    <script src="/assets/page_assets/footer.js"></script>
+   {{.Scripts}}
+    <script type="text/javascript">
         jQuery(function($) {
             var namespace = '{{.Namespace}}';
             var currentRoot =  $('.nav-list');
@@ -44,4 +46,5 @@
         });
     </script>
 </footer>
+
 </body>
