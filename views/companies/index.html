@@ -60,4 +60,14 @@
             </table>
         </div>
     </div>
+    <div class="row pull-right">
+        <paginate
+                :page-count="pageCount"
+                :click-handler="clickCallback"
+                :prev-text="'Prev'"
+                :next-text="'Next'"
+                :container-class="'pagination'">
+        </paginate>
+    </div>
 </div>
+

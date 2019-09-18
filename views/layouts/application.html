@@ -8,6 +8,7 @@
         }
     </style>
     {{template "layouts/head.html" .}}
+
     {{.HtmlHead}}
 </head>
 <body class="no-skin">
@@ -28,10 +29,13 @@
         </div>
     </div>
 </div>
-<footer>
+<s>
     {{template "layouts/footer.html" .}}
-    <script src="/assets/page_assets/{{.Namespace}}.js"></script>
-    <script src="/assets/page_assets/footer.js"></script>
+    <script src="/dist/main.js"></script>
+    {{if .Namespace | ShowAssets}}
+        <script src="/dist/company.js"></script>
+    {{end}}
+
    {{.Scripts}}
     <script type="text/javascript">
         jQuery(function($) {

@@ -73,7 +73,7 @@ func (c *CompaniesController) Get() {
 		order[0] = "desc"
 		//进行数据的分页
 		
-		perPage := 2
+		perPage := 5
 		page, _ := strconv.Atoi(c.GetString("page","1"))
 		count := int(models.ModelCount("company"))
 		p := models.CustomerPage{Page: page,Per: perPage,Count: count }
