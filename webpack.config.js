@@ -42,6 +42,7 @@ module.exports = {
                     options: {
                         presets: ['@babel/preset-env']
                     }
+
                 }
             },
             {
@@ -79,6 +80,7 @@ module.exports = {
                 test: /\.vue$/,
                 loader: 'vue-loader'
             }
-        ]
+        ],
+
     },
 };

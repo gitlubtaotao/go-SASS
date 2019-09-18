@@ -94,19 +94,7 @@
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-eval("\n\nvar _home = __webpack_require__(/*! ./packs/home */ \"./src/packs/home.js\");\n\nvar _home2 = _interopRequireDefault(_home);\n\nfunction _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { \"default\": obj }; }\n\nVue.component('paginate', VuejsPaginate);\nwindow.$ = $; // require('jquery');\n// import paginate from 'vuejs-paginate';\n// paginate = require('vuejs-paginate/dist/index');\n// window.paginate = paginate;\n\nconsole.log(_home2[\"default\"]); // require('./packs/company');\n\n//# sourceURL=webpack:///./src/index.js?");
-
-/***/ }),
-
-/***/ "./src/packs/home.js":
-/*!***************************!*\
-  !*** ./src/packs/home.js ***!
-  \***************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-eval("\n\nObject.defineProperty(exports, \"__esModule\", {\n  value: true\n});\nexports[\"default\"] = {};\n\n//# sourceURL=webpack:///./src/packs/home.js?");
+eval("\n\nVue.component('paginate', VuejsPaginate);\nwindow.$ = $; // import ss from \"./packs/home\";\n// console.log(ss);\n\n//# sourceURL=webpack:///./src/index.js?");
 
 /***/ })
 
