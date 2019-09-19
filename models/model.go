@@ -7,13 +7,14 @@ import (
 )
 
 //User person
-type User struct {
-	Id        int    `orm:"pk;auto"`
-	Name      string `orm:"unique"`
-	Pwd       string
-	Articles []*Article `orm:"rel(m2m)"`
-	Company *Company `orm:"rel(fk)"`
-}
+//type User struct {
+//	Id        int    `orm:"pk;auto"`
+//	Name      string `orm:"unique"`
+//	Email     string `orm:"unique;size(128)"`
+//	Pwd       string
+//	Articles []*Article `orm:"rel(m2m)"`
+//	Company *Company `orm:"rel(fk)"`
+//}
 //Article 文章标题
 type Article struct {
 	Id        int    `orm:"pk;auto"`
@@ -23,7 +24,7 @@ type Article struct {
 	Acontent  string
 	Aimg      string
 	ArticleType *ArticleType `orm:"rel(fk)"`
-	Users []*User `orm:"reverse(many)"`
+	//Users []*User `orm:"reverse(many)"`
 
 }
 //ArticleType 文章类型
@@ -34,7 +35,7 @@ type ArticleType struct {
 }
 
 func init()  {
-	orm.RegisterModel(new(Article), new(User),new(ArticleType))
+	orm.RegisterModel(new(Article),new(ArticleType))
 }
 
 //ModelCount 统计数据的总条数

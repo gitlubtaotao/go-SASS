@@ -3,6 +3,7 @@ package controllers
 import "C"
 import (
 	"github.com/astaxie/beego"
+	"github.com/astaxie/beego/logs"
 	"github.com/lhtzbj12/sdrms/enums"
 	"html/template"
 	"quickstart/models"
@@ -27,6 +28,7 @@ func (this *BaseController) Prepare() {
 	this.Data["xsrfdata"] = template.HTML(this.XSRFFormHTML())
 	this.controllerName, this.actionName = this.GetControllerAndAction()
 	this.Data["ControllerName"] = this.controllerName
+	logs.Info(this.controllerName)
 	this.adapterUserInfo()
 	//登录页面可以不需要进行登录判断
 	if this.controllerName != "LoginController" {

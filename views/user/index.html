@@ -1,0 +1,108 @@
+<div class="breadcrumbs ace-save-state" id="breadcrumbs">
+    <ul class="breadcrumb">
+        {{template "layouts/breadcrumb.html" .}}
+        <li class="active">
+            <a href="#">{{.PageTitle}}</a>
+        </li>
+    </ul><!-- /.breadcrumb -->
+</div>
+<div class="page-header">
+    <div class="col-sm-12 col-xs-6">
+        <div class="btn-group">
+            <a href="/company/new" class="btn btn-sm btn-primary"> 新增员工</a>
+        </div>
+    </div>
+    <div class="clearfix"></div>
+</div>
+<div id="page_content" class="page-content">
+    <div class="row">
+        <div class="col-xs-12 col-sm-12 widget-container-col ui-sortable">
+            <div class="widget-box ui-sortable-handle" id="widget-box-1">
+                <div class="widget-header">
+                    <h5 class="widget-title">查询条件</h5>
+                    <div class="widget-toolbar">
+                        <a href="#" data-action="collapse">
+                            <i class="ace-icon fa fa-chevron-up"></i>
+                        </a>
+                    </div>
+                </div>
+                <div class="widget-body">
+                    <div class="widget-main">
+                        <form class="form-horizontal filter-form"
+                              action="/user" method="get">
+                            <div class="form-group">
+                                <div class="col-sm-3 col-xs-5">
+                                    <label class="control-label cols-sm-4">姓名</label>
+                                    <input class="form-control" value="" placeholder="请输入姓名" name="Name">
+                                </div>
+                                <div class="col-sm-3 col-xs-5">
+                                    <label class="control-label cols-sm-4">邮箱</label>
+                                    <input class="form-control" value="" placeholder="请输入邮箱" name="Email">
+                                </div>
+                            </div>
+                            <div class="buttons" id="buttons">
+                                <div class="col-sm-offset-5 col-xs-offset-3">
+                                    <button class="btn btn-success btn-sm" type="button" @click="filterResult" >
+                                        <i class="ace-icon fa fa-search bigger-110"></i>
+                                        查询
+                                    </button>
+
+                                    <button class="btn btn-sm btn-danger" type="button" @click="refreshResult">
+                                        <i class="ace-icon fa fa-refresh bigger-110"></i>
+                                        清空查询
+                                    </button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="space-12"></div>
+    <div class="row">
+        <div class="col-xs-12 col-sm-12">
+            <table id="user_table" class="table table-bordered table-hover">
+                <thead>
+                <tr>
+                    <th></th>
+                    <th>姓名</th>
+                    <th>邮箱</th>
+                    <th>性别</th>
+                    <th>职位</th>
+                    <th>入职时间</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr v-for="(user,index) in companyList">
+                    <td>
+                        <button class="btn btn-xs btn-info" @click="editCompany(user.Id,index)">
+                            <i class="ace-icon fa fa-pencil bigger-120"></i>
+                            修改
+                        </button>
+                        <button class="btn btn-xs btn-danger" @click="deleteCompany(user.Id,index)">
+                            <i class="ace-icon fa fa-trash-o bigger-120"></i>
+                            删除
+                        </button>
+                    </td>
+                    <td>{ user.Name }</td>
+                    <td>{user.Email}</td>
+                    <td>{user.Gender}</td>
+                    <td></td>
+                    <td>{user.EntryTime}</td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="row pull-right">
+        <paginate
+                :page-count="pageCount"
+                :click-handler="clickCallback"
+                :prev-text="'Prev'"
+                :next-text="'Next'"
+                :container-class="'pagination'">
+        </paginate>
+    </div>
+</div>

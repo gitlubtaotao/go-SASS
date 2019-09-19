@@ -4,18 +4,12 @@ import "math"
 
 //CustomerPage 分页计算方式
 type CustomerPage struct {
-	Page int
-	Per int
-	Count int
+	Per   int64
+	Count int64
 }
+
 //SetPaginator 计算分页
-func (p *CustomerPage) SetPaginator() map[string] int  {
-	
-	offset := p.Per * (p.Page - 1)
-	countPage := int(math.Ceil(float64(p.Count) / float64(p.Per)))
-	mapValue := map[string]int{
-		"Offset": offset,
-		"CountPage": countPage,
-	}
-	return mapValue
+func SetPaginator(count int64, per int64) int64 {
+	countPage := int64(math.Ceil(float64(count) / float64(per)))
+	return countPage
 }

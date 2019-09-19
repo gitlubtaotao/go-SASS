@@ -1,4 +1,5 @@
 package models
+
 import (
 	"errors"
 	"fmt"
@@ -11,19 +12,18 @@ import (
 	"time"
 )
 
-
 //Company 公司信息
 type Company struct {
-	Id   int64  `orm:"pk;auto";form:"-"`
-	Name string `orm:"size(128)";form:"Name"`
-	Telephone string `orm:"size(128)"`
-	Address string `orm:"size(256)"`
-	Email string `orm:"size(128)"`
-	Remarks string `orm:"size(128)"`
-	Website string `orm:"size(128)"`
-	CreatedAt   time.Time  `orm:"auto_now;type(datetime)"`
-	User	[]*User `orm:"reverse(many)"`
-	Department	[]*Department `orm:"reverse(many)"`
+	Id         int64         `orm:"pk;auto";form:"-"`
+	Name       string        `orm:"size(128)";form:"Name"`
+	Telephone  string        `orm:"size(128)"`
+	Address    string        `orm:"size(256)"`
+	Email      string        `orm:"size(128)"`
+	Remarks    string        `orm:"size(128)"`
+	Website    string        `orm:"size(128)"`
+	CreatedAt  time.Time     `orm:"auto_now;type(datetime)"`
+	User       []*User       `orm:"reverse(many)"`
+	Department []*Department `orm:"reverse(many)"`
 }
 
 func init() {
@@ -52,7 +52,7 @@ func GetCompanyById(id int64) (v *Company, err error) {
 // GetAllCompany retrieves all Company matches certain condition. Returns empty list if
 // no records exist
 func GetAllCompany(query map[string]string, fields []string, sortby []string, order []string,
-	offset int64, limit int64) (ml []interface{}, err error) {
+	offset int64, limit int64) (ml []interface{}, countPage int64, err error) {
 	o := orm.NewOrm()
 	qs := o.QueryTable(new(Company))
 	// query k=v
@@ -63,6 +63,7 @@ func GetAllCompany(query map[string]string, fields []string, sortby []string, or
 			qs = qs.Filter(k, v)
 		}
 	}
+	count, _ := qs.Count()
 	// order by:
 	var sortFields []string
 	if len(sortby) != 0 {
@@ -75,7 +76,7 @@ func GetAllCompany(query map[string]string, fields []string, sortby []string, or
 				} else if order[i] == "asc" {
 					orderby = v
 				} else {
-					return nil, errors.New("Error: Invalid order. Must be either [asc|desc]")
+					return nil, 0, errors.New("Error: Invalid order. Must be either [asc|desc]")
 				}
 				sortFields = append(sortFields, orderby)
 			}
@@ -89,19 +90,19 @@ func GetAllCompany(query map[string]string, fields []string, sortby []string, or
 				} else if order[0] == "asc" {
 					orderby = v
 				} else {
-					return nil, errors.New("Error: Invalid order. Must be either [asc|desc]")
+					return nil, 0, errors.New("Error: Invalid order. Must be either [asc|desc]")
 				}
 				sortFields = append(sortFields, orderby)
 			}
 		} else if len(sortby) != len(order) && len(order) != 1 {
-			return nil, errors.New("Error: 'sortby', 'order' sizes mismatch or 'order' size is not 1")
+			return nil, 0, errors.New("Error: 'sortby', 'order' sizes mismatch or 'order' size is not 1")
 		}
 	} else {
 		if len(order) != 0 {
-			return nil, errors.New("Error: unused 'order' fields")
+			return nil, 0, errors.New("Error: unused 'order' fields")
 		}
 	}
-
+	
 	var l []Company
 	qs = qs.OrderBy(sortFields...).RelatedSel()
 	if _, err = qs.Limit(limit, offset).All(&l, fields...); err == nil {
@@ -119,16 +120,16 @@ func GetAllCompany(query map[string]string, fields []string, sortby []string, or
 				for _, fname := range fields {
 					if fname == "CreatedAt" {
 						m[fname] = v.CreatedAt.Format("2006-01-02 15:04:05")
-					}else {
+					} else {
 						m[fname] = val.FieldByName(fname).Interface()
 					}
 				}
 				ml = append(ml, m)
 			}
 		}
-		return ml, nil
+		return ml, count, nil
 	}
-	return nil, err
+	return nil, 0, err
 }
 
 // UpdateCompany updates Company by Id and returns error if

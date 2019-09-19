@@ -6,37 +6,42 @@ var app = new Vue({
         pageCount: 1
     },
     mounted: function () {
-        this.getList()
+        this.getList();
     },
     methods: {
-        clickCallback: function(pageNum) {
+        clickCallback: function (pageNum) {
             this.getList(pageNum);
         },
         //获取所有的数据
         getList: function (page = 1) {
-            var hashParams = {};
-            $.each($('#company_filter').serializeArray(), function (key, value) {
+            let hashParams = {};
+            let currentFilter = $('.filter-form');
+            $.each(currentFilter.serializeArray(), function (key, value) {
                 hashParams[value['name']] = value['value'];
             });
             hashParams['page'] = page;
-            axios.get('/company', {
+            axios.get(currentFilter.attr('action'), {
                 headers: {'X-Requested-With': 'XMLHttpRequest'},
                 params: hashParams,
                 dataType: 'json',
             }).then(function (response) {
-                app.companyList = response['data']['data'];
-                app.pageCount = response['data']['pageResult']['CountPage'];
+                console.log(response);
+                if (response['data'] !== null) {
+                    app.companyList = response['data']['data'];
+                    app.pageCount = response['data']['countPage']
+                }
             }).catch(function (error) {
                 console.log(error);
             });
         },
         //过滤部分数据
         filterResult: function () {
+
             app.getList();
         },
         //清空数据
         refreshResult: function () {
-            $('#company_filter')[0].reset();
+            $('.filter-form')[0].reset();
             app.getList();
         },
         editCompany: function (Id, index) {

@@ -73,23 +73,17 @@ func (c *CompaniesController) Get() {
 		order[0] = "desc"
 		//进行数据的分页
 		
-		perPage := 5
+		perPage := 10
 		page, _ := strconv.Atoi(c.GetString("page","1"))
-		count := int(models.ModelCount("company"))
-		p := models.CustomerPage{Page: page,Per: perPage,Count: count }
-		pageResult  := p.SetPaginator()
-		pageResult["PerPage"] = perPage
-		pageResult["Count"] = count
-		
-		logs.Info(pageResult)
-		companies, err := models.GetAllCompany(companyFiler, fields, sortBy, order, int64(pageResult["Offset"]), int64(perPage))
-		
+		limit :=int64(perPage * (page-1))
+		companies,countPage, err := models.GetAllCompany(companyFiler, fields, sortBy, order, limit, int64(perPage))
 		if err != nil {
 			logs.Error(err)
 			c.ServeJSON()
 		} else {
+			mapValue := models.SetPaginator(countPage, int64(perPage))
 			c.Data["json"] = map[string]interface{}{
-				"pageResult": pageResult,
+				"countPage": mapValue,
 				"data": companies,
 			}
 			c.ServeJSON()
