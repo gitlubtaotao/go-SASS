@@ -5,7 +5,10 @@ const nodeExternals = require('webpack-node-externals');
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 const VueLoaderPlugin = require('vue-loader/lib/plugin');
 module.exports = {
-    entry: { main: './src/index.js',company: './src/packs/company.js' },
+    entry: {
+        main: './src/index.js', company: './src/packs/company.js',
+        user_form: './src/packs/user_form.js'
+    },
     output: {
         path: path.resolve(__dirname, 'dist'),
         filename: '[name].js'
@@ -24,7 +27,7 @@ module.exports = {
 
     ],
     resolve: {
-        extensions: [ '.js', '.vue', '.json'],
+        extensions: ['.js', '.vue', '.json'],
         alias: {
             'vue$': 'vue/dist/vue.common.js',
             'src': path.resolve(__dirname, '../src'),

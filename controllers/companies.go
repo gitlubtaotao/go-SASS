@@ -89,7 +89,7 @@ func (c *CompaniesController) Get() {
 			c.ServeJSON()
 		}
 	} else {
-		c.namespace = "company"
+		c.Data["JsName"] = "company"
 		c.Data["Namespace"] = "company"
 		c.Data["PageTitle"] = "公司信息"
 		c.LayoutSections = make(map[string]string)

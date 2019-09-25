@@ -11,15 +11,11 @@ func init() {
 
 //是否显示对应的静态资源
 func ShowAssets(namespace string) bool  {
-	assetSlice := []string {"company"}
-	status := false
-	for _,value := range assetSlice{
-		if value == namespace{
-			status = true
-			break
-		}
+	if namespace != ""{
+		return true
+	}else{
+		return false
 	}
-	return status
 }
 
 //MenuActive 当前菜单高亮

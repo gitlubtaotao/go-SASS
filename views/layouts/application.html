@@ -32,22 +32,19 @@
 <footer>
     {{template "layouts/footer.html" .}}
     <script src="/dist/main.js"></script>
-    {{if .Namespace | ShowAssets}}
-        <script src="/dist/company.js?version=2"></script>
+    {{if .JsName | ShowAssets}}
+        <script src="/dist/{{.JsName}}.js?version=2"></script>
     {{end}}
 
    {{.Scripts}}
     <script type="text/javascript">
         jQuery(function($) {
             var namespace = '{{.Namespace}}';
-            console.log(namespace);
             var currentRoot =  $('.nav-list');
             currentRoot.find('li').removeClass('open').removeClass('active');
             currentRoot.find('#'+namespace).addClass('active').addClass('open');
             currentRoot.find('.submenu').hide();
-
             var submenu = currentRoot.find('.submenu').find('#'+'{{.ControllerName}}');
-            console.log('{{.ControllerName}}');
             submenu.parent().show();
             submenu.addClass('active');
         });

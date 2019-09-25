@@ -94,7 +94,7 @@
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-eval("\n\nVue.component('paginate', VuejsPaginate);\nwindow.$ = $; // import ss from \"./packs/home\";\n// console.log(ss);\n\n//# sourceURL=webpack:///./src/index.js?");
+eval("\n\nVue.component('paginate', VuejsPaginate);\nwindow.$ = $;\n$(document).ready(function () {\n  $(\".form_datetime\").datetimepicker({\n    format: 'YYYY-MM-DD',\n    icons: {\n      time: 'fa fa-clock-o',\n      date: 'fa fa-calendar',\n      up: 'fa fa-chevron-up',\n      down: 'fa fa-chevron-down',\n      previous: 'fa fa-chevron-left',\n      next: 'fa fa-chevron-right',\n      today: 'fa fa-arrows ',\n      clear: 'fa fa-trash',\n      close: 'fa fa-times'\n    }\n  }).next().on(ace.click_event, function () {\n    $(this).prev().focus();\n  });\n}); // import ss from \"./packs/home\";\n// console.log(ss);\n\n//# sourceURL=webpack:///./src/index.js?");
 
 /***/ })
 

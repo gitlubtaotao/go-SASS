@@ -1,0 +1,101 @@
+<div class="page-content">
+    <div class="row">
+        <div class="col-sm-6 col-sm-offset-2 col-xs-12">
+            <form class="form-horizontal" action="" method="post"
+                  id='create_form' @submit.prevent="checkForm">
+{{/*                错误信息提示*/}}
+                <div class="alert alert-danger col-sm-offset-2 " v-if="errors.length">
+                    <button type="button" class="close" data-dismiss="alert">
+                        <i class="ace-icon fa fa-times"></i>
+                    </button>
+                    <ul>
+                        <li v-for="error in errors">{ error }</li>
+                    </ul>
+                </div>
+                <fieldset>
+                    <div class="form-group">
+                        <label class="control-label col-sm-4">姓名</label>
+                        <div class="col-sm-8">
+                            <input class="form-control" v-model.trim="user.Name" name="Name"  value="{{.User.Name}}" placeholder="请输入公司名称">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label col-sm-4">邮箱</label>
+                        <div class="col-sm-8">
+                            <input class="form-control" type="email" v-model.trim="user.Email" name="Email" value="{{.User.Email}}"
+                                   placeholder="请输入邮箱">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label col-sm-4">电话</label>
+                        <div class="col-sm-8">
+                            <div class="input-group">
+                            <span class="input-group-addon">
+                                <i class="ace-icon fa fa-phone"></i>
+                            </span>
+                                <input class="form-control" v-model.trim="user.Phone" type="tel" name="Phone" value="{{.User.Phone}}"
+                                       placeholder="请输入电话">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label col-sm-4">密码</label>
+                        <div class="col-sm-8">
+                            <input class="form-control" type="password" v-model.trim="user.Password" name="Password" value="{{.User.Pwd}}"
+                                   placeholder="请输入新密码" autocapitalize="off" id="new-password" required>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label col-sm-4">确认密码</label>
+                        <div class="col-sm-8">
+                            <input class="form-control" type="password" v-model.trim="user.confirmPassword" name="ConfirmPassword" value="{{.User.Pwd}}"
+                                   placeholder="请再次输入密码" autocomplete="off" required>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label col-sm-4">性别</label>
+                        <div class="col-sm-8">
+                            <select name="Gender" class="form-control" v-model="user.Gender">
+                                <option v-bind:value="1">男</option>
+                                <option v-bind:value="2">女</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label col-sm-4">所属公司</label>
+                        <div class="col-sm-8">
+                            <select class="form-control" name="Company" v-model="user.Company">
+                                <option value=2>上市</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label col-sm-4">入职时间</label>
+                        <div class="col-sm-8">
+                            <div class="input-group">
+                                <span class="input-group-addon"><i class="fa fa-clock-o bigger-110"></i>
+                                </span>
+                                <input name="EntryTime" v-model="user.EntryTime" type="text" value="" class="form-control form_datetime" />
+                            </div>
+
+                        </div>
+                    </div>
+                    <input type="hidden" v-model="user.Id" value="{{.User.Id}}">
+                </fieldset>
+                <div class="space-6"></div>
+                <div class="clearfix form-group ">
+                    <div class="col-sm-offset-5">
+                        <button class="btn btn-success btn-sm " type="submit" @submit="checkForm">
+                            <i class="ace-icon fa fa-check bigger-110"></i>
+                          保存
+                        </button>
+                        <button class="btn btn-sm" type="reset">
+                            <i class="ace-icon fa fa-undo bigger-110"></i>
+                            取消
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

@@ -45,6 +45,7 @@
   "dependencies": {
     "exports-loader": "^0.7.0",
     "jquery": "^3.4.1",
+    "vee-validate": "^3.0.7",
     "vuejs-paginate": "^2.1.0"
   }
 }

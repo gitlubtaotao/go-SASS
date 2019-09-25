@@ -3,6 +3,7 @@ package models
 import (
 	"errors"
 	"fmt"
+	"github.com/astaxie/beego/logs"
 	"reflect"
 	"strings"
 	"time"
@@ -14,6 +15,7 @@ type User struct {
 	Id   int64  `orm:"pk;auto"`
 	Name string `orm:"size(128);unique;NOT NULL"`
 	Email string `orm:"size(128);unique;NOT NULL"`
+	Phone string `orm:"size(64);unique;NOT NULL"`
 	EncodePassword string  `orm:"size(512);unique;NOT NULL"`
 	Pwd       string
 	Gender int8 `orm:"default(1)"`
@@ -22,6 +24,7 @@ type User struct {
 	//CreatedAt   time.Time  `orm:"auto_now;type(datetime)"`
 	//UpdatedAt time.Time `orm:"auto_now;type(datetime)"`
 	Company *Company `orm:"rel(fk);index"`
+	
 	
 }
 
@@ -33,6 +36,10 @@ func init() {
 // last inserted Id on success.
 func AddUser(m *User) (id int64, err error) {
 	o := orm.NewOrm()
+	//articleType := Company{Id: m.Company}
+	//_ = o.Read(&articleType)
+	//atricle.ArticleType = &articleType
+	logs.Info(m.Company)
 	id, err = o.Insert(m)
 	return
 }

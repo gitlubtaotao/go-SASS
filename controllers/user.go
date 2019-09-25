@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"errors"
 	"github.com/astaxie/beego/logs"
+	"github.com/astaxie/beego/orm"
 	"quickstart/models"
 	"strconv"
 	"strings"
@@ -32,7 +33,12 @@ func (c *UserController) URLMapping() {
 // @router / [post]
 func (c *UserController) Post() {
 	var v models.User
-	json.Unmarshal(c.Ctx.Input.RequestBody, &v)
+	o := orm.NewOrm()
+	_ = json.Unmarshal(c.Ctx.Input.RequestBody, &v)
+	companyId, _ := strconv.Atoi(c.GetString("companyId"))
+	company := models.Company{Id: int64(companyId)}
+	_ = o.Read(&company)
+	v.Company = &company
 	if _, err := models.AddUser(&v); err == nil {
 		c.Ctx.Output.SetStatus(201)
 		c.Data["json"] = v
@@ -80,7 +86,7 @@ func (c *UserController) GetAll() {
 	var query = make(map[string]string)
 	var limit int64 = 10
 	var offset int64
-	page,_:= strconv.Atoi(c.GetString("page", "1"))
+	page, _ := strconv.Atoi(c.GetString("page", "1"))
 	offset = limit * (int64(page) - 1)
 	// fields: col1,col2,entity.col3
 	if v := c.GetString("fields"); v != "" {
@@ -126,17 +132,17 @@ func (c *UserController) GetAll() {
 		query["Email"] = c.GetString("Email")
 	}
 	logs.Info(query)
-	l,countPage, err := models.GetAllUser(query, fields, sortby, order, offset, limit)
+	l, countPage, err := models.GetAllUser(query, fields, sortby, order, offset, limit)
 	if err != nil {
 		logs.Error(err)
 		c.Data["json"] = err.Error()
 	} else {
 		logs.Info("sss")
-		mapValue := models.SetPaginator(countPage,int64(limit))
+		mapValue := models.SetPaginator(countPage, int64(limit))
 		logs.Info(mapValue)
 		c.Data["json"] = map[string]interface{}{
 			"countPage": mapValue,
-			"data": l,
+			"data":      l,
 		}
 	}
 	c.ServeJSON()
@@ -183,8 +189,23 @@ func (c *UserController) Delete() {
 
 //用户列表
 func (c *UserController) Get() {
-	c.namespace = "company"
 	c.Data["Namespace"] = "company"
 	c.Data["PageTitle"] = "员工信息"
+	c.Data["JsName"] = "company"
 	c.setTpl("user/index.html")
+}
+
+//新增用户
+func (c *UserController) New() {
+	c.namespace = "company"
+	c.Data["JsName"] = "user_form"
+	c.Data["Namespace"] = "company"
+	c.Data["PageTitle"] = "新增员工信息"
+	c.setTpl("user/new.html")
+}
+
+//修改用户
+
+func (c *UserController) Edit() {
+
 }
