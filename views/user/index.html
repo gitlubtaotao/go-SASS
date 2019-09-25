@@ -42,7 +42,7 @@
                             </div>
                             <div class="buttons" id="buttons">
                                 <div class="col-sm-offset-5 col-xs-offset-3">
-                                    <button class="btn btn-success btn-sm" type="button" @click="filterResult" >
+                                    <button class="btn btn-success btn-sm" type="button" @click="filterResult">
                                         <i class="ace-icon fa fa-search bigger-110"></i>
                                         查询
                                     </button>
@@ -66,6 +66,8 @@
                 <thead>
                 <tr>
                     <th></th>
+                    <th>所属公司</th>
+                    <th>公司邮箱</th>
                     <th>姓名</th>
                     <th>邮箱</th>
                     <th>性别</th>
@@ -85,6 +87,8 @@
                             删除
                         </button>
                     </td>
+                    <td>{ user.Company.Name}</td>
+                    <td>{ user.Company.Email}</td>
                     <td>{ user.Name }</td>
                     <td>{user.Email}</td>
                     <td>{user.Gender}</td>

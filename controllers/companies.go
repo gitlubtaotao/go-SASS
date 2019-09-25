@@ -4,11 +4,10 @@ import (
 	"fmt"
 	"github.com/astaxie/beego/logs"
 	"github.com/astaxie/beego/orm"
+	"strings"
 	
 	"quickstart/models"
 	"strconv"
-	
- 
 )
 
 // CompaniesController operations for Companies
@@ -57,7 +56,7 @@ func (c *CompaniesController) Post() {
 
 //Get 首页
 func (c *CompaniesController) Get() {
-	logs.Info(c.IsAjax())
+	var fields []string
 	if c.IsAjax() {
 		companyFiler := map[string]string{
 			"Name":      c.GetString("Name"),
@@ -65,18 +64,22 @@ func (c *CompaniesController) Get() {
 			"Email":     c.GetString("Email"),
 			"Address":   c.GetString("Address"),
 		}
-		fields := [] string{"Id", "Name", "Telephone", "Address",
-			"Email", "Website", "Remarks", "CreatedAt"}
+		if v := c.GetString("fields"); v != "" {
+			fields = strings.Split(v, ",")
+		}
+		if len(fields) == 0 {
+			fields = append(fields, "Id", "Name", "Telephone", "Address",
+				"Email", "Website", "Remarks", "CreatedAt")
+		}
 		sortBy := make([]string, 1)
 		order := make([]string, 1)
 		sortBy[0] = "Id"
 		order[0] = "desc"
 		//进行数据的分页
-		
 		perPage := 10
-		page, _ := strconv.Atoi(c.GetString("page","1"))
-		limit :=int64(perPage * (page-1))
-		companies,countPage, err := models.GetAllCompany(companyFiler, fields, sortBy, order, limit, int64(perPage))
+		page, _ := strconv.Atoi(c.GetString("page", "1"))
+		limit := int64(perPage * (page - 1))
+		companies, countPage, err := models.GetAllCompany(companyFiler, fields, sortBy, order, limit, int64(perPage))
 		if err != nil {
 			logs.Error(err)
 			c.ServeJSON()
@@ -84,7 +87,7 @@ func (c *CompaniesController) Get() {
 			mapValue := models.SetPaginator(countPage, int64(perPage))
 			c.Data["json"] = map[string]interface{}{
 				"countPage": mapValue,
-				"data": companies,
+				"data":      companies,
 			}
 			c.ServeJSON()
 		}
@@ -147,11 +150,11 @@ func (c *CompaniesController) Delete() {
 	var result map[string]string
 	if c.IsAjax() {
 		id := c.Ctx.Input.Param(":id")
-		newId,_:=strconv.ParseInt(id, 10, 64)
+		newId, _ := strconv.ParseInt(id, 10, 64)
 		company := models.Company{Id: newId}
 		o := orm.NewOrm()
 		if _, err := o.Delete(&company); err == nil {
-		}else{
+		} else {
 			result["message"] = "删除失败"
 			c.Data["json"] = result
 		}
@@ -160,5 +163,3 @@ func (c *CompaniesController) Delete() {
 		c.redirectCustomer("/company")
 	}
 }
-
-

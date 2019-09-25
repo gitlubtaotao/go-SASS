@@ -12,20 +12,18 @@ import (
 )
 
 type User struct {
-	Id   int64  `orm:"pk;auto"`
-	Name string `orm:"size(128);unique;NOT NULL"`
-	Email string `orm:"size(128);unique;NOT NULL"`
-	Phone string `orm:"size(64);unique;NOT NULL"`
-	EncodePassword string  `orm:"size(512);unique;NOT NULL"`
-	Pwd       string
-	Gender int8 `orm:"default(1)"`
-	Positions []*Position `orm:"rel(m2m)"`
-	EntryTime time.Time `orm:"auto_now;type(datetime)"`
+	Id             int64  `orm:"pk;auto"`
+	Name           string `orm:"size(128);unique;NOT NULL"`
+	Email          string `orm:"size(128);unique;NOT NULL"`
+	Phone          string `orm:"size(64);unique;NOT NULL"`
+	EncodePassword string `orm:"size(512);unique;NOT NULL"`
+	Pwd            string
+	Gender         int8        `orm:"default(1)"`
+	Positions      []*Position `orm:"rel(m2m)"`
+	EntryTime      time.Time   `orm:"auto_now;type(datetime)"`
 	//CreatedAt   time.Time  `orm:"auto_now;type(datetime)"`
 	//UpdatedAt time.Time `orm:"auto_now;type(datetime)"`
 	Company *Company `orm:"rel(fk);index"`
-	
-	
 }
 
 func init() {
@@ -36,12 +34,9 @@ func init() {
 // last inserted Id on success.
 func AddUser(m *User) (id int64, err error) {
 	o := orm.NewOrm()
-	//articleType := Company{Id: m.Company}
-	//_ = o.Read(&articleType)
-	//atricle.ArticleType = &articleType
-	logs.Info(m.Company)
 	id, err = o.Insert(m)
-	return
+	logs.Info(err)
+	return id,err
 }
 
 // GetUserById retrieves User by Id. Returns error if
@@ -58,7 +53,7 @@ func GetUserById(id int64) (v *User, err error) {
 // GetAllUser retrieves all User matches certain condition. Returns empty list if
 // no records exist
 func GetAllUser(query map[string]string, fields []string, sortby []string, order []string,
-	offset int64, limit int64) (ml []interface{},countPage int64 ,err error) {
+	offset int64, limit int64) (ml []interface{}, countPage int64, err error) {
 	o := orm.NewOrm()
 	qs := o.QueryTable(new(User))
 	// query k=v
@@ -83,7 +78,7 @@ func GetAllUser(query map[string]string, fields []string, sortby []string, order
 				} else if order[i] == "asc" {
 					orderby = v
 				} else {
-					return nil,0, errors.New("Error: Invalid order. Must be either [asc|desc]")
+					return nil, 0, errors.New("Error: Invalid order. Must be either [asc|desc]")
 				}
 				sortFields = append(sortFields, orderby)
 			}
@@ -97,19 +92,19 @@ func GetAllUser(query map[string]string, fields []string, sortby []string, order
 				} else if order[0] == "asc" {
 					orderby = v
 				} else {
-					return nil,0, errors.New("Error: Invalid order. Must be either [asc|desc]")
+					return nil, 0, errors.New("Error: Invalid order. Must be either [asc|desc]")
 				}
 				sortFields = append(sortFields, orderby)
 			}
 		} else if len(sortby) != len(order) && len(order) != 1 {
-			return nil,0, errors.New("Error: 'sortby', 'order' sizes mismatch or 'order' size is not 1")
+			return nil, 0, errors.New("Error: 'sortby', 'order' sizes mismatch or 'order' size is not 1")
 		}
 	} else {
 		if len(order) != 0 {
-			return nil,0, errors.New("Error: unused 'order' fields")
+			return nil, 0, errors.New("Error: unused 'order' fields")
 		}
 	}
-
+	
 	var l []User
 	qs = qs.OrderBy(sortFields...).RelatedSel()
 	if _, err = qs.Limit(limit, offset).All(&l, fields...); err == nil {
@@ -123,14 +118,18 @@ func GetAllUser(query map[string]string, fields []string, sortby []string, order
 				m := make(map[string]interface{})
 				val := reflect.ValueOf(v)
 				for _, fname := range fields {
-					m[fname] = val.FieldByName(fname).Interface()
+					if fname == "EntryTime" {
+						m[fname] = 	v.EntryTime.Format("2006-01-02 15:04:05")
+					} else {
+						m[fname] = val.FieldByName(fname).Interface()
+					}
 				}
 				ml = append(ml, m)
 			}
 		}
-		return ml, count,nil
+		return ml, count, nil
 	}
-	return nil,0, err
+	return nil, 0, err
 }
 
 // UpdateUser updates User by Id and returns error if

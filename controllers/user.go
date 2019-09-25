@@ -93,7 +93,9 @@ func (c *UserController) GetAll() {
 		fields = strings.Split(v, ",")
 	}
 	if len(fields) == 0 {
-		fields = append(fields, "Name", "Email", "Gender", "EntryTime", "Id")
+		fields = append(fields, "Name",
+			"Email", "Gender", "EntryTime",
+			"Id","Company")
 	}
 	// limit: 10 (default is 10)
 	if v, err := c.GetInt64("limit"); err == nil {
@@ -137,7 +139,6 @@ func (c *UserController) GetAll() {
 		logs.Error(err)
 		c.Data["json"] = err.Error()
 	} else {
-		logs.Info("sss")
 		mapValue := models.SetPaginator(countPage, int64(limit))
 		logs.Info(mapValue)
 		c.Data["json"] = map[string]interface{}{
