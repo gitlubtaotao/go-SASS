@@ -8,6 +8,8 @@ import (
 	"quickstart/models"
 	"strconv"
 	"strings"
+	
+	"golang.org/x/crypto/bcrypt"
 )
 
 //  UserController operations for User
@@ -39,6 +41,9 @@ func (c *UserController) Post() {
 	company := models.Company{Id: int64(companyId)}
 	_ = o.Read(&company)
 	v.Company = &company
+	encodePassword := c.generatePassword(v.Pwd)
+	v.EncodePassword = encodePassword
+	v.Pwd = ""
 	if _, err := models.AddUser(&v); err == nil {
 		c.Ctx.Output.SetStatus(201)
 		c.Data["json"] = v
@@ -95,7 +100,7 @@ func (c *UserController) GetAll() {
 	if len(fields) == 0 {
 		fields = append(fields, "Name",
 			"Email", "Gender", "EntryTime",
-			"Id","Company")
+			"Id", "Company")
 	}
 	// limit: 10 (default is 10)
 	if v, err := c.GetInt64("limit"); err == nil {
@@ -209,4 +214,16 @@ func (c *UserController) New() {
 
 func (c *UserController) Edit() {
 
+}
+
+//生成对应的密码
+func (c *UserController) generatePassword(pwd string) (encodePassword string) {
+	hash, err := bcrypt.GenerateFromPassword([]byte(pwd), bcrypt.DefaultCost)
+	if err != nil {
+		logs.Error(err)
+		return ""
+	}
+	encodePW := string(hash) // 保存在数据库的密码，虽然每次生成都不同，只需保存一份即可
+	logs.Info(encodePW)
+	return encodePW
 }

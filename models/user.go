@@ -21,9 +21,8 @@ type User struct {
 	Gender         int8        `orm:"default(1)"`
 	Positions      []*Position `orm:"rel(m2m)"`
 	EntryTime      time.Time   `orm:"auto_now;type(datetime)"`
-	//CreatedAt   time.Time  `orm:"auto_now;type(datetime)"`
-	//UpdatedAt time.Time `orm:"auto_now;type(datetime)"`
 	Company *Company `orm:"rel(fk);index"`
+	//Department *Department  `orm:"rel(fk);index"`
 }
 
 func init() {
@@ -32,6 +31,7 @@ func init() {
 
 // AddUser insert a new User into database and returns
 // last inserted Id on success.
+//真的密码的生成
 func AddUser(m *User) (id int64, err error) {
 	o := orm.NewOrm()
 	id, err = o.Insert(m)

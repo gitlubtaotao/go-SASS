@@ -24,17 +24,8 @@ var app = new Vue({
     methods: {
         //对表单的数据进行验证
         checkForm: function () {
-            console.log('sdsdsd');
-            if (!this.user.Name) {
-                this.errors.push("姓名必填项");
-                return false;
-            }
-            if (!this.user.Email) {
-                this.errors.push("邮箱必填项");
-                return false;
-            }
-            if (!this.user.Phone) {
-                this.errors.push("电话必填项");
+            if(!this.validateSubmit()){
+                return;
             }
             this.errors = [];
             axios({
@@ -51,6 +42,34 @@ var app = new Vue({
             }).catch(function (error) {
                 console.log(error);
             });
+        },
+        //提交表单前进行验证
+        validateSubmit: function(){
+            let regPhone=/^1[3456789]\d{9}$/;
+            if (!this.user.Name) {
+                this.errors.push("姓名必填项");
+                return false;
+            }
+            if (!this.user.Email) {
+                this.errors.push("邮箱必填项");
+                return false;
+            }
+            if (!this.user.Phone) {
+                this.errors.push("电话必填项");
+                return false;
+            }
+            if(!this.user.Pwd){
+                this.errors.push('密码必填项');
+                return  false;
+            }
+            if(!regPhone.test(this.user.Phone)){
+                this.errors.push('请输入有效的手机号码');
+            }
+            if(!(this.user.Pwd === this.user.confirmPassword)){
+                this.errors.push('两次输入的密码不一致');
+                return false;
+            }
+            return true;
         },
         //所属公司下拉数据
         companySelect: function () {
