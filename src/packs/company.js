@@ -3,7 +3,9 @@ var app = new Vue({
     delimiters: ['{', '}'],
     data: {
         companyList: [],
-        pageCount: 1
+        pageCount: 1,
+        editUrl: '',
+        destroyUrl: '',
     },
     mounted: function () {
         this.getList();
@@ -28,7 +30,8 @@ var app = new Vue({
                 console.log(response);
                 if (response['data'] !== null) {
                     app.companyList = response['data']['data'];
-                    app.pageCount = response['data']['countPage']
+                    app.pageCount = response['data']['countPage'];
+                    app.editUrl = response['data']['editUrl']
                 }
             }).catch(function (error) {
                 console.log(error);
@@ -45,8 +48,8 @@ var app = new Vue({
             app.getList();
         },
         editCompany: function (Id, index) {
-            console.log(Id);
-
+            console.log(this.editUrl+Id);
+            location.href=this.editUrl+Id;
         },
         deleteCompany: function (Id, index) {
             console.log(index);

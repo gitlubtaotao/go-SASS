@@ -19,15 +19,17 @@ var app = new Vue({
         companyList: [],
     },
     mounted: function () {
-        this.companySelect();
+        this.selectData();
+        this.initData();
+
     },
     methods: {
         //对表单的数据进行验证
         checkForm: function () {
-            if(!this.validateSubmit()){
+            this.errors = [];
+            if (!this.validateSubmit()) {
                 return;
             }
-            this.errors = [];
             axios({
                 method: 'post',
                 url: this.action + "?companyId=" + this.user.Company,
@@ -44,8 +46,8 @@ var app = new Vue({
             });
         },
         //提交表单前进行验证
-        validateSubmit: function(){
-            let regPhone=/^1[3456789]\d{9}$/;
+        validateSubmit: function () {
+            let regPhone = /^1[3456789]\d{9}$/;
             if (!this.user.Name) {
                 this.errors.push("姓名必填项");
                 return false;
@@ -58,21 +60,39 @@ var app = new Vue({
                 this.errors.push("电话必填项");
                 return false;
             }
-            if(!this.user.Pwd){
-                this.errors.push('密码必填项');
-                return  false;
+            console.log(this.user.Id);
+            if (this.user.Id === 0) {
+                if(!this.validatePassword()){
+                    return false;
+                }
+            }else if(this.user.Id !== 0 && this.user.Pwd !==''){
+                if(!this.validatePassword()){
+                    return false;
+                }
             }
-            if(!regPhone.test(this.user.Phone)){
+            if (!regPhone.test(this.user.Phone)) {
                 this.errors.push('请输入有效的手机号码');
             }
-            if(!(this.user.Pwd === this.user.confirmPassword)){
+
+            return true;
+        },
+        validatePassword: function(){
+            if (!this.user.Pwd) {
+                this.errors.push('密码必填项');
+                return false;
+            }
+            if (!this.user.confirmPassword) {
+                this.errors.push("确认密码必填项");
+                return false;
+            }
+            if (!(this.user.Pwd === this.user.confirmPassword)) {
                 this.errors.push('两次输入的密码不一致');
                 return false;
             }
             return true;
         },
         //所属公司下拉数据
-        companySelect: function () {
+        selectData: function () {
             let result = selectApi('/company', ['Name', 'Id'], 1);
             if (result.status) {
                 if (Array.isArray(result.data.data)) {
@@ -82,7 +102,33 @@ var app = new Vue({
             } else {
                 console.log(result.data)
             }
+        },
+        //修改时初始化数据
+        initData: function () {
+            let id = $('#create_form').attr('data-id');
+            if (id !== "" && id !== null) {
+                console.log(id);
+                this.user.Id = parseInt(id);
+                axios({
+                    method: 'get',
+                    url: "/user/" + id,
+                    data: this.user
+                }).then(function (response) {
+                    console.log(response);
+                    let data = response.data;
+                    app.user.Name = data['Name'];
+                    app.user.Email = data['Email'];
+                    app.user.Phone = data['Phone'];
+                    app.user.Id = data['Id'];
+                    app.user.Gender = data['Gender'];
+                    app.user.EntryTime = data['EntryTime'];
+                    app.user.Company = data['Company']['Id'];
+                }).catch(function (error) {
+                    console.log(error);
+                });
+            }
         }
+
     }
 });
 

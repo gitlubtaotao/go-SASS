@@ -26,6 +26,7 @@ func (c *UserController) URLMapping() {
 	c.Mapping("Delete", c.Delete)
 }
 
+
 // Post ...
 // @Title Post
 // @Description create User
@@ -41,14 +42,31 @@ func (c *UserController) Post() {
 	company := models.Company{Id: int64(companyId)}
 	_ = o.Read(&company)
 	v.Company = &company
-	encodePassword := c.generatePassword(v.Pwd)
-	v.EncodePassword = encodePassword
-	v.Pwd = ""
-	if _, err := models.AddUser(&v); err == nil {
-		c.Ctx.Output.SetStatus(201)
-		c.Data["json"] = v
-	} else {
-		c.Data["json"] = err.Error()
+	logs.Info(v.Id)
+	//更新员工信息
+	if v.Id != 0{
+		if v.Pwd != ""{
+			encodePassword := c.generatePassword(v.Pwd)
+			v.EncodePassword = encodePassword
+			v.Pwd = ""
+		}
+		if err := models.UpdateUserById(&v); err == nil {
+			c.Ctx.Output.SetStatus(201)
+			c.Data["json"] = "OK"
+		} else {
+			c.Data["json"] = err.Error()
+		}
+	}else {
+		//创建员工信息
+		encodePassword := c.generatePassword(v.Pwd)
+		v.EncodePassword = encodePassword
+		v.Pwd = ""
+		if _, err := models.AddUser(&v); err == nil {
+			c.Ctx.Output.SetStatus(201)
+			c.Data["json"] = v
+		} else {
+			c.Data["json"] = err.Error()
+		}
 	}
 	c.ServeJSON()
 }
@@ -148,6 +166,7 @@ func (c *UserController) GetAll() {
 		logs.Info(mapValue)
 		c.Data["json"] = map[string]interface{}{
 			"countPage": mapValue,
+			"editUrl": "/user/edit/",
 			"data":      l,
 		}
 	}
@@ -167,6 +186,7 @@ func (c *UserController) Put() {
 	id, _ := strconv.ParseInt(idStr, 0, 64)
 	v := models.User{Id: id}
 	json.Unmarshal(c.Ctx.Input.RequestBody, &v)
+	
 	if err := models.UpdateUserById(&v); err == nil {
 		c.Data["json"] = "OK"
 	} else {
@@ -213,7 +233,16 @@ func (c *UserController) New() {
 //修改用户
 
 func (c *UserController) Edit() {
-
+	c.Data["JsName"] = "user_form"
+	c.Data["Namespace"] = "company"
+	c.Data["PageTitle"] = "修改员工信息"
+	logs.Info("dsdsdsssdsd")
+	//获取 :Id
+	idStr := c.Ctx.Input.Param(":id")
+	logs.Info(idStr)
+	id, _ := strconv.ParseInt(idStr, 0, 64)
+	c.Data["UserId"] = id
+	c.setTpl("user/edit.html")
 }
 
 //生成对应的密码

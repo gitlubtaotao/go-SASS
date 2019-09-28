@@ -7,7 +7,8 @@ const VueLoaderPlugin = require('vue-loader/lib/plugin');
 module.exports = {
     entry: {
         main: './src/index.js', company: './src/packs/company.js',
-        user_form: './src/packs/user_form.js'
+        user_form: './src/packs/user_form.js',
+        login_in: './src/packs/login_in.js'
     },
     output: {
         path: path.resolve(__dirname, 'dist'),

@@ -3,7 +3,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <head>
     <style>
-        .menu-text{
+        .menu-text {
             vertical-align: sub;
         }
     </style>
@@ -15,13 +15,19 @@
 {{template "layouts/navbar.html" .}}
 <div class="main-container ace-save-state" id="main-container">
     <script type="text/javascript">
-        try{ace.settings.loadState('main-container')}catch(e){}
+        try {
+            ace.settings.loadState('main-container')
+        } catch (e) {
+        }
     </script>
-    <div id="sidebar" class="sidebar responsive ace-save-state" data-sidebar-scroll="true" data-sidebar-hover="true" >
+    <div id="sidebar" class="sidebar responsive ace-save-state" data-sidebar-scroll="true" data-sidebar-hover="true">
         <script type="text/javascript">
-            try{ace.settings.loadState('sidebar')}catch(e){}
+            try {
+                ace.settings.loadState('sidebar')
+            } catch (e) {
+            }
         </script>
-      {{template "layouts/menuList.html" .}}
+        {{template "layouts/menuList.html" .}}
     </div>
     <div class="main-content">
         <div class="main-content-inner">
@@ -31,20 +37,19 @@
 </div>
 <footer>
     {{template "layouts/footer.html" .}}
-    <script src="/dist/main.js"></script>
-    {{if .JsName | ShowAssets}}
-        <script src="/dist/{{.JsName}}.js"></script>
-    {{end}}
 
-   {{.Scripts}}
+    {{if .JsName | ShowAssets}}
+        <script src="/dist/{{.JsName}}.js?version=3"></script>
+    {{end}}
+    {{.Scripts}}
     <script type="text/javascript">
-        jQuery(function($) {
+        jQuery(function ($) {
             var namespace = '{{.Namespace}}';
-            var currentRoot =  $('.nav-list');
+            var currentRoot = $('.nav-list');
             currentRoot.find('li').removeClass('open').removeClass('active');
-            currentRoot.find('#'+namespace).addClass('active').addClass('open');
+            currentRoot.find('#' + namespace).addClass('active').addClass('open');
             currentRoot.find('.submenu').hide();
-            var submenu = currentRoot.find('.submenu').find('#'+'{{.ControllerName}}');
+            var submenu = currentRoot.find('.submenu').find('#' + '{{.ControllerName}}');
             submenu.parent().show();
             submenu.addClass('active');
         });

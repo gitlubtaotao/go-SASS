@@ -6,27 +6,27 @@
                 输入账号和密码
             </h4>
             <div class="space-6"></div>
-            <form class="" name="login" method="post" action="/login">
+            <form class="" name="login" method="post" action="/login" id="login_in" @submit.prevent="submitForm">
                 <fieldset>
                     {{ .xsrfdata }}
                     <label class="block clearfix">
                                                 <span class="block input-icon input-icon-right">
                                                 <input type="text" class="form-control" name="userName"
-                                                       value="{{.userName}}" placeholder="请输入账号">
+                                                       value="{{.userName}}" v-model="userName" placeholder="请输入邮箱或者手机号码">
                                                   <i class="ace-icon fa fa-user"></i>
                                                 </span>
                     </label>
                     <label class="block clearfix">
 														<span class="block input-icon input-icon-right">
 															<input type="password" class="form-control"
-                                                                   placeholder="请输入密码" name="password">
+                                                                   placeholder="请输入密码" name="password" v-model="Password">
 															<i class="ace-icon fa fa-lock"></i>
 														</span>
                     </label>
                     <div class="space"></div>
                     <div class="clearfix"></div>
                     <label class="inline">
-                        <input type="checkbox" name="remember" class="ace"
+                        <input type="checkbox" name="remember" class="ace" v-model="Remember"
                                value="true" {{.remember}} >
                         <span class="lbl">记住我</span>
                     </label>

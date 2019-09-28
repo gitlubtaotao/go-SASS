@@ -2,7 +2,7 @@
 <html lang="zh-CN">
 <head>
     <style>
-        .login-container{
+        .login-container {
             margin: 100px auto !important;
         }
     </style>
@@ -25,7 +25,7 @@
                         <div class="position-relative">
                             {{/*  用户登录模块                          */}}
                             {{template "login/loginIn.html" .}}
-{{/*                            忘记密码模块*/}}
+                            {{/*                            忘记密码模块*/}}
                             {{template "login/forgetPass.html" .}}
                         </div>
                     </div>
@@ -34,19 +34,12 @@
         </div>
     </div>
 </div>
-<footer>
-    <script type="text/javascript">
-        if ('ontouchstart' in document.documentElement) document.write("<script src='assets/js/jquery.mobile.custom.min.js'>" + "<" + "/script>");
-    </script>
-
-
-</footer>
+{{ template "login/footer.html" .}}
 </body>
 </html>
-
 <script>
-    jQuery(function($) {
-        $(document).on('click', '.toolbar a[data-target]', function(e) {
+    jQuery(function ($) {
+        $(document).on('click', '.toolbar a[data-target]', function (e) {
             e.preventDefault();
             var target = $(this).data('target');
             $('.widget-box.visible').removeClass('visible');//hide others
