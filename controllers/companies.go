@@ -1,6 +1,7 @@
 package controllers
 
 import (
+	"encoding/json"
 	"fmt"
 	"github.com/astaxie/beego/logs"
 	"github.com/astaxie/beego/orm"
@@ -30,6 +31,7 @@ func (this *CompaniesController) New() {
 	this.namespace = "company"
 	this.Data["Namespace"] = "company"
 	this.Data["PageTitle"] = "新增公司"
+	this.Data["JsName"] = "company_form"
 	this.setTpl("companies/new.html")
 }
 
@@ -41,16 +43,23 @@ func (this *CompaniesController) New() {
 // @Failure 403 body is empty
 // @router / [post]
 func (c *CompaniesController) Post() {
-	Company := models.Company{}
-	if err := c.ParseForm(&Company); err != nil {
+	company := models.Company{}
+	_ = json.Unmarshal(c.Ctx.Input.RequestBody, &company)
+	
+	if err := c.ParseForm(&company); err != nil {
 		fmt.Print(err)
 	} else {
 		o := orm.NewOrm()
-		if _, err = o.Insert(&Company); err != nil {
-			c.setTpl("company/new")
-			return
+		status, returnErr := company.Validate()
+		if status {
+			if _, err = o.Insert(&company); err != nil {
+				c.setTpl("company/new")
+				return
+			}
+			c.redirectCustomer("/company")
+		}else{
+			fmt.Print(returnErr)
 		}
-		c.redirectCustomer("/company")
 	}
 }
 

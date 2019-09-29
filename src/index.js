@@ -1,6 +1,6 @@
 'use strict';
 Vue.component('paginate', VuejsPaginate);
-
+require('./widget/common');
 window.$ = $;
 $(document).ready(function () {
     //时间格式化

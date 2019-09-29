@@ -1,5 +1,6 @@
 // webpack v4
 const path = require('path');
+
 // update from 23.12.2018
 const nodeExternals = require('webpack-node-externals');
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
@@ -8,14 +9,16 @@ module.exports = {
     entry: {
         main: './src/index.js', company: './src/packs/company.js',
         user_form: './src/packs/user_form.js',
-        login_in: './src/packs/login_in.js'
+        login_in: './src/packs/login_in.js',
+        company_form: './src/packs/company_form.js'
     },
     output: {
         path: path.resolve(__dirname, 'dist'),
         filename: '[name].js'
     },
     target: 'node', // update from 23.12.2018
-    externals: [nodeExternals()], // update from 23.12.2018
+    mode: 'development',
+    externals: [nodeExternals({ whitelist: [ "lodash", "path" ] })], // update from 23.12.2018
     plugins: [
         new MiniCssExtractPlugin({
             // Options similar to the same options in webpackOptions.output

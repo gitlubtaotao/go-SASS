@@ -48,13 +48,17 @@ func (c *UserController) Post() {
 			v.EncodePassword = encodePassword
 			v.Pwd = ""
 		}
-		valid,vErrors	:=c.validateUser(v)
-		logs.Info(valid,vErrors)
-		if err := models.UpdateUserById(&v); err == nil {
-			c.Ctx.Output.SetStatus(201)
-			c.Data["json"] = "OK"
+		valid, vErrors := v.Validate()
+		logs.Info(valid, vErrors)
+		if valid {
+			if err := models.UpdateUserById(&v); err == nil {
+				c.Ctx.Output.SetStatus(201)
+				c.Data["json"] = "OK"
+			} else {
+				c.Data["json"] = err.Error()
+			}
 		} else {
-			c.Data["json"] = err.Error()
+			c.Data["json"] = vErrors
 		}
 	} else {
 		//创建员工信息
@@ -62,13 +66,17 @@ func (c *UserController) Post() {
 		v.EncodePassword = encodePassword
 		v.Pwd = ""
 		//插入数据前进行验证
-		valid,vErrors	:=c.validateUser(v)
-		logs.Info(valid,vErrors)
-		if _, err := models.AddUser(&v); err == nil {
-			c.Ctx.Output.SetStatus(201)
-			c.Data["json"] = v
+		valid, vErrors := v.Validate()
+		logs.Info(valid, vErrors)
+		if valid {
+			if _, err := models.AddUser(&v); err == nil {
+				c.Ctx.Output.SetStatus(201)
+				c.Data["json"] = v
+			} else {
+				c.Data["json"] = err.Error()
+			}
 		} else {
-			c.Data["json"] = err.Error()
+			c.Data["json"] = vErrors
 		}
 	}
 	c.ServeJSON()
@@ -144,6 +152,7 @@ func (c *UserController) GetAll() {
 		order = append(order, "desc")
 	}
 	// query: k:v,k:v
+	
 	if v := c.GetString("query"); v != "" {
 		for _, cond := range strings.Split(v, ",") {
 			kv := strings.SplitN(cond, ":", 2)
@@ -260,12 +269,4 @@ func (c *UserController) generatePassword(pwd string) (encodePassword string) {
 	return encodePW
 }
 
-//进行用户的验证
-//用户信息u
-//return
-//b: true
-//errors: 错误信息
-func (c *UserController) validateUser(u models.User) (b bool, errors map[string]interface{}) {
-	var err map[string]interface{}
-	return true,err
-}
+

@@ -1,4 +1,4 @@
-require('../widget/common');
+// require('../widget/common');
 var app = new Vue({
     el: '#create_form',
     delimiters: ['{', '}'],
@@ -27,9 +27,9 @@ var app = new Vue({
         //对表单的数据进行验证
         checkForm: function () {
             this.errors = [];
-            // if (!this.validateSubmit()) {
-            //     return ;
-            // }
+            if (!this.validateSubmit()) {
+                return ;
+            }
             axios({
                 method: 'post',
                 url: this.action + "?companyId=" + this.user.Company,
@@ -37,7 +37,10 @@ var app = new Vue({
             }).then(function (response) {
                 console.log(response);
                 if (response.status === 200) {
-                    app.errors.push(response.data);
+                    $.each(response.data,function (key,value) {
+                        app.errors.push(key+':'+value);
+                    });
+
                 } else {
                     toastr.success("新增员工成功");
                 }

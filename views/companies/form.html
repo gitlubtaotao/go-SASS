@@ -1,50 +1,54 @@
 <div class="page-content">
     <div class="row">
         <div class="col-sm-6 col-sm-offset-2 col-xs-12">
-            <form class="form-horizontal" action="/company" method="post">
+            <form class="form-horizontal" action="/company" method="post" id="create_form" @submit.prevent="submitForm">
+                {{template "../common/errors.html" .}}
                 <fieldset>
+
                     <div class="form-group">
                         <label class="control-label col-sm-4">公司名称</label>
                         <div class="col-sm-8">
-                            <input class="form-control" name="Name" value="{{.Company.Name}}" placeholder="请输入公司名称">
+                            <input class="form-control" name="Name" v-model.trim="company.Name" value="{{.Company.Name}}"
+                                   placeholder="请输入公司名称" required>
                         </div>
                     </div>
+
                     <div class="form-group">
                         <label class="control-label col-sm-4">公司座机</label>
                         <div class="col-sm-8">
                             <input class="form-control" type="tel" name="Telephone" value="{{.Company.Telephone}}"
-                                   placeholder="请输入座机">
+                                   v-model="company.Telephone" placeholder="请输入座机" required>
                         </div>
                     </div>
                     <div class="form-group">
                         <label class="control-label col-sm-4">公司邮箱</label>
                         <div class="col-sm-8">
                             <input class="form-control" type="email" name="Email" value="{{.Company.Email}}"
-                                   placeholder="请输入公司邮箱">
+                                   v-model="company.Email" placeholder="请输入公司邮箱" required>
                         </div>
                     </div>
                     <div class="form-group">
                         <label class="control-label col-sm-4">公司地址</label>
                         <div class="col-sm-8">
                             <input class="form-control" name="Address" value="{{.Company.Address}}"
-                                   placeholder="请输入公司地址">
+                                   v-model.trim="company.Address"  placeholder="请输入公司地址">
                         </div>
                     </div>
                     <div class="form-group">
                         <label class="control-label col-sm-4">公司网站</label>
                         <div class="col-sm-8">
                             <input class="form-control" name="Website" value="{{.Company.Website}}"
-                                   placeholder="请输入公司网站">
+                                   placeholder="请输入公司网站" v-model="company.Website">
                         </div>
                     </div>
                     <div class="form-group">
                         <label class="control-label col-sm-4">公司备注</label>
                         <div class="col-sm-8">
                             <textarea class="form-control" name="Remarks" value="{{.Company.Remarks}}"
-                                      placeholder=""></textarea>
+                                      placeholder="" v-model="company.Remarks"></textarea>
                         </div>
                     </div>
-                    <input type="hidden" value="{{.Company.Id}}">
+                    <input type="hidden" value="{{.Company.Id}}" >
                 </fieldset>
                 <div class="space-6"></div>
                 <div class="clearfix form-group ">

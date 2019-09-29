@@ -30,7 +30,6 @@ func init()  {
 	beego.SetStaticPath("/static","static")
 	beego.SetStaticPath("/assets","assets")
 	beego.SetStaticPath("/dist","dist")
-	
 	//链接数据库
 	dataConnection()
 }

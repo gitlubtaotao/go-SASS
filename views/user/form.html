@@ -4,20 +4,13 @@
             <form class="form-horizontal" action="" method="post" data-id="{{.UserId}}"
                   id='create_form' @submit.prevent="checkForm">
                 {{/*                错误信息提示*/}}
-                <div class="alert alert-danger col-sm-offset-2 " v-if="errors.length">
-                    <button type="button" class="close" data-dismiss="alert">
-                        <i class="ace-icon fa fa-times"></i>
-                    </button>
-                    <ul>
-                        <li v-for="error in errors">{ error }</li>
-                    </ul>
-                </div>
+                {{template "../common/errors.html" .}}
                 <fieldset>
                     <div class="form-group">
                         <label class="control-label col-sm-4">姓名</label>
                         <div class="col-sm-8">
                             <input class="form-control" v-model.trim="user.Name" name="Name" value="{{.User.Name}}"
-                                   placeholder="请输入公司名称">
+                                   placeholder="请输入公司名称" required>
                         </div>
                     </div>
                     <div class="form-group">
@@ -25,7 +18,7 @@
                         <div class="col-sm-8">
                             <input class="form-control" type="email" v-model.trim="user.Email" name="Email"
                                    value="{{.User.Email}}"
-                                   placeholder="请输入邮箱">
+                                   placeholder="请输入邮箱" required>
                         </div>
                     </div>
                     <div class="form-group">
@@ -36,8 +29,7 @@
                                 <i class="ace-icon fa fa-phone"></i>
                             </span>
                                 <input class="form-control" v-model.trim="user.Phone" type="tel" name="Phone"
-                                       value="{{.User.Phone}}"
-                                       placeholder="请输入电话">
+                                       value="{{.User.Phone}}"  placeholder="请输入电话" required>
                             </div>
                         </div>
                     </div>
@@ -69,7 +61,7 @@
                     <div class="form-group">
                         <label class="control-label col-sm-4">所属公司</label>
                         <div class="col-sm-8">
-                            <select class="form-control" name="Company" v-model="user.Company">
+                            <select class="form-control" name="Company" v-model="user.Company" required>
                                 <option v-for="company in companyList" v-bind:value="company.Id">{company.Name}</option>
                             </select>
                         </div>

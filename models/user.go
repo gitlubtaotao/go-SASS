@@ -4,12 +4,13 @@ import (
 	"errors"
 	"fmt"
 	"github.com/astaxie/beego/logs"
+	"github.com/astaxie/beego/validation"
+	"log"
 	"reflect"
 	"strings"
 	"time"
 	
 	"github.com/astaxie/beego/orm"
-	
 )
 
 type User struct {
@@ -22,7 +23,7 @@ type User struct {
 	Gender         int8        `orm:"default(1)"`
 	Positions      []*Position `orm:"rel(m2m)"`
 	EntryTime      time.Time   `orm:"auto_now;type(datetime)"`
-	Company *Company `orm:"rel(fk);index"`
+	Company        *Company    `orm:"rel(fk);index"`
 	//Department *Department  `orm:"rel(fk);index"`
 }
 
@@ -37,7 +38,7 @@ func AddUser(m *User) (id int64, err error) {
 	o := orm.NewOrm()
 	id, err = o.Insert(m)
 	logs.Info(err)
-	return id,err
+	return id, err
 }
 
 // GetUserById retrieves User by Id. Returns error if
@@ -120,7 +121,7 @@ func GetAllUser(query map[string]string, fields []string, sortby []string, order
 				val := reflect.ValueOf(v)
 				for _, fname := range fields {
 					if fname == "EntryTime" {
-						m[fname] = 	v.EntryTime.Format("2006-01-02 15:04:05")
+						m[fname] = v.EntryTime.Format("2006-01-02 15:04:05")
 					} else {
 						m[fname] = val.FieldByName(fname).Interface()
 					}
@@ -161,4 +162,29 @@ func DeleteUser(id int64) (err error) {
 		}
 	}
 	return
+}
+
+//创建用户的对应validate
+
+func (u *User) Validate() (b bool, errors map[string]interface{}) {
+	valid := validation.Validation{}
+	valid.Required(u.Name, "name")
+	valid.MaxSize(u.Name, 128, "name max")
+	valid.Phone(u.Phone, "phone")
+	valid.Email(u.Email,"email")
+	valid.MaxSize(u.Email,128,"email max")
+	valid.Required(u.EncodePassword,"password")
+	valid.Required(u.Company,"company")
+	var returnErr map[string]interface{}
+	returnErr = make(map[string]interface{})
+	status := true
+	logs.Error(valid.HasErrors())
+	if valid.HasErrors() {
+		status = false
+		for _, err := range valid.Errors {
+			returnErr[err.Key] = err.Message
+			log.Println(err.Key, err.Message)
+		}
+	}
+	return status, returnErr
 }
