@@ -26,7 +26,6 @@ func (c *UserController) URLMapping() {
 	c.Mapping("Delete", c.Delete)
 }
 
-
 // Post ...
 // @Title Post
 // @Description create User
@@ -42,25 +41,29 @@ func (c *UserController) Post() {
 	company := models.Company{Id: int64(companyId)}
 	_ = o.Read(&company)
 	v.Company = &company
-	logs.Info(v.Id)
 	//更新员工信息
-	if v.Id != 0{
-		if v.Pwd != ""{
+	if v.Id != 0 {
+		if v.Pwd != "" {
 			encodePassword := c.generatePassword(v.Pwd)
 			v.EncodePassword = encodePassword
 			v.Pwd = ""
 		}
+		valid,vErrors	:=c.validateUser(v)
+		logs.Info(valid,vErrors)
 		if err := models.UpdateUserById(&v); err == nil {
 			c.Ctx.Output.SetStatus(201)
 			c.Data["json"] = "OK"
 		} else {
 			c.Data["json"] = err.Error()
 		}
-	}else {
+	} else {
 		//创建员工信息
 		encodePassword := c.generatePassword(v.Pwd)
 		v.EncodePassword = encodePassword
 		v.Pwd = ""
+		//插入数据前进行验证
+		valid,vErrors	:=c.validateUser(v)
+		logs.Info(valid,vErrors)
 		if _, err := models.AddUser(&v); err == nil {
 			c.Ctx.Output.SetStatus(201)
 			c.Data["json"] = v
@@ -166,7 +169,7 @@ func (c *UserController) GetAll() {
 		logs.Info(mapValue)
 		c.Data["json"] = map[string]interface{}{
 			"countPage": mapValue,
-			"editUrl": "/user/edit/",
+			"editUrl":   "/user/edit/",
 			"data":      l,
 		}
 	}
@@ -255,4 +258,14 @@ func (c *UserController) generatePassword(pwd string) (encodePassword string) {
 	encodePW := string(hash) // 保存在数据库的密码，虽然每次生成都不同，只需保存一份即可
 	logs.Info(encodePW)
 	return encodePW
+}
+
+//进行用户的验证
+//用户信息u
+//return
+//b: true
+//errors: 错误信息
+func (c *UserController) validateUser(u models.User) (b bool, errors map[string]interface{}) {
+	var err map[string]interface{}
+	return true,err
 }

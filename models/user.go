@@ -9,6 +9,7 @@ import (
 	"time"
 	
 	"github.com/astaxie/beego/orm"
+	
 )
 
 type User struct {
