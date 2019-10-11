@@ -11,7 +11,7 @@ import (
 )
 
 type Position struct {
-	Id   int64  `orm:"auto"`
+	Id   int64  `orm:"pk;auto"`
 	Name string `orm:"size(128)"`
 	CreatedAt   time.Time  `orm:"auto_now;type(datetime)"`
 	UpdatedAt time.Time `orm:"auto_now;type(datetime)"`

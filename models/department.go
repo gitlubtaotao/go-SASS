@@ -11,7 +11,7 @@ import (
 )
 
 type Department struct {
-	Id   int64  `orm:"pk:auto"`
+	Id   int64  `orm:"pk;auto"`
 	Name string `orm:"size(128)"`
 	CreateAt time.Time  `orm:"auto_now;type(datetime)"`
 	Company *Company `orm:"rel(fk)"`

@@ -22,6 +22,7 @@ func (c *LoginController) Get() {
 		c.Data["userName"] = name
 	}
 	c.Data["JsName"] = "login_in"
+	c.SetSession("redirectUrl",c.GetString("url"))
 	c.TplName = "login/index.html"
 }
 
@@ -76,12 +77,13 @@ func (c *LoginController) Post() {
 		c.Ctx.SetCookie("Name", Account, time.Second*3600)
 	}
 	c.SetSession("currentName", user)
-	var url string
-	if c.GetString("url") != "" {
-		url = c.GetString("url")
+	var url interface{}
+	if c.GetSession("redirectUrl") != "" {
+		url = c.GetSession("redirectUrl")
 	} else {
 		url = "/"
 	}
+	logs.Info(url)
 	c.Data["json"] = map[string]interface{}{"status": true,
 		"url": url}
 	c.ServeJSON()

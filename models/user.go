@@ -15,16 +15,16 @@ import (
 
 type User struct {
 	Id             int64  `orm:"pk;auto"`
-	Name           string `orm:"size(128);unique;NOT NULL"`
-	Email          string `orm:"size(128);unique;NOT NULL"`
-	Phone          string `orm:"size(64);unique;NOT NULL"`
-	EncodePassword string `orm:"size(512);unique;NOT NULL"`
+	Name           string `orm:"size(128);unique"`
+	Email          string `orm:"size(128);unique"`
+	Phone          string `orm:"size(64);unique"`
+	EncodePassword string `orm:"size(512);unique"`
 	Pwd            string
 	Gender         int8        `orm:"default(1)"`
 	Positions      []*Position `orm:"rel(m2m)"`
 	EntryTime      time.Time   `orm:"auto_now;type(datetime)"`
 	Company        *Company    `orm:"rel(fk);index"`
-	//Department *Department  `orm:"rel(fk);index"`
+	Department *Department  `orm:"rel(fk);index;NULL"`
 }
 
 func init() {

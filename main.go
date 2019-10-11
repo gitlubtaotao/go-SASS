@@ -2,6 +2,8 @@ package main
 
 import (
 	"github.com/astaxie/beego/orm"
+	"quickstart/utils/redis"
+	
 	_ "quickstart/routers"
 	
 	_ "quickstart/models"
@@ -11,7 +13,6 @@ import (
 	"github.com/astaxie/beego"
 	_ "quickstart/utils"
 )
-
 
 func main() {
 	orm.Debug = true
@@ -32,6 +33,9 @@ func init()  {
 	beego.SetStaticPath("/dist","dist")
 	//链接数据库
 	dataConnection()
+	//链接redis
+	redis.RedisNewClient()
+	
 }
 
 func dataConnection()  {

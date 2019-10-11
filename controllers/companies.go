@@ -45,7 +45,6 @@ func (this *CompaniesController) New() {
 func (c *CompaniesController) Post() {
 	company := models.Company{}
 	_ = json.Unmarshal(c.Ctx.Input.RequestBody, &company)
-	
 	if err := c.ParseForm(&company); err != nil {
 		fmt.Print(err)
 	} else {

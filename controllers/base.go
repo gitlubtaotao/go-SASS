@@ -24,6 +24,7 @@ type BaseController struct {
 //Prepare before action
 func (this *BaseController) Prepare() {
 	//跨站请求伪造
+	this.TplExt = "html"
 	this.Data["xsrfdata"] = template.HTML(this.XSRFFormHTML())
 	this.controllerName, this.actionName = this.GetControllerAndAction()
 	this.Data["ControllerName"] = this.controllerName

@@ -27,6 +27,7 @@ type Company struct {
 	CreatedAt  time.Time     `orm:"auto_now;type(datetime)"`
 	User       []*User       `orm:"reverse(many)"`
 	Department []*Department `orm:"reverse(many)"`
+	CompanyType string `orm:"size(32)"`
 }
 
 func init() {

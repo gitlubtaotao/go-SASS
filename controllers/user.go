@@ -197,7 +197,7 @@ func (c *UserController) Put() {
 	idStr := c.Ctx.Input.Param(":id")
 	id, _ := strconv.ParseInt(idStr, 0, 64)
 	v := models.User{Id: id}
-	json.Unmarshal(c.Ctx.Input.RequestBody, &v)
+	_ = json.Unmarshal(c.Ctx.Input.RequestBody, &v)
 	
 	if err := models.UpdateUserById(&v); err == nil {
 		c.Data["json"] = "OK"

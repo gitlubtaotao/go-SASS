@@ -7,6 +7,7 @@ import (
 )
 
 func init() {
+	
 	//beego.InsertFilter("/article/*",beego.BeforeRouter, filerFunc)
 	beego.InsertFilter("/login_out",beego.BeforeRouter,filerFunc)
 	beego.InsertFilter("/article_type/*",beego.BeforeRouter,filerFunc)
@@ -15,11 +16,6 @@ func init() {
 	beego.Router("/register", &controllers.RegisterController{})
 	beego.Router("/login", &controllers.LoginController{})
 	beego.Router("/login_out", &controllers.LoginController{}, "get:LoginOut")
-	beego.Router("/article", &controllers.ArticleController{})
-	beego.Router("/article/add", &controllers.ArticleController{}, "get:Add")
-	beego.Router("/article/show",&controllers.ArticleController{},"get:Show")
-	beego.Router("/article/update",&controllers.ArticleController{},"get:Edit;post:Update")
-	beego.Router("/article_type/create",&controllers.ArticleTypeController{},"get:New;post:Create")
 	beego.Router("/company",&controllers.CompaniesController{})
 	beego.Router("/company/new",&controllers.CompaniesController{},"get:New")
 	beego.Router("/company/:id",&controllers.CompaniesController{},"delete:Delete;get:GetOne;put:Put")
@@ -28,6 +24,7 @@ func init() {
 	beego.Router("/user/new",&controllers.UserController{},"get:New")
 	beego.Router("/user/edit/:id",&controllers.UserController{},"get:Edit")
 	beego.Router("/user/:id",&controllers.UserController{},"delete:Delete;get:GetOne;put:Put")
+	beego.Router("/department",&controllers.DepartmentController{},"get:GetAll;post:Post")
 }
 //过滤器的使用
 var filerFunc = func(ctx *context.Context) {
