@@ -24,7 +24,7 @@ type User struct {
 	Positions      []*Position `orm:"rel(m2m)"`
 	EntryTime      time.Time   `orm:"auto_now;type(datetime)"`
 	Company        *Company    `orm:"rel(fk);index"`
-	Department *Department  `orm:"rel(fk);index;NULL"`
+	Department     *Department `orm:"rel(fk);index;NULL"`
 }
 
 func init() {
@@ -109,8 +109,17 @@ func GetAllUser(query map[string]string, fields []string, sortby []string, order
 	
 	var l []User
 	qs = qs.OrderBy(sortFields...).RelatedSel()
-	if _, err = qs.Limit(limit, offset).All(&l, fields...); err == nil {
-		if len(fields) == 0 {
+	
+	var tempFields []string
+	for _, value := range fields {
+		if len(strings.Split(value,".")) == 1{
+			tempFields = append(tempFields, value)
+		}else{
+		
+		}
+	}
+	if _, err = qs.Limit(limit, offset).All(&l, tempFields...); err == nil {
+		if len(tempFields) == 0 {
 			for _, v := range l {
 				ml = append(ml, v)
 			}
@@ -119,13 +128,15 @@ func GetAllUser(query map[string]string, fields []string, sortby []string, order
 			for _, v := range l {
 				m := make(map[string]interface{})
 				val := reflect.ValueOf(v)
-				for _, fname := range fields {
+				for _, fname := range tempFields {
 					if fname == "EntryTime" {
 						m[fname] = v.EntryTime.Format("2006-01-02 15:04:05")
 					} else {
 						m[fname] = val.FieldByName(fname).Interface()
 					}
 				}
+				m["Company.Name"] = v.Company.Name
+				m["Company.Email"] = v.Company.Email
 				ml = append(ml, m)
 			}
 		}
@@ -147,6 +158,22 @@ func UpdateUserById(m *User) (err error) {
 		}
 	}
 	return
+}
+
+//获取用户对应的colNames
+func GetUserCols() ([]string, []CustomerSlice) {
+	attributes := []CustomerSlice{
+		{"key": "Company.Name", "value": "所属公司", "class": "col-xs-1"},
+		{"key": "Company.Email", "value": "公司邮箱", "class": "col-xs-2"},
+		{"key": "Name", "value": "姓名", "class": "col-xs-1"},
+		{"key": "Email", "value": "邮箱", "class": "col-xs-1"},
+		{"key": "Gender", "value": "性别", "class": "col-xs-1"},
+		{"key": "EntryTime", "value": "入职时间", "class": "col-xs-1"},
+		{"key": "Department.Name", "value": "部门", "class": "col-xs-1"},
+		{"key": "Id", "value": "Id", "class": ""},
+	}
+	var fields []string
+	return fields, attributes
 }
 
 // DeleteUser deletes User by Id and returns error if
@@ -171,10 +198,10 @@ func (u *User) Validate() (b bool, errors map[string]interface{}) {
 	valid.Required(u.Name, "name")
 	valid.MaxSize(u.Name, 128, "name max")
 	valid.Phone(u.Phone, "phone")
-	valid.Email(u.Email,"email")
-	valid.MaxSize(u.Email,128,"email max")
-	valid.Required(u.EncodePassword,"password")
-	valid.Required(u.Company,"company")
+	valid.Email(u.Email, "email")
+	valid.MaxSize(u.Email, 128, "email max")
+	valid.Required(u.EncodePassword, "password")
+	valid.Required(u.Company, "company")
 	var returnErr map[string]interface{}
 	returnErr = make(map[string]interface{})
 	status := true

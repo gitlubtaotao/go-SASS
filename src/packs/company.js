@@ -2,10 +2,13 @@ var app = new Vue({
     el: '#page_content',
     delimiters: ['{', '}'],
     data: {
-        companyList: [],
         pageCount: 1,
-        editUrl: '',
-        destroyUrl: '',
+        //col names
+        colNames: [],
+        //objects
+        objects: [],
+        //对应的actions
+        actions: [],
     },
     mounted: function () {
         this.getList();
@@ -18,20 +21,29 @@ var app = new Vue({
         getList: function (page = 1) {
             let hashParams = {};
             let currentFilter = $('.filter-form');
-            $.each(currentFilter.serializeArray(), function (key, value) {
-                hashParams[value['name']] = value['value'];
-            });
+            let url='';
+            if (currentFilter.length !== 0) {
+                $.each(currentFilter.serializeArray(), function (key, value) {
+                    hashParams[value['name']] = value['value'];
+                });
+                url =currentFilter.attr('action');
+            }else{
+                url = $(this.$el).attr('data-url');
+            }
             hashParams['page'] = page;
-            axios.get(currentFilter.attr('action'), {
+            axios.get(url, {
                 headers: {'X-Requested-With': 'XMLHttpRequest'},
                 params: hashParams,
                 dataType: 'json',
             }).then(function (response) {
                 console.log(response);
                 if (response['data'] !== null) {
-                    app.companyList = response['data']['data'];
+                    app.objects = response['data']['data'];
                     app.pageCount = response['data']['countPage'];
-                    app.editUrl = response['data']['editUrl']
+                    app.colNames = response['data']['colNames'];
+                    if (response['data']['actions'] !== "") {
+                        app.actions = response['data']["actions"];
+                    }
                 }
             }).catch(function (error) {
                 console.log(error);
@@ -39,7 +51,6 @@ var app = new Vue({
         },
         //过滤部分数据
         filterResult: function () {
-
             app.getList();
         },
         //清空数据
@@ -48,8 +59,8 @@ var app = new Vue({
             app.getList();
         },
         editCompany: function (Id, index) {
-            console.log(this.editUrl+Id);
-            location.href=this.editUrl+Id;
+            console.log(this.editUrl + Id);
+            location.href = this.editUrl + Id;
         },
         deleteCompany: function (Id, index) {
             console.log(index);

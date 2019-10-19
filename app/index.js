@@ -1,1 +1,0 @@
-require.config({"paths":{"company":"company.js?v=2fe559f132dbfc5767b4","main":"main.js?v=384dd9b7bc3d7b6de544"},"baseUrl":""})

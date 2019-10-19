@@ -56,7 +56,7 @@ func (c *CompaniesController) Post() {
 				return
 			}
 			c.redirectCustomer("/company")
-		}else{
+		} else {
 			fmt.Print(returnErr)
 		}
 	}
@@ -64,48 +64,11 @@ func (c *CompaniesController) Post() {
 
 //Get 首页
 func (c *CompaniesController) Get() {
-	var fields []string
-	if c.IsAjax() {
-		companyFiler := map[string]string{
-			"Name":      c.GetString("Name"),
-			"Telephone": c.GetString("Telephone"),
-			"Email":     c.GetString("Email"),
-			"Address":   c.GetString("Address"),
-		}
-		if v := c.GetString("fields"); v != "" {
-			fields = strings.Split(v, ",")
-		}
-		if len(fields) == 0 {
-			fields = append(fields, "Id", "Name", "Telephone", "Address",
-				"Email", "Website", "Remarks", "CreatedAt")
-		}
-		sortBy := make([]string, 1)
-		order := make([]string, 1)
-		sortBy[0] = "Id"
-		order[0] = "desc"
-		//进行数据的分页
-		perPage := 10
-		page, _ := strconv.Atoi(c.GetString("page", "1"))
-		limit := int64(perPage * (page - 1))
-		companies, countPage, err := models.GetAllCompany(companyFiler, fields, sortBy, order, limit, int64(perPage))
-		if err != nil {
-			logs.Error(err)
-			c.ServeJSON()
-		} else {
-			mapValue := models.SetPaginator(countPage, int64(perPage))
-			c.Data["json"] = map[string]interface{}{
-				"countPage": mapValue,
-				"data":      companies,
-			}
-			c.ServeJSON()
-		}
-	} else {
-		c.Data["JsName"] = "company"
-		c.Data["Namespace"] = "company"
-		c.Data["PageTitle"] = "公司信息"
-		c.LayoutSections = make(map[string]string)
-		c.setTpl("companies/index.html")
-	}
+	c.Data["JsName"] = "company"
+	c.Data["Namespace"] = "company"
+	c.Data["PageTitle"] = "公司信息"
+	c.LayoutSections = make(map[string]string)
+	c.setTpl("companies/index.html")
 }
 
 // GetOne ...
@@ -132,7 +95,44 @@ func (c *CompaniesController) GetOne() {
 // @Failure 403
 // @router / [get]
 func (c *CompaniesController) GetAll() {
-
+	var fields []string
+	companyFiler := map[string]string{
+		"Name":      c.GetString("Name"),
+		"Telephone": c.GetString("Telephone"),
+		"Email":     c.GetString("Email"),
+		"Address":   c.GetString("Address"),
+	}
+	if v := c.GetString("fields"); v != "" {
+		fields = strings.Split(v, ",")
+	}
+	if len(fields) == 0 {
+		fields = append(fields, "Id", "Name", "Telephone", "Address",
+			"Email", "Website", "Remarks", "CreatedAt")
+	}
+	sortBy := make([]string, 1)
+	order := make([]string, 1)
+	sortBy[0] = "Id"
+	order[0] = "desc"
+	//进行数据的分页
+	limit := models.UserPerPage()
+	var offset int64
+	page, _ := strconv.Atoi(c.GetString("page", "1"))
+	offset = models.GetOffsetPage(int64(page))
+	colNames := models.GetCompanyCols()
+	companies, countPage, err := models.GetAllCompany(companyFiler, fields, sortBy, order, offset, limit)
+	if err != nil {
+		logs.Error(err)
+		c.ServeJSON()
+	} else {
+		mapValue := models.SetPaginator(countPage)
+		c.Data["json"] = map[string]interface{}{
+			"countPage": mapValue,
+			"data":      companies,
+			"colNames":  colNames,
+			"actions":   map[string]string{"edit": "company/edit/:id", "destroy": ""},
+		}
+		c.ServeJSON()
+	}
 }
 
 // Put ...
@@ -156,6 +156,7 @@ func (c *CompaniesController) Put() {
 // @router /:id [delete]
 func (c *CompaniesController) Delete() {
 	var result map[string]string
+	result = make(map[string]string)
 	if c.IsAjax() {
 		id := c.Ctx.Input.Param(":id")
 		newId, _ := strconv.ParseInt(id, 10, 64)
@@ -170,4 +171,8 @@ func (c *CompaniesController) Delete() {
 	} else {
 		c.redirectCustomer("/company")
 	}
+}
+
+func (c *CompaniesController) Edit() {
+
 }

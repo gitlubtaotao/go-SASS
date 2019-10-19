@@ -66,41 +66,14 @@
     <div class="space-12"></div>
     <div class="row">
         <div class="col-xs-12 col-sm-12">
-            <table id="user_table" class="table table-bordered table-hover">
-                <thead>
-                <tr>
-                    <th></th>
-                    <th>所属公司</th>
-                    <th>公司邮箱</th>
-                    <th>姓名</th>
-                    <th>邮箱</th>
-                    <th>性别</th>
-                    <th>职位</th>
-                    <th>入职时间</th>
-                </tr>
-                </thead>
-                <tbody>
-                <tr v-for="(user,index) in companyList">
-                    <td>
-                        <button class="btn btn-xs btn-info" @click="editCompany(user.Id,index)">
-                            <i class="ace-icon fa fa-pencil bigger-120"></i>
-                            修改
-                        </button>
-                        <button class="btn btn-xs btn-danger" @click="deleteCompany(user.Id,index)">
-                            <i class="ace-icon fa fa-trash-o bigger-120"></i>
-                            删除
-                        </button>
-                    </td>
-                    <td>{ user.Company.Name}</td>
-                    <td>{ user.Company.Email}</td>
-                    <td>{ user.Name }</td>
-                    <td>{user.Email}</td>
-                    <td>{user.Gender}</td>
-                    <td></td>
-                    <td>{user.EntryTime}</td>
-                </tr>
-                </tbody>
-            </table>
+            <div class="table-responsive">
+               <index-table
+                       :col-Names="colNames"
+                       :objects="objects"
+                       :actions="actions"
+               >
+               </index-table>
+            </div>
         </div>
     </div>
 

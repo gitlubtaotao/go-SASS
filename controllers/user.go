@@ -118,19 +118,16 @@ func (c *UserController) GetAll() {
 	var sortby []string
 	var order []string
 	var query = make(map[string]string)
-	var limit int64 = 10
+	limit := models.UserPerPage()
 	var offset int64
 	page, _ := strconv.Atoi(c.GetString("page", "1"))
-	offset = limit * (int64(page) - 1)
+	offset = models.GetOffsetPage(int64(page))
 	// fields: col1,col2,entity.col3
 	if v := c.GetString("fields"); v != "" {
 		fields = strings.Split(v, ",")
 	}
-	if len(fields) == 0 {
-		fields = append(fields, "Name",
-			"Email", "Gender", "EntryTime",
-			"Id", "Company")
-	}
+	fields,colNames:= models.GetUserCols()
+	logs.Info(fields,colNames)
 	// limit: 10 (default is 10)
 	if v, err := c.GetInt64("limit"); err == nil {
 		limit = v
@@ -170,16 +167,18 @@ func (c *UserController) GetAll() {
 	}
 	logs.Info(query)
 	l, countPage, err := models.GetAllUser(query, fields, sortby, order, offset, limit)
+	//colName
+	
 	if err != nil {
 		logs.Error(err)
 		c.Data["json"] = err.Error()
 	} else {
-		mapValue := models.SetPaginator(countPage, int64(limit))
-		logs.Info(mapValue)
+		mapValue := models.SetPaginator(countPage)
 		c.Data["json"] = map[string]interface{}{
 			"countPage": mapValue,
-			"editUrl":   "/user/edit/",
 			"data":      l,
+			"colNames":  colNames,
+			"actions": map[string]string{"edit": "/user/edit/:id","destroy":"",},
 		}
 	}
 	c.ServeJSON()

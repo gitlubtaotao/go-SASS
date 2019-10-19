@@ -31,6 +31,7 @@ type Company struct {
 }
 
 func init() {
+	
 	orm.RegisterModel(new(Company))
 }
 //创建用户对应的验证
@@ -185,4 +186,17 @@ func DeleteCompany(id int64) (err error) {
 		}
 	}
 	return
+}
+//获取对应的列
+func GetCompanyCols()(array []CustomerSlice)  {
+	colNames :=[]CustomerSlice{
+		{"key": "Name","value": "公司姓名","class": "col-xs-1"},
+		{"key": "Telephone","value": "公司电话","class": "col-xs-1"},
+		{"key": "Address","value": "公司地址","class": "col-xs-2"},
+		{"key": "Email","value": "公司邮箱","class": "col-xs-1"},
+		{"key": "Website","value": "公司网站","class": ""},
+		{"key": "Remarks","value": "公司备注","class": ""},
+		{"key": "CreatedAt","value": "创建时间","class": ""},
+	}
+	return colNames
 }

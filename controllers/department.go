@@ -79,13 +79,15 @@ func (c *DepartmentController) GetAll() {
 	var sortby []string
 	var order []string
 	var query = make(map[string]string)
-	var limit int64 = 10
+	limit := models.UserPerPage()
 	var offset int64
-
+	page, _ := strconv.Atoi(c.GetString("page", "1"))
+	offset = models.GetOffsetPage(int64(page))
 	// fields: col1,col2,entity.col3
 	if v := c.GetString("fields"); v != "" {
 		fields = strings.Split(v, ",")
 	}
+	fields,colNames := models.GetDepartmentCols()
 	// limit: 10 (default is 10)
 	if v, err := c.GetInt64("limit"); err == nil {
 		limit = v
@@ -116,11 +118,18 @@ func (c *DepartmentController) GetAll() {
 		}
 	}
 
-	l, err := models.GetAllDepartment(query, fields, sortby, order, offset, limit)
+	l,countPage, err := models.GetAllDepartment(query, fields, sortby, order, offset, limit)
 	if err != nil {
 		c.Data["json"] = err.Error()
 	} else {
-		c.Data["json"] = l
+		mapValue := models.SetPaginator(countPage)
+		logs.Info(l)
+		c.Data["json"] = map[string]interface{}{
+			"countPage": mapValue,
+			"data":      l,
+			"colNames":  colNames,
+			"actions": map[string]string{"edit": "/department/edit/:id","destroy":"/department/:id",},
+		}
 	}
 	c.ServeJSON()
 }
@@ -162,4 +171,12 @@ func (c *DepartmentController) Delete() {
 		c.Data["json"] = err.Error()
 	}
 	c.ServeJSON()
+}
+
+func (c *DepartmentController) Get() {
+	c.namespace = "company"
+	c.Data["JsName"] = "company"
+	c.Data["Namespace"] = "company"
+	c.Data["PageTitle"] = "部门信息"
+	c.setTpl("department/index.html")
 }

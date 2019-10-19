@@ -1,4 +1,3 @@
-// require('../widget/common');
 var app = new Vue({
     el: '#create_form',
     delimiters: ['{', '}'],

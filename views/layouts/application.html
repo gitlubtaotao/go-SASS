@@ -39,7 +39,7 @@
     {{template "layouts/footer.html" .}}
 
     {{if .JsName | ShowAssets}}
-        <script src="/dist/{{.JsName}}.js?version=2"></script>
+        <script src="/dist/{{.JsName}}.js"></script>
     {{end}}
     {{.Scripts}}
     <script type="text/javascript">

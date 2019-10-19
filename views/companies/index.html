@@ -19,45 +19,14 @@
     {{template "companies/filter.html" .}}
     <div class="space-12"></div>
     <div class="row">
-        <div class="col-sm-12 col-xs-12">
-            <div class="spinner-grow text-success" role="status">
-                <span class="sr-only">Loading...</span>
+        <div class="col-xs-12 col-sm-12">
+            <div class="table-responsive">
+                <index-table
+                        :col-Names="colNames"
+                        :objects="objects"
+                        :actions="actions"
+                ></index-table>
             </div>
-            <table id="company_table" class="table  table-bordered table-hover">
-                <thead>
-                <tr>
-                    <th></th>
-                    <th>公司名称</th>
-                    <th>公司座机</th>
-                    <th>公司邮箱</th>
-                    <th>公司地址</th>
-                    <th>公司网站</th>
-                    <th>公司备注</th>
-                    <th>创建时间</th>
-                </tr>
-                </thead>
-                <tbody>
-                <tr v-for="(company, index) in companyList">
-                    <td>
-                        <button class="btn btn-xs btn-info" @click="editCompany(company.Id,index)">
-                            <i class="ace-icon fa fa-pencil bigger-120"></i>
-                            修改
-                        </button>
-                        <button class="btn btn-xs btn-danger" @click="deleteCompany(company.Id,index)">
-                            <i class="ace-icon fa fa-trash-o bigger-120"></i>
-                            删除
-                        </button>
-                    </td>
-                    <td>{ company.Name }</td>
-                    <td>{company.Telephone}</td>
-                    <td>{company.Email}</td>
-                    <td>{company.Website}</td>
-                    <td>{company.Address}</td>
-                    <td>{company.Remarks}</td>
-                    <td>{company.CreatedAt}</td>
-                </tr>
-                </tbody>
-            </table>
         </div>
     </div>
     <div class="row pull-right">

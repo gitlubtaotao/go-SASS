@@ -3,7 +3,9 @@ module quickstart
 go 1.13
 
 require (
+	github.com/Unknwon/goconfig v0.0.0-20190425194916-3dba17dd7b9e // indirect
 	github.com/astaxie/beego v1.12.0
+	github.com/beego/i18n v0.0.0-20161101132742-e9308947f407 // indirect
 	github.com/go-redis/redis v6.15.6+incompatible
 	github.com/go-sql-driver/mysql v1.4.1
 	github.com/lhtzbj12/sdrms v0.0.0-20190701115710-2b304003159e

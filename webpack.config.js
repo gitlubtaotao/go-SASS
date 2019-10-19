@@ -1,13 +1,15 @@
 // webpack v4
 const path = require('path');
 
-// update from 23.12.2018
-const nodeExternals = require('webpack-node-externals');
+// const nodeExternals = require('webpack-node-externals');
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 const VueLoaderPlugin = require('vue-loader/lib/plugin');
 module.exports = {
     entry: {
-        main: './src/index.js', company: './src/packs/company.js',
+        main: './src/index.js',
+        foot_before: './src/foot_before.js',
+        css: './src/css.js',
+        company: './src/packs/company.js',
         user_form: './src/packs/user_form.js',
         login_in: './src/packs/login_in.js',
         company_form: './src/packs/company_form.js'
@@ -16,9 +18,9 @@ module.exports = {
         path: path.resolve(__dirname, 'dist'),
         filename: '[name].js'
     },
-    target: 'node', // update from 23.12.2018
+    // target: 'node', // update from 23.12.2018
     mode: 'development',
-    externals: [nodeExternals({ whitelist: [ "lodash", "path" ] })], // update from 23.12.2018
+    // externals: [nodeExternals({ whitelist: [ "lodash", "path" ] })], // update from 23.12.2018
     plugins: [
         new MiniCssExtractPlugin({
             // Options similar to the same options in webpackOptions.output
@@ -28,7 +30,6 @@ module.exports = {
             ignoreOrder: false, // Enable to remove warnings about conflicting order
         }),
         new VueLoaderPlugin(),
-
     ],
     resolve: {
         extensions: ['.js', '.vue', '.json'],
@@ -42,7 +43,7 @@ module.exports = {
     module: {
         rules: [
             {
-                test: /\.m?js$/,
+                test: /\.(js|mjs)?$/,
                 exclude: /(node_modules|bower_components)/,
                 use: {
                     loader: 'babel-loader',
@@ -53,26 +54,33 @@ module.exports = {
                 }
             },
             {
-                test: /\.css$/,
+                test:/\.css$/,
                 use: [
-                    {
-                        loader: MiniCssExtractPlugin.loader,
-                        options: {
-                            // you can specify a publicPath here
-                            // by default it uses publicPath in webpackOptions.output
-                            publicPath: '../',
-                            hmr: process.env.NODE_ENV === 'development',
-                        },
-                    },
+                    'vue-style-loader',
+                    'style-loader',
                     'css-loader',
-                ],
+                ]
             },
             {
                 test: /\.scss$/,
                 use: [
+                    'vue-style-loader',
                     "style-loader", // 将 JS 字符串生成为 style 节点
                     "css-loader", // 将 CSS 转化成 CommonJS 模块
                     "sass-loader" // 将 Sass 编译成 CSS，默认使用 Node Sass
+                ]
+            },
+            {
+                test: /\.sass$/,
+                use: [
+                    'vue-style-loader',
+                    'css-loader',
+                    {
+                        loader: 'sass-loader',
+                        options: {
+                            indentedSyntax: true
+                        }
+                    }
                 ]
             },
             {
