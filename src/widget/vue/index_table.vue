@@ -65,12 +65,11 @@
                 }
                 return value;
             },
+
+            //取数据的表关联的其他字段的值
             showItem: function (record, item) {
                 let arrayItem = item.split('.');
                 if(record[item] !== "" && typeof(record[item]) !== 'undefined'){
-                    return record[item]
-                }
-                if (arrayItem.length === 1) {
                     return record[item]
                 }
                 if(arrayItem.length === 2){
