@@ -3,7 +3,6 @@ package models
 import (
 	"errors"
 	"fmt"
-	"github.com/astaxie/beego/logs"
 	"reflect"
 	"strings"
 	"time"
@@ -12,10 +11,12 @@ import (
 )
 
 type Department struct {
-	Id   int64  `orm:"pk;auto"`
-	Name string `orm:"size(128)"`
-	CreateAt time.Time  `orm:"auto_now;type(datetime)"`
-	Company *Company `orm:"rel(fk)"`
+	Id       int64     `orm:"pk;auto"`
+	Name     string    `orm:"size(128)"`
+	CreatedAt time.Time `orm:"auto_now;type(datetime)"`
+	UpdatedAt time.Time
+	DeletedAt time.Time
+	Company  *Company  `orm:"rel(fk)"`
 }
 
 func init() {
@@ -30,14 +31,14 @@ func AddDepartment(m *Department) (id int64, err error) {
 	return
 }
 
-func GetDepartmentCols()([]string,[]CustomerSlice)  {
+func GetDepartmentCols() ([]string, []CustomerSlice) {
 	var fields []string
 	colNames := []CustomerSlice{
-		{"key": "Name","value": "部门名称","class": ""},
-		{"key": "Company.Name","value": "所属公司","class": ""},
-		{"key": "CreateAt","value": "创建时间","class": ""},
+		{"key": "Name", "value": "部门名称", "class": ""},
+		{"key": "Company.Name", "value": "所属公司", "class": ""},
+		{"key": "CreatedAt", "value": "创建时间", "class": ""},
 	}
-	return fields,colNames
+	return fields, colNames
 	
 }
 
@@ -55,7 +56,7 @@ func GetDepartmentById(id int64) (v *Department, err error) {
 // GetAllDepartment retrieves all Department matches certain condition. Returns empty list if
 // no records exist
 func GetAllDepartment(query map[string]string, fields []string, sortby []string, order []string,
-	offset int64, limit int64) (ml []interface{},countPage int64, err error) {
+	offset int64, limit int64) (ml []interface{}, countPage int64, err error) {
 	o := orm.NewOrm()
 	qs := o.QueryTable(new(Department))
 	// query k=v
@@ -76,7 +77,7 @@ func GetAllDepartment(query map[string]string, fields []string, sortby []string,
 				} else if order[i] == "asc" {
 					orderby = v
 				} else {
-					return nil,0, errors.New("Error: Invalid order. Must be either [asc|desc]")
+					return nil, 0, errors.New("Error: Invalid order. Must be either [asc|desc]")
 				}
 				sortFields = append(sortFields, orderby)
 			}
@@ -90,19 +91,18 @@ func GetAllDepartment(query map[string]string, fields []string, sortby []string,
 				} else if order[0] == "asc" {
 					orderby = v
 				} else {
-					return nil,0, errors.New("Error: Invalid order. Must be either [asc|desc]")
+					return nil, 0, errors.New("Error: Invalid order. Must be either [asc|desc]")
 				}
 				sortFields = append(sortFields, orderby)
 			}
 		} else if len(sortby) != len(order) && len(order) != 1 {
-			return nil,0, errors.New("Error: 'sortby', 'order' sizes mismatch or 'order' size is not 1")
+			return nil, 0, errors.New("Error: 'sortby', 'order' sizes mismatch or 'order' size is not 1")
 		}
 	} else {
 		if len(order) != 0 {
-			return nil,0, errors.New("Error: unused 'order' fields")
+			return nil, 0, errors.New("Error: unused 'order' fields")
 		}
 	}
-
 	var l []Department
 	qs = qs.OrderBy(sortFields...).RelatedSel()
 	count, _ := qs.Count()
@@ -111,7 +111,6 @@ func GetAllDepartment(query map[string]string, fields []string, sortby []string,
 			for _, v := range l {
 				ml = append(ml, v)
 			}
-			
 		} else {
 			// trim unused fields
 			for _, v := range l {
@@ -124,8 +123,7 @@ func GetAllDepartment(query map[string]string, fields []string, sortby []string,
 				ml = append(ml, m)
 			}
 		}
-		logs.Info(ml)
-		return ml,count, nil
+		return ml, count, nil
 	}
 	return nil, 0, err
 }

@@ -20,7 +20,7 @@ type User struct {
 	Phone          string `orm:"size(64);unique"`
 	EncodePassword string `orm:"size(512);unique"`
 	Pwd            string
-	Gender         int8        `orm:"default(1)"`
+	Gender         string `orm:"size(64)"`
 	Positions      []*Position `orm:"rel(m2m)"`
 	EntryTime      time.Time   `orm:"auto_now;type(datetime)"`
 	Company        *Company    `orm:"rel(fk);index"`

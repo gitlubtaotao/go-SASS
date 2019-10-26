@@ -47,11 +47,12 @@
   "dependencies": {
     "axios": "^0.19.0",
     "exports-loader": "^0.7.0",
+    "glob": "^7.1.5",
     "jquery": "^3.4.1",
     "toastr": "^2.1.4",
     "vee-validate": "^3.0.7",
     "vue": "^2.6.10",
-    "vuejs-paginate": "^2.1.0",
-    "glob": "latest"
+    "vue-select": "^3.2.0",
+    "vuejs-paginate": "^2.1.0"
   }
 }

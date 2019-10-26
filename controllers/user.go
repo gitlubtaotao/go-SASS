@@ -4,7 +4,6 @@ import (
 	"encoding/json"
 	"errors"
 	"github.com/astaxie/beego/logs"
-	"github.com/astaxie/beego/orm"
 	"quickstart/models"
 	"strconv"
 	"strings"
@@ -35,50 +34,45 @@ func (c *UserController) URLMapping() {
 // @router / [post]
 func (c *UserController) Post() {
 	var v models.User
-	o := orm.NewOrm()
 	_ = json.Unmarshal(c.Ctx.Input.RequestBody, &v)
-	companyId, _ := strconv.Atoi(c.GetString("companyId"))
-	company := models.Company{Id: int64(companyId)}
-	_ = o.Read(&company)
-	v.Company = &company
 	//更新员工信息
-	if v.Id != 0 {
-		if v.Pwd != "" {
-			encodePassword := c.generatePassword(v.Pwd)
-			v.EncodePassword = encodePassword
-			v.Pwd = ""
-		}
-		valid, vErrors := v.Validate()
-		logs.Info(valid, vErrors)
-		if valid {
-			if err := models.UpdateUserById(&v); err == nil {
-				c.Ctx.Output.SetStatus(201)
-				c.Data["json"] = "OK"
-			} else {
-				c.Data["json"] = err.Error()
-			}
+	//if v.Id != 0 {
+	//	if v.Pwd != "" {
+	//		encodePassword := c.generatePassword(v.Pwd)
+	//		v.EncodePassword = encodePassword
+	//		v.Pwd = ""
+	//	}
+	//	valid, vErrors := v.Validate()
+	//	logs.Info(valid, vErrors)
+	//	if valid {
+	//		if err := models.UpdateUserById(&v); err == nil {
+	//			c.Ctx.Output.SetStatus(201)
+	//			c.Data["json"] = "OK"
+	//		} else {
+	//			c.Data["json"] = err.Error()
+	//		}
+	//	} else {
+	//		c.Data["json"] = vErrors
+	//	}
+	//} else {
+	//创建员工信息
+	encodePassword := c.generatePassword(v.Pwd)
+	v.EncodePassword = encodePassword
+	v.Pwd = ""
+	//插入数据前进行验证
+	valid, vErrors := v.Validate()
+	logs.Info(valid, vErrors)
+	if valid {
+		if _, err := models.AddUser(&v); err == nil {
+			c.Ctx.Output.SetStatus(201)
+			c.Data["json"] = v
 		} else {
-			c.Data["json"] = vErrors
+			c.Data["json"] = err.Error()
 		}
 	} else {
-		//创建员工信息
-		encodePassword := c.generatePassword(v.Pwd)
-		v.EncodePassword = encodePassword
-		v.Pwd = ""
-		//插入数据前进行验证
-		valid, vErrors := v.Validate()
-		logs.Info(valid, vErrors)
-		if valid {
-			if _, err := models.AddUser(&v); err == nil {
-				c.Ctx.Output.SetStatus(201)
-				c.Data["json"] = v
-			} else {
-				c.Data["json"] = err.Error()
-			}
-		} else {
-			c.Data["json"] = vErrors
-		}
+		c.Data["json"] = vErrors
 	}
+	//
 	c.ServeJSON()
 }
 
@@ -126,8 +120,8 @@ func (c *UserController) GetAll() {
 	if v := c.GetString("fields"); v != "" {
 		fields = strings.Split(v, ",")
 	}
-	fields,colNames:= models.GetUserCols()
-	logs.Info(fields,colNames)
+	fields, colNames := models.GetUserCols()
+	logs.Info(fields, colNames)
 	// limit: 10 (default is 10)
 	if v, err := c.GetInt64("limit"); err == nil {
 		limit = v
@@ -178,7 +172,7 @@ func (c *UserController) GetAll() {
 			"countPage": mapValue,
 			"data":      l,
 			"colNames":  colNames,
-			"actions": map[string]string{"edit": "/user/edit/:id","destroy":"",},
+			"actions":   map[string]string{"edit": "/user/edit/:id", "destroy": "",},
 		}
 	}
 	c.ServeJSON()
@@ -235,7 +229,6 @@ func (c *UserController) Get() {
 //新增用户
 func (c *UserController) New() {
 	c.namespace = "company"
-	c.Data["JsName"] = "user_form"
 	c.Data["Namespace"] = "company"
 	c.Data["PageTitle"] = "新增员工信息"
 	c.setTpl("user/new.html")
@@ -244,10 +237,8 @@ func (c *UserController) New() {
 //修改用户
 
 func (c *UserController) Edit() {
-	c.Data["JsName"] = "user_form"
 	c.Data["Namespace"] = "company"
 	c.Data["PageTitle"] = "修改员工信息"
-	logs.Info("dsdsdsssdsd")
 	//获取 :Id
 	idStr := c.Ctx.Input.Param(":id")
 	logs.Info(idStr)
@@ -267,5 +258,3 @@ func (c *UserController) generatePassword(pwd string) (encodePassword string) {
 	logs.Info(encodePW)
 	return encodePW
 }
-
-

@@ -4,7 +4,10 @@ const path = require('path');
 // const nodeExternals = require('webpack-node-externals');
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 const VueLoaderPlugin = require('vue-loader/lib/plugin');
+const  glob = require('glob');
+
 module.exports = {
+    // entry: glob.sync('./src/packs/*.js',['dist']),
     entry: {
         main: './src/index.js',
         foot_before: './src/foot_before.js',

@@ -1,19 +1,11 @@
 'use strict';
 window.$ = $;
-import Paginate from 'vuejs-paginate';
-Vue.component('paginate', Paginate);
-// index table
-import indexTable from './widget/vue/index_table';
-Vue.component('index-table', indexTable);
-
-window.axios = require('axios');
-
-import toastr from 'toastr';
-
-window.toastr = toastr;
 
 
-require('./widget/common');
+
+
+
+
 $(document).ready(function () {
     //时间格式化
     let formDatetime = $(".form_datetime");

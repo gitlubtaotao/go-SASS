@@ -9,3 +9,5 @@ func ModelCount(tableName string) int64 {
 	cnt, _ := o.QueryTable(tableName).Count() // SELECT COUNT(*) FROM USER
 	return cnt
 }
+
+

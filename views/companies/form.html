@@ -4,11 +4,11 @@
             <form class="form-horizontal" action="/company" method="post" id="create_form" @submit.prevent="submitForm">
                 {{template "../common/errors.html" .}}
                 <fieldset>
-
                     <div class="form-group">
                         <label class="control-label col-sm-4">公司名称</label>
                         <div class="col-sm-8">
-                            <input class="form-control" name="Name" v-model.trim="company.Name" value="{{.Company.Name}}"
+                            <input class="form-control" name="Name" v-model.trim="company.Name"
+                                   value="{{.Company.Name}}"
                                    placeholder="请输入公司名称" required>
                         </div>
                     </div>
@@ -27,11 +27,12 @@
                                    v-model="company.Email" placeholder="请输入公司邮箱" required>
                         </div>
                     </div>
+
                     <div class="form-group">
                         <label class="control-label col-sm-4">公司地址</label>
                         <div class="col-sm-8">
                             <input class="form-control" name="Address" value="{{.Company.Address}}"
-                                   v-model.trim="company.Address"  placeholder="请输入公司地址">
+                                   v-model.trim="company.Address" placeholder="请输入公司地址">
                         </div>
                     </div>
                     <div class="form-group">
@@ -47,20 +48,21 @@
                             <textarea class="form-control" name="Remarks" value="{{.Company.Remarks}}"
                                       placeholder="" v-model="company.Remarks"></textarea>
                         </div>
+
                     </div>
-                    <input type="hidden" value="{{.Company.Id}}" >
+                    <input type="hidden" value="{{.Company.Id}}">
                 </fieldset>
                 <div class="space-6"></div>
                 <div class="clearfix form-group ">
-                    <div class="col-sm-offset-5">
-                    <button class="btn btn-success btn-sm " type="submit">
-                        <i class="ace-icon fa fa-check bigger-110"></i>
-                        保存
-                    </button>
-                    <button class="btn btn-sm" type="reset">
-                        <i class="ace-icon fa fa-undo bigger-110"></i>
-                        取消
-                    </button>
+                    <div class="col-sm-offset-5 col-xs-offset-2">
+                        <button class="btn btn-success btn-sm " type="submit">
+                            <i class="ace-icon fa fa-check bigger-110"></i>
+                            保存
+                        </button>
+                        <button class="btn btn-sm" type="reset">
+                            <i class="ace-icon fa fa-undo bigger-110"></i>
+                            取消
+                        </button>
                     </div>
                 </div>
             </form>

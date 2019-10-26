@@ -29,7 +29,7 @@
                                 <i class="ace-icon fa fa-phone"></i>
                             </span>
                                 <input class="form-control" v-model.trim="user.Phone" type="tel" name="Phone"
-                                       value="{{.User.Phone}}"  placeholder="请输入电话" required>
+                                       value="{{.User.Phone}}" placeholder="请输入电话" required>
                             </div>
                         </div>
                     </div>
@@ -52,20 +52,31 @@
                     <div class="form-group">
                         <label class="control-label col-sm-4">性别</label>
                         <div class="col-sm-8">
-                            <select name="Gender" class="form-control" v-model="user.Gender">
-                                <option v-bind:value="1">男</option>
-                                <option v-bind:value="2">女</option>
-                            </select>
+                            <vue-select class="vue-select2" name="select2" label="Name"
+                                        :options="['男','女']" v-model.trim="user.Gender"
+                                        :searchable="false" language="zh-CN">
+                            </vue-select>
                         </div>
                     </div>
                     <div class="form-group">
                         <label class="control-label col-sm-4">所属公司</label>
                         <div class="col-sm-8">
-                            <select class="form-control" name="Company" v-model="user.Company" required>
-                                <option v-for="company in companyList" v-bind:value="company.Id">{company.Name}</option>
-                            </select>
+                            <vue-select class="vue-select2" name="select2" label="Name"
+                                        :options="companyOptions" v-model.trim="user.Company"
+                                        :searchable="true" language="zh-CN" @input="selectDepartment">
+                            </vue-select>
                         </div>
                     </div>
+                    <div class="form-group">
+                        <label class="control-label col-sm-4">所属部门</label>
+                        <div class="col-sm-8">
+                            <vue-select class="vue-select2" name="select2" label="Name"
+                                        :options="departmentOptions" v-model.trim="user.Department"
+                                        :searchable="true" language="zh-CN">
+                            </vue-select>
+                        </div>
+                    </div>
+
                     <div class="form-group">
                         <label class="control-label col-sm-4">入职时间</label>
                         <div class="col-sm-8">
@@ -78,11 +89,11 @@
 
                         </div>
                     </div>
-                    <input type="hidden" v-model="user.Id" value="{{.UserId}}">
+
                 </fieldset>
                 <div class="space-6"></div>
                 <div class="clearfix form-group ">
-                    <div class="col-md-offset-5 col-md-7 col-sm-offset-5 col-sm-7">
+                    <div class="col-sm-offset-5 col-xs-offset-2">
                         <button class="btn btn-success btn-sm " type="submit" @submit="checkForm">
                             <i class="ace-icon fa fa-check bigger-110"></i>
                             保存
@@ -97,3 +108,167 @@
         </div>
     </div>
 </div>
+<script>
+    var app = new Vue({
+        el: '#create_form',
+        delimiters: ['{', '}'],
+        data: {
+            createUrl: '/user',
+            updateUrl: '/user/:id',
+            user: {
+                Id: '',
+                Name: '',//姓名
+                Email: '',//邮箱
+                Phone: '',//电话
+                Pwd: '',//密码
+                confirmPassword: '',//确认密码
+                Gender: '', // 性别
+                Company: '',// 所属公司
+                Department: '',
+                EntryTime: '', //入职时间
+            },
+            errors: [], //错误
+            companyOptions: [],
+            departmentOptions: [],
+        },
+        mounted: function () {
+            this.selectData();
+            this.initData();
+        },
+        methods: {
+            //对表单的数据进行验证
+            checkForm: function () {
+                this.errors = [];
+                let url, method;
+                if (this.user.Id === '') {
+                    url = this.createUrl;
+                    method = 'post';
+                } else {
+                    url = this.updateUrl;
+                    method = 'put'
+                }
+                if (this.validateSubmit()) {
+                    axios({
+                        method: method,
+                        url: url,
+                        data: this.user
+                    }).then(function (response) {
+                        if (response.status === 200) {
+                            $.each(response.data, function (key, value) {
+                                app.errors.push(key + ':' + value);
+                            });
+                        } else {
+                            toastr.success("新增员工成功");
+                        }
+                    }).catch(function (error) {
+                        console.log(error);
+                    });
+                }
+            },
+            //提交表单前进行验证
+            validateSubmit: function () {
+
+                let regPhone = /^1[3456789]\d{9}$/;
+                if (!this.user.Name) {
+                    this.errors.push("姓名必填项");
+                    return false;
+                }
+                if (!this.user.Email) {
+                    this.errors.push("邮箱必填项");
+                    return false;
+                }
+                if (!this.user.Phone) {
+                    this.errors.push("电话必填项");
+                    return false;
+                }
+                if(this.user.Company === ''){
+                    this.errors.push("所属公司不能为空");
+                    return false;
+                }
+                if (this.user.Id === '') {
+                    if (!this.validatePassword()) {
+                        return false;
+                    }
+                } else if (this.user.Id !== '' && this.user.Pwd !== '') {
+                    if (!this.validatePassword()) {
+                        return false;
+                    }
+                }
+                if (!regPhone.test(this.user.Phone)) {
+                    this.errors.push('请输入有效的手机号码');
+                }
+
+                return true;
+            },
+            validatePassword: function () {
+                if (!this.user.Pwd) {
+                    this.errors.push('密码必填项');
+                    return false;
+                }
+                if (!this.user.confirmPassword) {
+                    this.errors.push("确认密码必填项");
+                    return false;
+                }
+                if (!(this.user.Pwd === this.user.confirmPassword)) {
+                    this.errors.push('两次输入的密码不一致');
+                    return false;
+                }
+                return true;
+            },
+            //所属公司下拉数据
+            selectData: function () {
+                let result = selectApi('/company', {fields: 'Name,Id'}, 1);
+                if (result.status) {
+                    if (Array.isArray(result.data.data)) {
+                        this.companyOptions = result.data['data'];
+                    }
+                } else {
+                    console.log(result.data)
+                }
+            },
+            //修改时初始化数据
+            initData: function () {
+                let id = $('#create_form').attr('data-id');
+                if (id !== "" && id !== null) {
+                    console.log(id);
+                    this.user.Id = parseInt(id);
+                    axios({
+                        method: 'get',
+                        url: "/user/" + id,
+                        data: this.user
+                    }).then(function (response) {
+                        console.log(response);
+                        let data = response.data;
+                        app.user.Name = data['Name'];
+                        app.user.Email = data['Email'];
+                        app.user.Phone = data['Phone'];
+                        app.user.Id = data['Id'];
+                        app.user.Gender = data['Gender'];
+                        app.user.EntryTime = data['EntryTime'];
+                        app.user.Company = data['Company']['Id'];
+                    }).catch(function (error) {
+                        console.log(error);
+                    });
+                }
+            },
+            selectDepartment: function (value) {
+                this.user.Department = '';
+                let str ="Company:"+value.Id;
+                let result = selectApi('/department', {query: str,fields: "Name,Id"}, 1);
+                if (result.status) {
+                    let options = [];
+                    if (Array.isArray(result.data.data)) {
+                        $.each(result.data.data,function (index,value) {
+                            options.push({Id: value.Id,Name: value.Name})
+                        });
+                        this.departmentOptions = options;
+                    }else{
+                        this.departmentOptions = [];
+                    }
+                }
+            }
+        }
+    });
+
+
+</script>

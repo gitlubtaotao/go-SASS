@@ -1,26 +1,19 @@
 // 获取公司的数据的Api
 //selectApi 获取下拉数据
-//resourceName: 对应资源url,fields: 需要显示的字段,page: 对应的分页数量
+//resourceName: 对应资源url,options: 其他options,page: 对应的分页数量
 
-function selectApi(url, fields, page = 1) {
+function selectApi(url, options={}, page = 1) {
     let returnValue;
-    if (Array.isArray(fields)) {
-        fields = fields.join(',')
-    } else {
-        return {
-            status: false,
-            data: 'fields必须为数组形式'
-        };
-    }
     if (url === "") {
         return {
             status: false,
             data: 'url不能为空'
         }
     }
+    console.log($.extend(options,{page: page}));
     $.ajax({
         url: url,
-        data: {fields: fields, page: page},
+        data: $.extend(options,{page: page}),
         dataType: 'json',
         async: false,
         type: 'get',

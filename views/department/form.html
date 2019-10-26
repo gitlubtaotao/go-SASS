@@ -1,0 +1,113 @@
+<div class="page-content">
+    <div class="row">
+        <div class="col-sm-6 col-sm-offset-2 col-xs-12">
+            <form class="form-horizontal" action="" method="post" id="create_form" @submit.prevent="submitForm"
+                  @submit.prevent="submitForm">
+                {{template "../common/errors.html" .}}
+                <fieldset>
+                    <div class="form-group">
+                        <label class="control-label col-sm-4">部门名称</label>
+                        <div class="col-sm-8">
+                            <input class="form-control" name="Name" v-model.trim="department.Name"
+                                   placeholder="请输入部门名称" required>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label col-sm-4">所属公司</label>
+                        <div class="col-sm-8">
+                            <vue-select class="vue-select2" name="select2" label="Name"
+                                        :options="options" v-model.trim="department.Company"
+                                        :searchable="true" language="zh-CN">
+                            </vue-select>
+                        </div>
+
+                    </div>
+
+                </fieldset>
+                <div class="space-6"></div>
+                <div class="clearfix form-group ">
+                    <div class="col-sm-offset-5 col-xs-offset-2">
+                        <button class="btn btn-success btn-sm " type="submit">
+                            <i class="ace-icon fa fa-check bigger-110"></i>
+                            保存
+                        </button>
+                        <button class="btn btn-sm" type="reset">
+                            <i class="ace-icon fa fa-undo bigger-110"></i>
+                            取消
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<script>
+    app = new Vue({
+        el: '#create_form',
+        data: {
+            errors: [],
+            department:{
+                Name: '',
+                Company: '',
+                Id: '',
+            },
+            options: [],
+            createUrl: '/department',
+            editUrl: '/department/:id'
+        },
+        mounted: function () {
+            this.selectData();
+        },
+        methods:{
+            selectData: function () {
+                let result = window.selectApi('/company', {fields: 'Name,Id'}, 1);
+                if (result.status) {
+                    if (Array.isArray(result.data.data)) {
+                        this.options = result.data.data;
+                    }
+                } else {
+                    console.log(result.data);
+                }
+            },
+            submitForm: function () {
+                let url,method;
+                if(this.department.Id === ''){
+                    url = this.createUrl;
+                    method = 'post';
+                }else{
+                    url = this.editUrl;
+                    method = 'put';
+                }
+                if(this.validateForm()) {
+                    axios({
+                        method: method,
+                        url: url,
+                        data: this.department,
+                    }).then(function (response) {
+                        if (response.status === 200) {
+                            $.each(response.data,function (key,value) {
+                                app.errors.push(key+':'+value);
+                            });
+                        } else {
+                            toastr.success("保存成功");
+                        }
+                    }).catch(function (error) {
+                        console.log(error);
+                    });
+                }
+            },
+            //验证表单是否通过
+            validateForm: function () {
+                if(this.department.Name === ''){
+                    toastr.error("部门名称不能为空");
+                    return false;
+                }
+                if(this.department.Company === ''){
+                    toastr.error("所属公司不能为空");
+                    return false;
+                }
+                return true;
+            }
+        }
+    });
+</script>

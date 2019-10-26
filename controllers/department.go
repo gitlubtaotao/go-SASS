@@ -34,6 +34,7 @@ func (c *DepartmentController) URLMapping() {
 func (c *DepartmentController) Post() {
 	var v models.Department
 	json.Unmarshal(c.Ctx.Input.RequestBody, &v)
+	logs.Info(v)
 	if _, err := models.AddDepartment(&v); err == nil {
 		c.Ctx.Output.SetStatus(201)
 		c.Data["json"] = v
@@ -87,7 +88,10 @@ func (c *DepartmentController) GetAll() {
 	if v := c.GetString("fields"); v != "" {
 		fields = strings.Split(v, ",")
 	}
-	fields,colNames := models.GetDepartmentCols()
+	tempFields, colNames := models.GetDepartmentCols()
+	if len(fields) == 0{
+		fields = tempFields
+	}
 	// limit: 10 (default is 10)
 	if v, err := c.GetInt64("limit"); err == nil {
 		limit = v
@@ -117,18 +121,18 @@ func (c *DepartmentController) GetAll() {
 			query[k] = v
 		}
 	}
-
-	l,countPage, err := models.GetAllDepartment(query, fields, sortby, order, offset, limit)
+	
+	l, countPage, err := models.GetAllDepartment(query, fields, sortby, order, offset, limit)
 	if err != nil {
 		c.Data["json"] = err.Error()
 	} else {
 		mapValue := models.SetPaginator(countPage)
-		logs.Info(l)
+		
 		c.Data["json"] = map[string]interface{}{
 			"countPage": mapValue,
 			"data":      l,
 			"colNames":  colNames,
-			"actions": map[string]string{"edit": "/department/edit/:id","destroy":"/department/:id",},
+			"actions":   map[string]string{"edit": "/department/edit/:id", "destroy": "/department/:id",},
 		}
 	}
 	c.ServeJSON()
@@ -179,4 +183,17 @@ func (c *DepartmentController) Get() {
 	c.Data["Namespace"] = "company"
 	c.Data["PageTitle"] = "部门信息"
 	c.setTpl("department/index.html")
+}
+
+//新增
+func (c *DepartmentController) New() {
+	c.namespace = "company"
+	c.Data["Namespace"] = "company"
+	c.Data["PageTitle"] = "新增公司"
+	c.setTpl("department/new.html")
+}
+
+//
+func (c *DepartmentController) Edit() {
+
 }
