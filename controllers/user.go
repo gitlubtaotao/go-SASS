@@ -222,7 +222,7 @@ func (c *UserController) Delete() {
 func (c *UserController) Get() {
 	c.Data["Namespace"] = "company"
 	c.Data["PageTitle"] = "员工信息"
-	c.Data["JsName"] = "company"
+	c.Data["JsName"] = "index"
 	c.setTpl("user/index.html")
 }
 

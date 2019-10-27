@@ -12,10 +12,8 @@ module.exports = {
         main: './src/index.js',
         foot_before: './src/foot_before.js',
         css: './src/css.js',
-        company: './src/packs/company.js',
-        user_form: './src/packs/user_form.js',
+        index: './src/packs/index.js',
         login_in: './src/packs/login_in.js',
-        company_form: './src/packs/company_form.js'
     },
     output: {
         path: path.resolve(__dirname, 'dist'),

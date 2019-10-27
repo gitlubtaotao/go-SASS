@@ -69,15 +69,15 @@
             //取数据的表关联的其他字段的值
             showItem: function (record, item) {
                 let arrayItem = item.split('.');
-                if(record[item] !== "" && typeof(record[item]) !== 'undefined'){
+                if (record[item] !== "" && typeof (record[item]) !== 'undefined') {
                     return record[item]
                 }
-                if(arrayItem.length === 2){
+                if (arrayItem.length === 2) {
                     let value = record[arrayItem[0]];
-                    if(typeof(value) === 'undefined' || value === ""){
+                    if (typeof (value) === 'undefined' || value === "") {
                         return ""
-                    }else{
-                      return  value[arrayItem[1]];
+                    } else {
+                        return value[arrayItem[1]];
                     }
                 }
             },
@@ -87,7 +87,26 @@
             showMethod: function (id, index) {
 
             },
+            //删除对应的记录
             destroyMethod: function (id, index) {
+                let _this = this;
+                let url = this.actions.destroy.replace(":id", id);
+                if (confirm("确定删除该记录？")) {
+                    axios.delete(url, {
+                        headers: {'X-Requested-With': 'XMLHttpRequest'},
+                        dataType: 'json',
+                    }).then(function (response) {
+                        console.log(response);
+                        if (response.data === "OK") {
+                            toastr.success("删除成功");
+                            _this.objects.splice(index, 1)
+                        } else {
+                            toastr.error(response.data);
+                        }
+                    }).catch(function (error) {
+                        console.log(error);
+                    });
+                }
             }
         },
     };

@@ -179,7 +179,7 @@ func (c *DepartmentController) Delete() {
 
 func (c *DepartmentController) Get() {
 	c.namespace = "company"
-	c.Data["JsName"] = "company"
+	c.Data["JsName"] = "index"
 	c.Data["Namespace"] = "company"
 	c.Data["PageTitle"] = "部门信息"
 	c.setTpl("department/index.html")
@@ -189,11 +189,14 @@ func (c *DepartmentController) Get() {
 func (c *DepartmentController) New() {
 	c.namespace = "company"
 	c.Data["Namespace"] = "company"
-	c.Data["PageTitle"] = "新增公司"
-	c.setTpl("department/new.html")
+	c.Data["PageTitle"] = "新增部门信息"
+	c.setTpl("department/form.html")
 }
 
 //
 func (c *DepartmentController) Edit() {
-
+	c.namespace = "company"
+	c.Data["Namespace"] = "company"
+	c.Data["PageTitle"] = "修改部门信息"
+	c.setTpl("department/form.html")
 }

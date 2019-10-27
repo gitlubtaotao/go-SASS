@@ -64,7 +64,7 @@ func (c *CompaniesController) Post() {
 
 //Get 首页
 func (c *CompaniesController) Get() {
-	c.Data["JsName"] = "company"
+	c.Data["JsName"] = "index"
 	c.Data["Namespace"] = "company"
 	c.Data["PageTitle"] = "公司信息"
 	c.LayoutSections = make(map[string]string)
@@ -129,7 +129,7 @@ func (c *CompaniesController) GetAll() {
 			"countPage": mapValue,
 			"data":      companies,
 			"colNames":  colNames,
-			"actions":   map[string]string{"edit": "company/edit/:id", "destroy": ""},
+			"actions":   map[string]string{"edit": "/company/edit/:id", "destroy": "/company/:id"},
 		}
 		c.ServeJSON()
 	}
@@ -155,22 +155,14 @@ func (c *CompaniesController) Put() {
 // @Failure 403 id is empty
 // @router /:id [delete]
 func (c *CompaniesController) Delete() {
-	var result map[string]string
-	result = make(map[string]string)
-	if c.IsAjax() {
-		id := c.Ctx.Input.Param(":id")
-		newId, _ := strconv.ParseInt(id, 10, 64)
-		company := models.Company{Id: newId}
-		o := orm.NewOrm()
-		if _, err := o.Delete(&company); err == nil {
-		} else {
-			result["message"] = "删除失败"
-			c.Data["json"] = result
-		}
-		c.ServeJSON()
-	} else {
-		c.redirectCustomer("/company")
+	idStr := c.Ctx.Input.Param(":id")
+	id,_:=strconv.ParseInt(idStr,0,64)
+	if err := models.DeleteCompany(id);err == nil{
+		c.Data["json"] = "OK"
+	}else{
+		c.Data["json"] = err.Error()
 	}
+	c.ServeJSON()
 }
 
 func (c *CompaniesController) Edit() {
