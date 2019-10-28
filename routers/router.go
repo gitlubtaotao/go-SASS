@@ -30,6 +30,13 @@ func init() {
 	beego.Router("/department/new",&controllers.DepartmentController{},"get:New")
 	beego.Router("/department/edit/:id",&controllers.DepartmentController{},"get:Edit")
 	beego.Router("/department/:id",&controllers.DepartmentController{},"put:Put;get:GetOne;delete:Delete")
+	
+	beego.Router("/order",&controllers.OrderController{},"get:GetAll;post:Post")
+	beego.Router("/order/index",&controllers.OrderController{},"get:Get")
+	beego.Router("/order/new",&controllers.OrderController{},"get:New")
+	beego.Router("/order/edit/:id",&controllers.OrderController{},"get:Edit")
+	beego.Router("/order/:id",&controllers.OrderController{},"put:Put;get:GetOne;delete:Delete")
+	
 }
 //过滤器的使用
 var filerFunc = func(ctx *context.Context) {
