@@ -33,11 +33,11 @@ func (c *DepartmentController) URLMapping() {
 // @router / [post]
 func (c *DepartmentController) Post() {
 	var v models.Department
-	json.Unmarshal(c.Ctx.Input.RequestBody, &v)
+	_ = json.Unmarshal(c.Ctx.Input.RequestBody, &v)
 	logs.Info(v)
 	if _, err := models.AddDepartment(&v); err == nil {
 		c.Ctx.Output.SetStatus(201)
-		c.Data["json"] = v
+		c.Data["json"] = "OK"
 	} else {
 		c.Data["json"] = err.Error()
 	}
@@ -195,8 +195,10 @@ func (c *DepartmentController) New() {
 
 //
 func (c *DepartmentController) Edit() {
+	idStr := c.Ctx.Input.Param(":id")
 	c.namespace = "company"
 	c.Data["Namespace"] = "company"
 	c.Data["PageTitle"] = "修改部门信息"
+	c.Data["Id"] = idStr
 	c.setTpl("department/form.html")
 }

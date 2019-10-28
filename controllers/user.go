@@ -35,27 +35,6 @@ func (c *UserController) URLMapping() {
 func (c *UserController) Post() {
 	var v models.User
 	_ = json.Unmarshal(c.Ctx.Input.RequestBody, &v)
-	//更新员工信息
-	//if v.Id != 0 {
-	//	if v.Pwd != "" {
-	//		encodePassword := c.generatePassword(v.Pwd)
-	//		v.EncodePassword = encodePassword
-	//		v.Pwd = ""
-	//	}
-	//	valid, vErrors := v.Validate()
-	//	logs.Info(valid, vErrors)
-	//	if valid {
-	//		if err := models.UpdateUserById(&v); err == nil {
-	//			c.Ctx.Output.SetStatus(201)
-	//			c.Data["json"] = "OK"
-	//		} else {
-	//			c.Data["json"] = err.Error()
-	//		}
-	//	} else {
-	//		c.Data["json"] = vErrors
-	//	}
-	//} else {
-	//创建员工信息
 	encodePassword := c.generatePassword(v.Pwd)
 	v.EncodePassword = encodePassword
 	v.Pwd = ""
@@ -65,7 +44,7 @@ func (c *UserController) Post() {
 	if valid {
 		if _, err := models.AddUser(&v); err == nil {
 			c.Ctx.Output.SetStatus(201)
-			c.Data["json"] = v
+			c.Data["json"] = "OK"
 		} else {
 			c.Data["json"] = err.Error()
 		}
@@ -191,11 +170,18 @@ func (c *UserController) Put() {
 	id, _ := strconv.ParseInt(idStr, 0, 64)
 	v := models.User{Id: id}
 	_ = json.Unmarshal(c.Ctx.Input.RequestBody, &v)
-	
-	if err := models.UpdateUserById(&v); err == nil {
-		c.Data["json"] = "OK"
-	} else {
-		c.Data["json"] = err.Error()
+	encodePassword := c.generatePassword(v.Pwd)
+	v.EncodePassword = encodePassword
+	v.Pwd = ""
+	valid, vErrors := v.Validate()
+	if valid {
+		if err := models.UpdateUserById(&v); err == nil {
+			c.Data["json"] = "OK"
+		} else {
+			c.Data["json"] = err.Error()
+		}
+	}else{
+		c.Data["json"] = vErrors
 	}
 	c.ServeJSON()
 }
@@ -231,7 +217,7 @@ func (c *UserController) New() {
 	c.namespace = "company"
 	c.Data["Namespace"] = "company"
 	c.Data["PageTitle"] = "新增员工信息"
-	c.setTpl("user/new.html")
+	c.setTpl("user/form.html")
 }
 
 //修改用户
@@ -241,10 +227,8 @@ func (c *UserController) Edit() {
 	c.Data["PageTitle"] = "修改员工信息"
 	//获取 :Id
 	idStr := c.Ctx.Input.Param(":id")
-	logs.Info(idStr)
-	id, _ := strconv.ParseInt(idStr, 0, 64)
-	c.Data["UserId"] = id
-	c.setTpl("user/edit.html")
+	c.Data["Id"] = idStr
+	c.setTpl("user/form.html")
 }
 
 //生成对应的密码

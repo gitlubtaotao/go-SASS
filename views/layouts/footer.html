@@ -9,5 +9,15 @@
 {{template "../common/footer.html" .}}
 
 <script type="text/javascript">
-    if('ontouchstart' in document.documentElement) document.write("<script src='/assets/js/jquery.mobile.custom.min.js'>"+"<"+"/script>");
+    if ('ontouchstart' in document.documentElement) document.write("<script src='/assets/js/jquery.mobile.custom.min.js'>" + "<" + "/script>");
+    jQuery(function ($) {
+        var namespace = '{{.Namespace}}';
+        var currentRoot = $('.nav-list');
+        currentRoot.find('li').removeClass('open').removeClass('active');
+        currentRoot.find('#' + namespace).addClass('active').addClass('open');
+        currentRoot.find('.submenu').hide();
+        var submenu = currentRoot.find('.submenu').find('#' + '{{.ControllerName}}');
+        submenu.parent().show();
+        submenu.addClass('active');
+    });
 </script>

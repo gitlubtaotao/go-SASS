@@ -2,9 +2,7 @@ package controllers
 
 import (
 	"encoding/json"
-	"fmt"
 	"github.com/astaxie/beego/logs"
-	"github.com/astaxie/beego/orm"
 	"strings"
 	
 	"quickstart/models"
@@ -31,8 +29,7 @@ func (this *CompaniesController) New() {
 	this.namespace = "company"
 	this.Data["Namespace"] = "company"
 	this.Data["PageTitle"] = "新增公司"
-	this.Data["JsName"] = "company_form"
-	this.setTpl("companies/new.html")
+	this.setTpl("companies/form.html")
 }
 
 // Post ...
@@ -45,21 +42,18 @@ func (this *CompaniesController) New() {
 func (c *CompaniesController) Post() {
 	company := models.Company{}
 	_ = json.Unmarshal(c.Ctx.Input.RequestBody, &company)
-	if err := c.ParseForm(&company); err != nil {
-		fmt.Print(err)
-	} else {
-		o := orm.NewOrm()
-		status, returnErr := company.Validate()
-		if status {
-			if _, err = o.Insert(&company); err != nil {
-				c.setTpl("company/new")
-				return
-			}
-			c.redirectCustomer("/company")
+	status, errors := company.Validate()
+	if status {
+		if _, err := models.AddCompany(&company); err == nil {
+			c.Ctx.Output.SetStatus(201)
+			c.Data["json"] = "OK"
 		} else {
-			fmt.Print(returnErr)
+			c.Data["json"] = err.Error()
 		}
+	} else {
+		c.Data["json"] = errors
 	}
+	c.ServeJSON()
 }
 
 //Get 首页
@@ -67,7 +61,6 @@ func (c *CompaniesController) Get() {
 	c.Data["JsName"] = "index"
 	c.Data["Namespace"] = "company"
 	c.Data["PageTitle"] = "公司信息"
-	c.LayoutSections = make(map[string]string)
 	c.setTpl("companies/index.html")
 }
 
@@ -79,7 +72,16 @@ func (c *CompaniesController) Get() {
 // @Failure 403 :id is empty
 // @router /:id [get]
 func (c *CompaniesController) GetOne() {
-
+	idStr := c.Ctx.Input.Param(":id")
+	id, _ := strconv.ParseInt(idStr, 0, 64)
+	v, err := models.GetCompanyById(id)
+	logs.Info(v)
+	if err != nil {
+		c.Data["json"] = err.Error()
+	} else {
+		c.Data["json"] = v
+	}
+	c.ServeJSON()
 }
 
 // GetAll ...
@@ -144,7 +146,21 @@ func (c *CompaniesController) GetAll() {
 // @Failure 403 :id is not int
 // @router /:id [put]
 func (c *CompaniesController) Put() {
-
+	idStr := c.Ctx.Input.Param(":id")
+	id, _ := strconv.ParseInt(idStr, 0, 64)
+	v := models.Company{Id: id}
+	_ = json.Unmarshal(c.Ctx.Input.RequestBody, &v)
+	status, errors := v.Validate()
+	if status {
+		if err := models.UpdateCompanyById(&v); err == nil{
+				c.Data["json"] = "OK"
+		}else{
+			c.Data["json"] = err.Error()
+		}
+	} else {
+		c.Data["json"] = errors
+	}
+	c.ServeJSON()
 }
 
 // Delete ...
@@ -156,15 +172,20 @@ func (c *CompaniesController) Put() {
 // @router /:id [delete]
 func (c *CompaniesController) Delete() {
 	idStr := c.Ctx.Input.Param(":id")
-	id,_:=strconv.ParseInt(idStr,0,64)
-	if err := models.DeleteCompany(id);err == nil{
+	id, _ := strconv.ParseInt(idStr, 0, 64)
+	if err := models.DeleteCompany(id); err == nil {
 		c.Data["json"] = "OK"
-	}else{
+	} else {
 		c.Data["json"] = err.Error()
 	}
 	c.ServeJSON()
 }
 
-func (c *CompaniesController) Edit() {
-
+func (this *CompaniesController) Edit() {
+	idStr := this.Ctx.Input.Param(":id")
+	this.namespace = "company"
+	this.Data["Namespace"] = "company"
+	this.Data["PageTitle"] = "修改公司信息"
+	this.Data["Id"] = idStr
+	this.setTpl("companies/form.html")
 }

@@ -1,3 +1,14 @@
+<div class="breadcrumbs ace-save-state" id="breadcrumbs">
+    <ul class="breadcrumb">
+        {{template "layouts/breadcrumb.html" .}}
+        <li class="">
+            <a href="/company">公司信息</a>
+        </li>
+        <li class="active">
+            {{.PageTitle}}
+        </li>
+    </ul><!-- /.breadcrumb -->
+</div>
 <div class="page-content">
     <div class="row">
         <div class="col-sm-6 col-sm-offset-2 col-xs-12">
@@ -50,7 +61,6 @@
                         </div>
 
                     </div>
-                    <input type="hidden" value="{{.Company.Id}}">
                 </fieldset>
                 <div class="space-6"></div>
                 <div class="clearfix form-group ">
@@ -69,3 +79,83 @@
         </div>
     </div>
 </div>
+<script type="text/javascript">
+    var app = new Vue({
+        el: '#create_form',
+        delimiters: ['{', '}'],
+        data: {
+            errors: [],
+            company: {
+                Id: '',
+                Name: "",
+                Telephone: '',
+                Address: '',
+                Email: '',
+                Remarks: "",
+                Website: "",
+            }
+        },
+        mounted: function () {
+            this.initData();
+        },
+        methods: {
+            //初始化数据
+            initData: function () {
+                let id = "{{.Id}}";
+                let _this = this;
+                if (id !== "" && typeof (id) !== 'undefined') {
+                    window.initData("/company/" + id).then(res => {
+                            console.log(res);
+                            _this.company = res;
+                        },
+                        error => {
+                            console.log(error);
+                        });
+                }
+            },
+            //提交表单
+            submitForm: function () {
+                if (!this.validateForm()) {
+                    return
+                }
+                let _this = this;
+                let method, url = "";
+                if (_this.company.Id === '') {
+                    method = "post";
+                    url = "/company"
+                } else {
+                    method = "put";
+                    url = "/company/" + _this.company.Id
+                }
+                window.submitForm(method, url, _this.company).then(res => {
+                        if (res.length !== 0) {
+                            $.each(res, function (key, value) {
+                                _this.errors.push(key + ':' + value);
+                            });
+                        }
+                    },
+                    error => {
+                        console.log(error);
+                    });
+
+            },
+            validateForm: function () {
+                this.errors = [];
+                if (!this.company.Name) {
+                    this.errors.push("公司名称不能为空");
+                    return false;
+                }
+                if (!this.company.Telephone) {
+                    this.errors.push("公司座机不能为空");
+                    return false
+                }
+                if (!this.company.Email) {
+                    this.errors.push("公司邮箱不能为空");
+                    return false
+                }
+                return true
+            }
+
+        }
+    })
+</script>

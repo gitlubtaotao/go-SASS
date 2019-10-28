@@ -52,24 +52,37 @@
         </div>
     </div>
 </div>
-<script>
+<script type="text/javascript">
     app = new Vue({
         el: '#create_form',
+        delimiters: ['{', '}'],
         data: {
             errors: [],
-            department:{
+            department: {
                 Name: '',
                 Company: '',
                 Id: '',
             },
             options: [],
-            createUrl: '/department',
-            editUrl: '/department/:id'
         },
         mounted: function () {
             this.selectData();
+            this.initData();
         },
-        methods:{
+        methods: {
+            initData: function () {
+                let _this = this;
+                let id = "{{.Id}}";
+                if (id !== "" && typeof (id) !== "undefined") {
+                    window.initData("/department/" + id).then(res => {
+                            console.log(res);
+                            _this.department = res;
+                        },
+                        error => {
+                            console.log(error);
+                        });
+                }
+            },
             selectData: function () {
                 let result = window.selectApi('/company', {fields: 'Name,Id'}, 1);
                 if (result.status) {
@@ -81,39 +94,36 @@
                 }
             },
             submitForm: function () {
-                let url,method;
-                if(this.department.Id === ''){
-                    url = this.createUrl;
+                let _this = this;
+                let url, method;
+                if (this.department.Id === '') {
+                    url = "/department";
                     method = 'post';
-                }else{
-                    url = this.editUrl;
+                } else {
+                    url = "/department/" + this.department.Id;
                     method = 'put';
                 }
-                if(this.validateForm()) {
-                    axios({
-                        method: method,
-                        url: url,
-                        data: this.department,
-                    }).then(function (response) {
-                        if (response.status === 200) {
-                            $.each(response.data,function (key,value) {
-                                app.errors.push(key+':'+value);
-                            });
-                        } else {
-                            toastr.success("保存成功");
-                        }
-                    }).catch(function (error) {
-                        console.log(error);
-                    });
+                if (this.validateForm()) {
+                    window.submitForm(method, url, this.department).then(res => {
+                            if (res.length !== 0) {
+                                $.each(res, function (key, value) {
+                                    _this.errors.push(key + ':' + value);
+                                });
+                            }
+                        },
+                        error => {
+                            console.log(error);
+                        });
                 }
             },
             //验证表单是否通过
             validateForm: function () {
-                if(this.department.Name === ''){
+                this.errors = [];
+                if (this.department.Name === '') {
                     toastr.error("部门名称不能为空");
                     return false;
                 }
-                if(this.department.Company === ''){
+                if (this.department.Company === '') {
                     toastr.error("所属公司不能为空");
                     return false;
                 }

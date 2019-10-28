@@ -17,35 +17,36 @@ import (
 
 //Company 公司信息
 type Company struct {
-	Id         int64         `orm:"pk;auto";form:"-"`
-	Name       string        `orm:"size(128)";form:"Name"`
-	Telephone  string        `orm:"size(128)"`
-	Address    string        `orm:"size(256)"`
-	Email      string        `orm:"size(128)"`
-	Remarks    string        `orm:"size(128)"`
-	Website    string        `orm:"size(128)"`
-	CreatedAt  time.Time     `orm:"auto_now;type(datetime)"`
-	User       []*User       `orm:"reverse(many)"`
-	Department []*Department `orm:"reverse(many)"`
-	CompanyType string `orm:"size(32)"`
+	Id          int64         `orm:"pk;auto";form:"-"`
+	Name        string        `orm:"size(128)";form:"Name"`
+	Telephone   string        `orm:"size(128)"`
+	Address     string        `orm:"size(256)"`
+	Email       string        `orm:"size(128)"`
+	Remarks     string        `orm:"size(128)"`
+	Website     string        `orm:"size(128)"`
+	CreatedAt   time.Time     `orm:"auto_now;type(datetime)"`
+	User        []*User       `orm:"reverse(many)"`
+	Department  []*Department `orm:"reverse(many)"`
+	CompanyType string        `orm:"size(32)"`
 }
 
 func init() {
 	
 	orm.RegisterModel(new(Company))
 }
+
 //创建用户对应的验证
-func (c *Company)Validate()(b bool,err map[string]interface{})  {
+func (c *Company) Validate() (b bool, err map[string]interface{}) {
 	status := true
-	var returnErr  map[string]interface{}
+	var returnErr map[string]interface{}
 	returnErr = make(map[string]interface{})
 	valid := validation.Validation{}
-	valid.Required(c.Name,"name")
-	valid.MaxSize(c.Name,128,"max name")
-	valid.Required(c.Telephone,"telephone")
-	valid.Tel(c.Telephone,"telephone format")
-	valid.Required(c.Email,"email")
-	valid.Email(c.Email,"email format")
+	valid.Required(c.Name, "name")
+	valid.MaxSize(c.Name, 128, "max name")
+	valid.Required(c.Telephone, "telephone")
+	valid.Tel(c.Telephone, "telephone format")
+	valid.Required(c.Email, "email")
+	valid.Email(c.Email, "email format")
 	logs.Error(valid.HasErrors())
 	if valid.HasErrors() {
 		status = false
@@ -54,8 +55,9 @@ func (c *Company)Validate()(b bool,err map[string]interface{})  {
 			log.Println(err.Key, err.Message)
 		}
 	}
-	return status,returnErr
+	return status, returnErr
 }
+
 // AddCompany insert a new Company into database and returns
 // last inserted Id on success.
 func AddCompany(m *Company) (id int64, err error) {
@@ -185,16 +187,17 @@ func DeleteCompany(id int64) (err error) {
 	}
 	return
 }
+
 //获取对应的列
-func GetCompanyCols()(array []CustomerSlice)  {
-	colNames :=[]CustomerSlice{
-		{"key": "Name","value": "公司姓名","class": "col-xs-1"},
-		{"key": "Telephone","value": "公司电话","class": "col-xs-1"},
-		{"key": "Address","value": "公司地址","class": "col-xs-2"},
-		{"key": "Email","value": "公司邮箱","class": "col-xs-1"},
-		{"key": "Website","value": "公司网站","class": ""},
-		{"key": "Remarks","value": "公司备注","class": ""},
-		{"key": "CreatedAt","value": "创建时间","class": ""},
+func GetCompanyCols() (array []CustomerSlice) {
+	colNames := []CustomerSlice{
+		{"key": "Name", "value": "公司姓名", "class": "col-xs-1"},
+		{"key": "Telephone", "value": "公司电话", "class": "col-xs-1"},
+		{"key": "Address", "value": "公司地址", "class": "col-xs-2"},
+		{"key": "Email", "value": "公司邮箱", "class": "col-xs-1"},
+		{"key": "Website", "value": "公司网站", "class": ""},
+		{"key": "Remarks", "value": "公司备注", "class": ""},
+		{"key": "CreatedAt", "value": "创建时间", "class": ""},
 	}
 	return colNames
 }

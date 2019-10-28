@@ -1,3 +1,14 @@
+<div class="breadcrumbs ace-save-state " id="breadcrumbs">
+    <ul class="breadcrumb">
+        {{template "layouts/breadcrumb.html"}}
+        <li class="">
+            <a href="/user/index">员工信息</a>
+        </li>
+        <li class="active">
+            {{.PageTitle}}
+        </li>
+    </ul>
+</div>
 <div class="page-content">
     <div class="row">
         <div class="col-sm-6 col-sm-offset-2 col-xs-12">
@@ -113,8 +124,6 @@
         el: '#create_form',
         delimiters: ['{', '}'],
         data: {
-            createUrl: '/user',
-            updateUrl: '/user/:id',
             user: {
                 Id: '',
                 Name: '',//姓名
@@ -139,35 +148,31 @@
             //对表单的数据进行验证
             checkForm: function () {
                 this.errors = [];
+                let _this = this;
                 let url, method;
                 if (this.user.Id === '') {
-                    url = this.createUrl;
+                    url = "/user";
                     method = 'post';
                 } else {
-                    url = this.updateUrl;
+                    url = "/user/" + this.user.Id;
                     method = 'put'
                 }
                 if (this.validateSubmit()) {
-                    axios({
-                        method: method,
-                        url: url,
-                        data: this.user
-                    }).then(function (response) {
-                        if (response.status === 200) {
-                            $.each(response.data, function (key, value) {
-                                app.errors.push(key + ':' + value);
-                            });
-                        } else {
-                            toastr.success("新增员工成功");
-                        }
-                    }).catch(function (error) {
-                        console.log(error);
-                    });
+                    window.submitForm(method, url, this.user).then(res => {
+                            if (res.length !== 0) {
+                                $.each(res, function (key, value) {
+                                    _this.errors.push(key + ':' + value);
+                                });
+                            }
+                        },
+                        error => {
+                            console.log(error);
+                        });
                 }
             },
+
             //提交表单前进行验证
             validateSubmit: function () {
-
                 let regPhone = /^1[3456789]\d{9}$/;
                 if (!this.user.Name) {
                     this.errors.push("姓名必填项");
@@ -181,7 +186,7 @@
                     this.errors.push("电话必填项");
                     return false;
                 }
-                if(this.user.Company === ''){
+                if (this.user.Company === '') {
                     this.errors.push("所属公司不能为空");
                     return false;
                 }
@@ -196,6 +201,7 @@
                 }
                 if (!regPhone.test(this.user.Phone)) {
                     this.errors.push('请输入有效的手机号码');
+                    return false;
                 }
 
                 return true;
@@ -228,41 +234,33 @@
             },
             //修改时初始化数据
             initData: function () {
-                let id = $('#create_form').attr('data-id');
-                if (id !== "" && id !== null) {
-                    console.log(id);
-                    this.user.Id = parseInt(id);
-                    axios({
-                        method: 'get',
-                        url: "/user/" + id,
-                        data: this.user
-                    }).then(function (response) {
-                        console.log(response);
-                        let data = response.data;
-                        app.user.Name = data['Name'];
-                        app.user.Email = data['Email'];
-                        app.user.Phone = data['Phone'];
-                        app.user.Id = data['Id'];
-                        app.user.Gender = data['Gender'];
-                        app.user.EntryTime = data['EntryTime'];
-                        app.user.Company = data['Company']['Id'];
-                    }).catch(function (error) {
-                        console.log(error);
-                    });
+                let id = "{{.Id}}";
+                let _this = this;
+                if (id !== "" && typeof (id) !== 'undefined') {
+                    window.initData("/user/" + id).then(res => {
+                            console.log(res);
+                            _this.user = res;
+                        },
+                        error => {
+                            console.log(error);
+                        });
                 }
             },
             selectDepartment: function (value) {
+                if (value === null || typeof (value) === 'undefined') {
+                    return
+                }
                 this.user.Department = '';
-                let str ="Company:"+value.Id;
-                let result = selectApi('/department', {query: str,fields: "Name,Id"}, 1);
+                let str = "Company:" + value.Id;
+                let result = selectApi('/department', {query: str, fields: "Name,Id"}, 1);
                 if (result.status) {
                     let options = [];
                     if (Array.isArray(result.data.data)) {
-                        $.each(result.data.data,function (index,value) {
-                            options.push({Id: value.Id,Name: value.Name})
+                        $.each(result.data.data, function (index, value) {
+                            options.push({Id: value.Id, Name: value.Name})
                         });
                         this.departmentOptions = options;
-                    }else{
+                    } else {
                         this.departmentOptions = [];
                     }
                 }

@@ -37,23 +37,10 @@
 </div>
 <footer>
     {{template "layouts/footer.html" .}}
-
     {{if .JsName | ShowAssets}}
         <script src="/dist/{{.JsName}}.js"></script>
     {{end}}
     {{.Scripts}}
-    <script type="text/javascript">
-        jQuery(function ($) {
-            var namespace = '{{.Namespace}}';
-            var currentRoot = $('.nav-list');
-            currentRoot.find('li').removeClass('open').removeClass('active');
-            currentRoot.find('#' + namespace).addClass('active').addClass('open');
-            currentRoot.find('.submenu').hide();
-            var submenu = currentRoot.find('.submenu').find('#' + '{{.ControllerName}}');
-            submenu.parent().show();
-            submenu.addClass('active');
-        });
-    </script>
-</footer>
 
+</footer>
 </body>

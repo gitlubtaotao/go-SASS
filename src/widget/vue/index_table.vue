@@ -82,7 +82,9 @@
                 }
             },
             editMethod: function (id, index) {
-
+                let url = this.actions.edit;
+                url = url.replace(":id",id);
+                window.location.href = url;
             },
             showMethod: function (id, index) {
 
