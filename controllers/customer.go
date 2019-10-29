@@ -79,7 +79,7 @@ func (c *CustomerController) GetAll() {
 	var order []string
 	var query = make(map[string]string)
 	limit := models.UserPerPage()
-	page,_ := strconv.Atoi(c.GetString("page","1"))
+	page, _ := strconv.Atoi(c.GetString("page", "1"))
 	offset := models.GetOffsetPage(int64(page))
 	
 	// fields: col1,col2,entity.col3
@@ -115,17 +115,17 @@ func (c *CustomerController) GetAll() {
 			query[k] = v
 		}
 	}
-	_,colNames := crm.GetCustomerCols()
-	l,countPage, err := crm.GetAllCustomer(query, fields, sortby, order, offset, limit)
+	_, colNames := crm.GetCustomerCols()
+	l, countPage, err := crm.GetAllCustomer(query, fields, sortby, order, offset, limit)
 	if err != nil {
 		c.Data["json"] = err.Error()
 	} else {
 		c.Data["json"] = map[string]interface{}{
 			"countPage": countPage,
-			"data": l,
+			"data":      l,
 			"colNames":  colNames,
 			"actions": map[string]string{"edit": "/customer/edit/:id",
-				"show": "/customer/show/:id","destroy": "/customer/:id"},
+				"show": "/customer/show/:id", "destroy": "/customer/:id"},
 		}
 	}
 	c.ServeJSON()
@@ -170,15 +170,20 @@ func (c *CustomerController) Delete() {
 	c.ServeJSON()
 }
 
-func (c *CustomerController) Get()  {
+func (c *CustomerController) Get() {
 	c.Data["JsName"] = "customer_index"
 	c.Data["Namespace"] = "customer_manage"
 	c.Data["PageTitle"] = "客户信息"
 	c.setTpl("customer/index.html")
 }
-func (c *CustomerController) New()  {
+func (c *CustomerController) New() {
 
 }
-func (c *CustomerController) Edit()  {
+func (c *CustomerController) Edit() {
 
+}
+
+func (c *CustomerController) GetStatus() {
+	c.Data["json"] = crm.CustomerStatusArray()
+	c.ServeJSON()
 }

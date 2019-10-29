@@ -3,6 +3,8 @@ package models
 import "github.com/astaxie/beego/orm"
 
 type CustomerSlice map[string]string
+type CustomerBoolSlice map[bool]string
+
 //ModelCount 统计数据的总条数
 func ModelCount(tableName string) int64 {
 	o := orm.NewOrm()

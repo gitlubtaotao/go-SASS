@@ -184,3 +184,14 @@ func GetCustomerCols() ([]string, []models.CustomerSlice) {
 	}
 	return fields, colNames
 }
+
+//状态数组
+func CustomerStatusArray() []models.CustomerSlice {
+	data := []models.CustomerSlice{
+		{"label": "等待审核", "code": "init"},
+		{"label": "审核通过", "code": "pass"},
+		{"label": "审核失败", "code": "fail"},
+	}
+	return data
+}
+

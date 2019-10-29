@@ -35,7 +35,7 @@
                                 <div class="col-sm-3 col-xs-12">
                                     <label class="control-label col-sm-4">公司名称</label>
                                     <div class="col-sm-8">
-                                        <input class="form-control " value="" name="Name"
+                                        <input class="form-control " value="" name="Name" v-model.trim="customer.Name"
                                                placeholder="请输入公司名称">
                                     </div>
                                 </div>
@@ -43,40 +43,101 @@
                                     <label class="control-label col-sm-4">公司座机</label>
                                     <div class="col-sm-8">
                                         <input class="form-control " value="" name="Telephone"
+                                               v-model.trim="customer.Telephone"
                                                placeholder="请输入公司座机">
                                     </div>
                                 </div>
                                 <div class=" col-sm-3 col-xs-12">
                                     <label class="control-label col-sm-4">公司邮箱</label>
                                     <div class="col-sm-8">
-                                        <input class="form-control " value="" name="Email"
+                                        <input class="form-control " value="" name="Email" v-model.trim="customer.Email"
                                                placeholder="请输入公司邮箱">
                                     </div>
                                 </div>
-
-                                <div class=" col-sm-3 col-xs-12">
-                                    <label class="control-label col-sm-4">胀期</label>
+                                <div class="col-sm-3 col-xs-12">
+                                    <label class="control-label col-sm-4">业务类型</label>
                                     <div class="col-sm-8">
-                                        <vue-select></vue-select>
+                                        <input class="form-control" type="text" value="" name="BusinessTypeName"
+                                               v-model.trim="customer.BusinessTypeName"
+                                               placeholder="请输入业务类型">
                                     </div>
                                 </div>
                             </div>
                             <div class="form-group">
+                                <div class=" col-sm-3 col-xs-12">
+                                    <label class="control-label col-sm-4">胀期</label>
+                                    <div class="col-sm-8">
+                                        <vue-select v-model.trim="customer.AccountPeriod"></vue-select>
+                                    </div>
+                                </div>
+
                                 <div class="col-sm-3 col-xs-12">
                                     <label class="control-label col-sm-4">账龄</label>
                                     <div class="col-sm-8">
                                         <input class="form-control" type="number" value="" name="Aging"
+                                               v-model.trim="customer.Aging"
                                                placeholder="请输入账龄">
                                     </div>
                                 </div>
                                 <div class="col-sm-3 col-xs-12">
                                     <label class="control-label col-sm-4">额度</label>
                                     <div class="col-sm-8">
-                                        <input class="form-control" type="number" value="" name="Aging"
+                                        <input class="form-control" type="number" value="" name="Amount"
+                                               v-model.trim="customer.Amount"
                                                placeholder="请输入额度">
                                     </div>
                                 </div>
+                                <div class="col-sm-3 col-xs-12">
+                                    <label class="control-label col-sm-4">是否VIP</label>
+                                    <div class="col-sm-8">
+                                        <vue-select v-model.trim="customer.IsVip" :options="[{label: '是', code: true},{label: '否',code: false}]"></vue-select>
+                                    </div>
+                                </div>
                             </div>
+                            <div class="form-group">
+                                <div class="col-sm-3 col-xs-12">
+                                    <label class="control-label col-sm-4">状态</label>
+                                    <div class="col-sm-8">
+                                        <vue-select class="vue-select2" name="select2" label="label"
+                                                    :options="statusOptions" v-model.trim="customer.Status"
+                                                    :searchable="true" language="zh-CN" :placeholder="'请选择状态'" @search:focus="clickStatus">
+                                        </vue-select>
+                                    </div>
+                                </div>
+                                <div class="col-sm-3 col-xs-12">
+                                    <label class="control-label col-sm-4">所属公司</label>
+                                    <div class="col-sm-8">
+                                        <vue-select v-model.trim="customer.Company" id="company_id"
+                                                    :placeholder="'请选择所属公司'"
+                                                    :searchable="true" language="zh-CN"
+                                                    :options = "companyOptions" @search:focus="clickCompany"
+                                        >
+
+                                        </vue-select>
+                                    </div>
+                                </div>
+                                <div class="col-sm-3 col-xs-12">
+                                    <label class="control-label col-sm-4">业务员</label>
+                                    <div class="col-sm-8">
+                                        <vue-select v-model.trim="customer.SaleUser" id="sale_user" :placeholder="'请选择业务人员'"></vue-select>
+                                    </div>
+                                </div>
+                                <div class="col-sm-3 col-xs-12">
+                                    <label class="control-label col-sm-4">创建者</label>
+                                    <div class="col-sm-8">
+                                        <vue-select  v-model.trim="customer.CreateUser" id="create_user" :placeholder="'请选择创建者'"></vue-select>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div class="col-sm-3 col-xs-12">
+                                    <label class="control-label col-sm-4">审核员</label>
+                                    <div class="col-sm-8">
+                                        <vue-select v-model.trim="customer.AuditUser" id="audit_user" :placeholder="'请选择审核者'"></vue-select>
+                                    </div>
+                                </div>
+                            </div>
+
                             <div class="buttons" id="buttons">
                                 <div class="col-sm-offset-5 col-xs-offset-3">
                                     <button class="btn btn-success btn-sm" type="button" v-on:click="filterResult">
