@@ -5,7 +5,7 @@ import (
 	"github.com/astaxie/beego/logs"
 	"github.com/astaxie/beego/orm"
 	"golang.org/x/crypto/bcrypt"
-	"quickstart/models"
+	"quickstart/models/oa"
 	"time"
 )
 
@@ -48,7 +48,7 @@ func (c *LoginController) Post() {
 	}
 	//验证登录的账号是手机或者邮箱
 	o := orm.NewOrm()
-	user := models.User{}
+	user := oa.User{}
 	user.Email = Account
 	//验证是否邮箱登录
 	err := o.Read(&user, "Email")

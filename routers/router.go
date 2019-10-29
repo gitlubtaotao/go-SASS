@@ -1,9 +1,9 @@
 package routers
 
 import (
-	"quickstart/controllers"
 	"github.com/astaxie/beego"
 	"github.com/astaxie/beego/context"
+	"quickstart/controllers"
 )
 
 func init() {

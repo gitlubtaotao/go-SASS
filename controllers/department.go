@@ -5,6 +5,7 @@ import (
 	"errors"
 	"github.com/astaxie/beego/logs"
 	"quickstart/models"
+	"quickstart/models/oa"
 	"strconv"
 	"strings"
 )
@@ -32,10 +33,10 @@ func (c *DepartmentController) URLMapping() {
 // @Failure 403 body is empty
 // @router / [post]
 func (c *DepartmentController) Post() {
-	var v models.Department
+	var v oa.Department
 	_ = json.Unmarshal(c.Ctx.Input.RequestBody, &v)
 	logs.Info(v)
-	if _, err := models.AddDepartment(&v); err == nil {
+	if _, err := oa.AddDepartment(&v); err == nil {
 		c.Ctx.Output.SetStatus(201)
 		c.Data["json"] = "OK"
 	} else {
@@ -54,7 +55,7 @@ func (c *DepartmentController) Post() {
 func (c *DepartmentController) GetOne() {
 	idStr := c.Ctx.Input.Param(":id")
 	id, _ := strconv.ParseInt(idStr, 0, 64)
-	v, err := models.GetDepartmentById(id)
+	v, err := oa.GetDepartmentById(id)
 	if err != nil {
 		c.Data["json"] = err.Error()
 	} else {
@@ -88,7 +89,7 @@ func (c *DepartmentController) GetAll() {
 	if v := c.GetString("fields"); v != "" {
 		fields = strings.Split(v, ",")
 	}
-	tempFields, colNames := models.GetDepartmentCols()
+	tempFields, colNames := oa.GetDepartmentCols()
 	if len(fields) == 0{
 		fields = tempFields
 	}
@@ -122,7 +123,7 @@ func (c *DepartmentController) GetAll() {
 		}
 	}
 	
-	l, countPage, err := models.GetAllDepartment(query, fields, sortby, order, offset, limit)
+	l, countPage, err := oa.GetAllDepartment(query, fields, sortby, order, offset, limit)
 	if err != nil {
 		c.Data["json"] = err.Error()
 	} else {
@@ -149,9 +150,9 @@ func (c *DepartmentController) GetAll() {
 func (c *DepartmentController) Put() {
 	idStr := c.Ctx.Input.Param(":id")
 	id, _ := strconv.ParseInt(idStr, 0, 64)
-	v := models.Department{Id: id}
+	v := oa.Department{Id: id}
 	json.Unmarshal(c.Ctx.Input.RequestBody, &v)
-	if err := models.UpdateDepartmentById(&v); err == nil {
+	if err := oa.UpdateDepartmentById(&v); err == nil {
 		c.Data["json"] = "OK"
 	} else {
 		c.Data["json"] = err.Error()
@@ -169,7 +170,7 @@ func (c *DepartmentController) Put() {
 func (c *DepartmentController) Delete() {
 	idStr := c.Ctx.Input.Param(":id")
 	id, _ := strconv.ParseInt(idStr, 0, 64)
-	if err := models.DeleteDepartment(id); err == nil {
+	if err := oa.DeleteDepartment(id); err == nil {
 		c.Data["json"] = "OK"
 	} else {
 		c.Data["json"] = err.Error()

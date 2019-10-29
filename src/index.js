@@ -1,11 +1,5 @@
 'use strict';
 window.$ = $;
-
-
-
-
-
-
 $(document).ready(function () {
     //时间格式化
     let formDatetime = $(".form_datetime");

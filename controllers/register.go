@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"github.com/astaxie/beego"
 	"github.com/astaxie/beego/orm"
-	"quickstart/models"
+	"quickstart/models/oa"
 )
 
 // RegisterController 注册功能
@@ -28,7 +28,7 @@ func (c *RegisterController) Post() {
 		
 	}
 	o := orm.NewOrm()
-	user := models.User{Name: userName, Pwd: pwd}
+	user := oa.User{Name: userName, Pwd: pwd}
 	_, err := o.Insert(&user)
 	if err != nil {
 		fmt.Println("注册错误：", user)

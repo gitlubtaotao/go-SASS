@@ -43,13 +43,13 @@ function submitForm(method, url, data) {
             dataType: 'json',
             data: data
         }).then(function (response) {
-            if(response.data === 'OK'){
+            if (response.data === 'OK') {
                 toastr.success("保存成功");
                 resolve([])
-            }else{
-                if(Array.isArray(response.data)){
+            } else {
+                if (Array.isArray(response.data)) {
                     resolve(response.data);
-                }else{
+                } else {
                     resolve([response.data]);
                 }
 
@@ -60,6 +60,7 @@ function submitForm(method, url, data) {
     });
 }
 
+//initData: form表单初始化数据
 function initData(url) {
     return new Promise((resolve, reject) => {
         axios({
@@ -73,8 +74,22 @@ function initData(url) {
     });
 }
 
-//初始化form对应的数据
+//初始化index对应的数据
+function indexData(url, hashParams) {
+    return new Promise((resolve, reject) => {
+        axios.get(url, {
+            headers: {'X-Requested-With': 'XMLHttpRequest'},
+            params: hashParams,
+            dataType: 'json',
+        }).then(function (response) {
+            if (response['data'] !== null) {
+                resolve(response['data'])
+            }
+        }).catch(function (error) {
+            reject(error);
+        });
+    });
+}
 
-
-export {selectApi, submitForm, initData};
+export {selectApi, submitForm, initData,indexData};
 

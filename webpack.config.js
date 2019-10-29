@@ -14,6 +14,7 @@ module.exports = {
         css: './src/css.js',
         index: './src/packs/index.js',
         login_in: './src/packs/login_in.js',
+        customer_index: './src/packs/customer_index.js',
     },
     output: {
         path: path.resolve(__dirname, 'dist'),

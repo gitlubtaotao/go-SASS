@@ -19,35 +19,28 @@ var app = new Vue({
         },
         //获取所有的数据
         getList: function (page = 1) {
+            let _this = this;
             let hashParams = {};
             let currentFilter = $('.filter-form');
-            let url='';
+            let url = '';
             if (currentFilter.length !== 0) {
                 $.each(currentFilter.serializeArray(), function (key, value) {
                     hashParams[value['name']] = value['value'];
                 });
-                url =currentFilter.attr('action');
-            }else{
+                url = currentFilter.attr('action');
+            } else {
                 url = $(this.$el).attr('data-url');
             }
             hashParams['page'] = page;
-            axios.get(url, {
-                headers: {'X-Requested-With': 'XMLHttpRequest'},
-                params: hashParams,
-                dataType: 'json',
-            }).then(function (response) {
-                console.log(response);
-                if (response['data'] !== null) {
-                    app.objects = response['data']['data'];
-                    app.pageCount = response['data']['countPage'];
-                    app.colNames = response['data']['colNames'];
-                    if (response['data']['actions'] !== "") {
-                        app.actions = response['data']["actions"];
-                    }
-                }
-            }).catch(function (error) {
-                console.log(error);
-            });
+            window.indexData(url, hashParams).then(res => {
+                    _this.actions = res.actions;
+                    _this.colNames = res.colNames;
+                    _this.pageCount = res.countPage;
+                    _this.objects = res.data;
+                },
+                error => {
+                    console.log(error);
+                });
         },
         //过滤部分数据
         filterResult: function () {

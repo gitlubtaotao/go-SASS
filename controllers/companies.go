@@ -3,6 +3,7 @@ package controllers
 import (
 	"encoding/json"
 	"github.com/astaxie/beego/logs"
+	"quickstart/models/oa"
 	"strings"
 	
 	"quickstart/models"
@@ -40,11 +41,11 @@ func (this *CompaniesController) New() {
 // @Failure 403 body is empty
 // @router / [post]
 func (c *CompaniesController) Post() {
-	company := models.Company{}
+	company := oa.Company{}
 	_ = json.Unmarshal(c.Ctx.Input.RequestBody, &company)
 	status, errors := company.Validate()
 	if status {
-		if _, err := models.AddCompany(&company); err == nil {
+		if _, err := oa.AddCompany(&company); err == nil {
 			c.Ctx.Output.SetStatus(201)
 			c.Data["json"] = "OK"
 		} else {
@@ -74,7 +75,7 @@ func (c *CompaniesController) Get() {
 func (c *CompaniesController) GetOne() {
 	idStr := c.Ctx.Input.Param(":id")
 	id, _ := strconv.ParseInt(idStr, 0, 64)
-	v, err := models.GetCompanyById(id)
+	v, err := oa.GetCompanyById(id)
 	logs.Info(v)
 	if err != nil {
 		c.Data["json"] = err.Error()
@@ -120,8 +121,8 @@ func (c *CompaniesController) GetAll() {
 	var offset int64
 	page, _ := strconv.Atoi(c.GetString("page", "1"))
 	offset = models.GetOffsetPage(int64(page))
-	colNames := models.GetCompanyCols()
-	companies, countPage, err := models.GetAllCompany(companyFiler, fields, sortBy, order, offset, limit)
+	colNames := oa.GetCompanyCols()
+	companies, countPage, err := oa.GetAllCompany(companyFiler, fields, sortBy, order, offset, limit)
 	if err != nil {
 		logs.Error(err)
 		c.ServeJSON()
@@ -148,11 +149,11 @@ func (c *CompaniesController) GetAll() {
 func (c *CompaniesController) Put() {
 	idStr := c.Ctx.Input.Param(":id")
 	id, _ := strconv.ParseInt(idStr, 0, 64)
-	v := models.Company{Id: id}
+	v := oa.Company{Id: id}
 	_ = json.Unmarshal(c.Ctx.Input.RequestBody, &v)
 	status, errors := v.Validate()
 	if status {
-		if err := models.UpdateCompanyById(&v); err == nil{
+		if err := oa.UpdateCompanyById(&v); err == nil{
 				c.Data["json"] = "OK"
 		}else{
 			c.Data["json"] = err.Error()
@@ -173,7 +174,7 @@ func (c *CompaniesController) Put() {
 func (c *CompaniesController) Delete() {
 	idStr := c.Ctx.Input.Param(":id")
 	id, _ := strconv.ParseInt(idStr, 0, 64)
-	if err := models.DeleteCompany(id); err == nil {
+	if err := oa.DeleteCompany(id); err == nil {
 		c.Data["json"] = "OK"
 	} else {
 		c.Data["json"] = err.Error()

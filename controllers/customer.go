@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"errors"
 	"quickstart/models"
+	"quickstart/models/crm"
 	"strconv"
 	"strings"
 )
@@ -30,9 +31,9 @@ func (c *CustomerController) URLMapping() {
 // @Failure 403 body is empty
 // @router / [post]
 func (c *CustomerController) Post() {
-	var v models.Customer
-	json.Unmarshal(c.Ctx.Input.RequestBody, &v)
-	if _, err := models.AddCustomer(&v); err == nil {
+	var v crm.Customer
+	_ = json.Unmarshal(c.Ctx.Input.RequestBody, &v)
+	if _, err := crm.AddCustomer(&v); err == nil {
 		c.Ctx.Output.SetStatus(201)
 		c.Data["json"] = v
 	} else {
@@ -51,7 +52,7 @@ func (c *CustomerController) Post() {
 func (c *CustomerController) GetOne() {
 	idStr := c.Ctx.Input.Param(":id")
 	id, _ := strconv.ParseInt(idStr, 0, 64)
-	v, err := models.GetCustomerById(id)
+	v, err := crm.GetCustomerById(id)
 	if err != nil {
 		c.Data["json"] = err.Error()
 	} else {
@@ -77,9 +78,10 @@ func (c *CustomerController) GetAll() {
 	var sortby []string
 	var order []string
 	var query = make(map[string]string)
-	var limit int64 = 10
-	var offset int64
-
+	limit := models.UserPerPage()
+	page,_ := strconv.Atoi(c.GetString("page","1"))
+	offset := models.GetOffsetPage(int64(page))
+	
 	// fields: col1,col2,entity.col3
 	if v := c.GetString("fields"); v != "" {
 		fields = strings.Split(v, ",")
@@ -113,12 +115,18 @@ func (c *CustomerController) GetAll() {
 			query[k] = v
 		}
 	}
-
-	l, err := models.GetAllCustomer(query, fields, sortby, order, offset, limit)
+	_,colNames := crm.GetCustomerCols()
+	l,countPage, err := crm.GetAllCustomer(query, fields, sortby, order, offset, limit)
 	if err != nil {
 		c.Data["json"] = err.Error()
 	} else {
-		c.Data["json"] = l
+		c.Data["json"] = map[string]interface{}{
+			"countPage": countPage,
+			"data": l,
+			"colNames":  colNames,
+			"actions": map[string]string{"edit": "/customer/edit/:id",
+				"show": "/customer/show/:id","destroy": "/customer/:id"},
+		}
 	}
 	c.ServeJSON()
 }
@@ -134,9 +142,9 @@ func (c *CustomerController) GetAll() {
 func (c *CustomerController) Put() {
 	idStr := c.Ctx.Input.Param(":id")
 	id, _ := strconv.ParseInt(idStr, 0, 64)
-	v := models.Customer{Id: id}
+	v := crm.Customer{Id: id}
 	json.Unmarshal(c.Ctx.Input.RequestBody, &v)
-	if err := models.UpdateCustomerById(&v); err == nil {
+	if err := crm.UpdateCustomerById(&v); err == nil {
 		c.Data["json"] = "OK"
 	} else {
 		c.Data["json"] = err.Error()
@@ -154,7 +162,7 @@ func (c *CustomerController) Put() {
 func (c *CustomerController) Delete() {
 	idStr := c.Ctx.Input.Param(":id")
 	id, _ := strconv.ParseInt(idStr, 0, 64)
-	if err := models.DeleteCustomer(id); err == nil {
+	if err := crm.DeleteCustomer(id); err == nil {
 		c.Data["json"] = "OK"
 	} else {
 		c.Data["json"] = err.Error()
@@ -163,7 +171,7 @@ func (c *CustomerController) Delete() {
 }
 
 func (c *CustomerController) Get()  {
-	c.Data["JsName"] = "index"
+	c.Data["JsName"] = "customer_index"
 	c.Data["Namespace"] = "customer_manage"
 	c.Data["PageTitle"] = "客户信息"
 	c.setTpl("customer/index.html")

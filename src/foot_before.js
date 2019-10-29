@@ -11,7 +11,8 @@ Vue.component('index-table', indexTable);
 import toastr from 'toastr';
 window.toastr = toastr;
 
-import {selectApi,submitForm,initData} from './widget/data_api';
+import {selectApi,submitForm,initData,indexData} from './widget/data_api';
 window.selectApi = selectApi;
 window.submitForm = submitForm;
 window.initData = initData;
+window.indexData = indexData;

@@ -5,6 +5,7 @@ import (
 	"errors"
 	"github.com/astaxie/beego/logs"
 	"quickstart/models"
+	"quickstart/models/oa"
 	"strconv"
 	"strings"
 	
@@ -33,7 +34,7 @@ func (c *UserController) URLMapping() {
 // @Failure 403 body is empty
 // @router / [post]
 func (c *UserController) Post() {
-	var v models.User
+	var v oa.User
 	_ = json.Unmarshal(c.Ctx.Input.RequestBody, &v)
 	encodePassword := c.generatePassword(v.Pwd)
 	v.EncodePassword = encodePassword
@@ -42,7 +43,7 @@ func (c *UserController) Post() {
 	valid, vErrors := v.Validate()
 	logs.Info(valid, vErrors)
 	if valid {
-		if _, err := models.AddUser(&v); err == nil {
+		if _, err := oa.AddUser(&v); err == nil {
 			c.Ctx.Output.SetStatus(201)
 			c.Data["json"] = "OK"
 		} else {
@@ -65,7 +66,7 @@ func (c *UserController) Post() {
 func (c *UserController) GetOne() {
 	idStr := c.Ctx.Input.Param(":id")
 	id, _ := strconv.ParseInt(idStr, 0, 64)
-	v, err := models.GetUserById(id)
+	v, err := oa.GetUserById(id)
 	if err != nil {
 		c.Data["json"] = err.Error()
 	} else {
@@ -99,7 +100,7 @@ func (c *UserController) GetAll() {
 	if v := c.GetString("fields"); v != "" {
 		fields = strings.Split(v, ",")
 	}
-	fields, colNames := models.GetUserCols()
+	fields, colNames := oa.GetUserCols()
 	logs.Info(fields, colNames)
 	// limit: 10 (default is 10)
 	if v, err := c.GetInt64("limit"); err == nil {
@@ -139,7 +140,7 @@ func (c *UserController) GetAll() {
 		query["Email"] = c.GetString("Email")
 	}
 	logs.Info(query)
-	l, countPage, err := models.GetAllUser(query, fields, sortby, order, offset, limit)
+	l, countPage, err := oa.GetAllUser(query, fields, sortby, order, offset, limit)
 	//colName
 	
 	if err != nil {
@@ -168,14 +169,14 @@ func (c *UserController) GetAll() {
 func (c *UserController) Put() {
 	idStr := c.Ctx.Input.Param(":id")
 	id, _ := strconv.ParseInt(idStr, 0, 64)
-	v := models.User{Id: id}
+	v := oa.User{Id: id}
 	_ = json.Unmarshal(c.Ctx.Input.RequestBody, &v)
 	encodePassword := c.generatePassword(v.Pwd)
 	v.EncodePassword = encodePassword
 	v.Pwd = ""
 	valid, vErrors := v.Validate()
 	if valid {
-		if err := models.UpdateUserById(&v); err == nil {
+		if err := oa.UpdateUserById(&v); err == nil {
 			c.Data["json"] = "OK"
 		} else {
 			c.Data["json"] = err.Error()
@@ -196,7 +197,7 @@ func (c *UserController) Put() {
 func (c *UserController) Delete() {
 	idStr := c.Ctx.Input.Param(":id")
 	id, _ := strconv.ParseInt(idStr, 0, 64)
-	if err := models.DeleteUser(id); err == nil {
+	if err := oa.DeleteUser(id); err == nil {
 		c.Data["json"] = "OK"
 	} else {
 		c.Data["json"] = err.Error()
