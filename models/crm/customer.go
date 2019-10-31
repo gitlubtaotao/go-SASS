@@ -33,7 +33,7 @@ type Customer struct {
 	CreateUser       *oa.User    `orm:"rel(fk);index"`
 	SaleUser         *oa.User    `orm:"rel(fk);index"`
 	Company          *oa.Company `orm:"rel(fk);index"`
-	BusinessTypeName string      `orm:"size(256)"`
+	BusinessTypeName string      `orm:"size(256);index"`
 }
 
 func init() {

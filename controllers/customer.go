@@ -178,7 +178,9 @@ func (c *CustomerController) Get() {
 	c.setTpl("customer/index.html")
 }
 func (c *CustomerController) New() {
-
+	c.Data["Namespace"] = "customer_manage"
+	c.Data["PageTitle"] = "新增客户信息"
+	c.setTpl("customer/form.html")
 }
 func (c *CustomerController) Edit() {
 

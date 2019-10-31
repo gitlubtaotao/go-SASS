@@ -11,12 +11,14 @@
 </div>
 <div class="page-content">
     <div class="row">
-        <div class="col-sm-6 col-sm-offset-2 col-xs-12">
-            <form class="form-horizontal" action="" method="post" data-id="{{.UserId}}"
-                  id='create_form' @submit.prevent="checkForm">
-                {{/*                错误信息提示*/}}
-                {{template "../common/errors.html" .}}
-                <fieldset>
+        <div class="space-12"></div>
+        <form class="form-horizontal" action="" method="post" data-id="{{.UserId}}"
+              id='create_form' @submit.prevent="checkForm">
+            {{/*                错误信息提示*/}}
+            {{template "../common/errors.html" .}}
+            <fieldset>
+                <div class="col-sm-6 col-sm-offset-2 col-xs-12">
+
                     <div class="form-group">
                         <label class="control-label col-sm-4">姓名</label>
                         <div class="col-sm-8">
@@ -100,23 +102,22 @@
 
                         </div>
                     </div>
-
-                </fieldset>
-                <div class="space-6"></div>
-                <div class="clearfix form-group ">
-                    <div class="col-sm-offset-5 col-xs-offset-2">
-                        <button class="btn btn-success btn-sm " type="submit" @submit="checkForm">
-                            <i class="ace-icon fa fa-check bigger-110"></i>
-                            保存
-                        </button>
-                        <button class="btn btn-sm" type="reset">
-                            <i class="ace-icon fa fa-undo bigger-110"></i>
-                            取消
-                        </button>
-                    </div>
                 </div>
-            </form>
-        </div>
+            </fieldset>
+            <div class="space-6"></div>
+            <div class="clearfix form-group ">
+                <div class="col-sm-offset-5 col-xs-offset-3">
+                    <button class="btn btn-success btn-sm " type="submit" @submit="checkForm">
+                        <i class="ace-icon fa fa-check bigger-110"></i>
+                        保存
+                    </button>
+                    <button class="btn btn-sm" type="reset">
+                        <i class="ace-icon fa fa-undo bigger-110"></i>
+                        取消
+                    </button>
+                </div>
+            </div>
+        </form>
     </div>
 </div>
 <script>
@@ -223,14 +224,7 @@
             },
             //所属公司下拉数据
             selectData: function () {
-                let result = selectApi('/company', {fields: 'Name,Id'}, 1);
-                if (result.status) {
-                    if (Array.isArray(result.data.data)) {
-                        this.companyOptions = result.data['data'];
-                    }
-                } else {
-                    console.log(result.data)
-                }
+                this.companyOptions = this.$select2Company();
             },
             //修改时初始化数据
             initData: function () {
@@ -252,18 +246,7 @@
                 }
                 this.user.Department = '';
                 let str = "Company:" + value.Id;
-                let result = selectApi('/department', {query: str, fields: "Name,Id"}, 1);
-                if (result.status) {
-                    let options = [];
-                    if (Array.isArray(result.data.data)) {
-                        $.each(result.data.data, function (index, value) {
-                            options.push({Id: value.Id, Name: value.Name})
-                        });
-                        this.departmentOptions = options;
-                    } else {
-                        this.departmentOptions = [];
-                    }
-                }
+                this.departmentOptions = this.$select2Department({query: str});
             }
         }
     });

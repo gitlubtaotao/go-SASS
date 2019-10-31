@@ -24,6 +24,18 @@ selectExtend.install = function (Vue, options) {
                 return []
             }
         }
+    };
+
+    //选择对应的部门信息
+    Vue.prototype.$select2Department = function (options = {}, page = 1) {
+        let result = selectApi('/department', $.extend({fields: "Name,Id"}, options), page);
+        if (result.status) {
+            if (Array.isArray(result.data.data)) {
+                return result.data.data;
+            } else {
+                return [];
+            }
+        }
     }
 };
 module.exports = selectExtend;

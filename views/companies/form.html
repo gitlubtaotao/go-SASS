@@ -11,10 +11,11 @@
 </div>
 <div class="page-content">
     <div class="row">
-        <div class="col-sm-6 col-sm-offset-2 col-xs-12">
-            <form class="form-horizontal" action="/company" method="post" id="create_form" @submit.prevent="submitForm">
-                {{template "../common/errors.html" .}}
-                <fieldset>
+        <div class="space-12"></div>
+        <form class="form-horizontal" action="/company" method="post" id="create_form" @submit.prevent="submitForm">
+            {{template "../common/errors.html" .}}
+            <fieldset>
+                <div class="col-sm-6 col-sm-offset-2 col-xs-12">
                     <div class="form-group">
                         <label class="control-label col-sm-4">公司名称</label>
                         <div class="col-sm-8">
@@ -61,22 +62,22 @@
                         </div>
 
                     </div>
-                </fieldset>
-                <div class="space-6"></div>
-                <div class="clearfix form-group ">
-                    <div class="col-sm-offset-5 col-xs-offset-2">
-                        <button class="btn btn-success btn-sm " type="submit">
-                            <i class="ace-icon fa fa-check bigger-110"></i>
-                            保存
-                        </button>
-                        <button class="btn btn-sm" type="reset">
-                            <i class="ace-icon fa fa-undo bigger-110"></i>
-                            取消
-                        </button>
-                    </div>
                 </div>
-            </form>
-        </div>
+            </fieldset>
+            <div class="space-6"></div>
+            <div class="clearfix form-group ">
+                <div class="col-sm-offset-5 col-xs-offset-3">
+                    <button class="btn btn-success btn-sm " type="submit">
+                        <i class="ace-icon fa fa-check bigger-110"></i>
+                        保存
+                    </button>
+                    <button class="btn btn-sm" type="reset">
+                        <i class="ace-icon fa fa-undo bigger-110"></i>
+                        取消
+                    </button>
+                </div>
+            </div>
+        </form>
     </div>
 </div>
 <script type="text/javascript">
