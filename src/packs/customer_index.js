@@ -25,22 +25,31 @@ var app = new Vue({
             Company: ''
 
         },
-        statusOptions: [],
+        select2Data: [],
         companyOptions: [],
+        userOptions: [],
     },
     mounted: function () {
         this.getList();
     },
     methods: {
-        //获取对应的状态事件
-        clickStatus: function () {
-            let data = window.selectApi("/customer/get_status", {}, 1);
+        //获取select2数据
+        select2Method: function (actionType) {
+            let data = window.selectApi("/customer/get_status", {actionType: actionType}, 1);
             if (data.status) {
-                this.statusOptions = data.data
+                this.select2Data = data.data
             }
         },
-        clickCompany: function(){
-
+        clickCompany: function () {
+            this.companyOptions = this.$select2Company()
+        },
+        clickUser: function () {
+            let str = "";
+            let company = this.customer.Company;
+            if (company !== '' && company !== null) {
+                str = "Company:" + company.Id;
+            }
+            this.userOptions = this.$select2User({query: str})
         },
         //获取对应的员工数据
         clickCallback: function (pageNum) {
@@ -75,12 +84,12 @@ var app = new Vue({
         },
         //过滤部分数据
         filterResult: function () {
-            app.getList();
+            this.getList();
         },
         //清空数据
         refreshResult: function () {
             $('.filter-form')[0].reset();
-            app.getList();
+            this.getList();
         },
     }
 });

@@ -3,6 +3,7 @@ package controllers
 import (
 	"encoding/json"
 	"errors"
+	"github.com/astaxie/beego/logs"
 	"quickstart/models"
 	"quickstart/models/crm"
 	"strconv"
@@ -184,6 +185,13 @@ func (c *CustomerController) Edit() {
 }
 
 func (c *CustomerController) GetStatus() {
-	c.Data["json"] = crm.CustomerStatusArray()
+	actionType := c.GetString("actionType")
+	logs.Info(actionType)
+	switch actionType {
+	case "Status":
+		c.Data["json"] = crm.CustomerStatusArray()
+	case "AccountPeriod":
+		c.Data["json"] = crm.CustomerAccountPeriodArray()
+	}
 	c.ServeJSON()
 }

@@ -25,8 +25,8 @@ type Customer struct {
 	UpdatedAt        time.Time `orm:"auto_now;type(datetime)"`
 	CompanyType      int64     `orm:"size(32);default(1)"`
 	Aging            int64
-	Amount           float64 `orm:"digits(12);decimals(4)"`
-	AccountPeriod    int
+	Amount           float64     `orm:"digits(12);decimals(4)"`
+	AccountPeriod    string      `orm:"size(32);"`
 	IsVip            bool        `orm:"default(false)"`
 	Status           string      `orm:"size(32);default(init)"`
 	AuditUser        *oa.User    `orm:"rel(fk);index"`
@@ -129,9 +129,9 @@ func GetAllCustomer(query map[string]string, fields []string, sortby []string, o
 				ml = append(ml, m)
 			}
 		}
-		return ml, count,nil
+		return ml, count, nil
 	}
-	return nil,0, err
+	return nil, 0, err
 }
 
 // UpdateCustomer updates Customer by Id and returns error if
@@ -195,3 +195,11 @@ func CustomerStatusArray() []models.CustomerSlice {
 	return data
 }
 
+//获取对应的账期
+func CustomerAccountPeriodArray() []models.CustomerSlice {
+	data := []models.CustomerSlice{
+		{"label": "月结", "code": "month"},
+		{"label": "票结", "code": "ticket"},
+	}
+	return data
+}

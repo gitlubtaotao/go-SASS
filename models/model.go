@@ -2,7 +2,7 @@ package models
 
 import "github.com/astaxie/beego/orm"
 
-type CustomerSlice map[string]string
+type CustomerSlice map[string]interface{}
 type CustomerBoolSlice map[bool]string
 
 //ModelCount 统计数据的总条数
