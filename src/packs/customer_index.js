@@ -2,28 +2,13 @@ var app = new Vue({
     el: '#page_content',
     delimiters: ['{', '}'],
     data: {
-        pageCount: 1,
-        //col names
-        colNames: [],
-        //objects
-        objects: [],
-        //对应的actions
-        actions: [],
+        pageCount: 1,colNames: [],objects: [],actions: [],
         customer: {
-            Name: '',
-            Telephone: '',
-            Email: '',
-            AccountPeriod: '',
-            Aging: '',
-            Amount: '',
-            IsVip: '',
-            Status: '',
-            BusinessTypeName: '',
-            AuditUser: '',
-            CreateUser: '',
-            SaleUser: '',
-            Company: ''
-
+            Name: '',Telephone: '',Email: '',
+            AccountPeriod: '', IsVip: '',
+            Status: '',BusinessTypeName: '',
+            AuditUser: '',CreateUser: '',
+            SaleUser: '',Company: ''
         },
         select2Data: [],
         companyOptions: [],
@@ -59,25 +44,17 @@ var app = new Vue({
         getList: function (page = 1) {
             let _this = this;
             let hashParams = {};
-            let currentFilter = $('.filter-form');
-            let url = '';
-            if (currentFilter.length !== 0) {
-                $.each(currentFilter.serializeArray(), function (key, value) {
-                    hashParams[value['name']] = value['value'];
-                });
-                url = currentFilter.attr('action');
-            } else {
-                url = $(this.$el).attr('data-url');
-            }
+            let url = "/customer";
+            hashParams["query"] = this.getFilerResult();
             hashParams['page'] = page;
             window.indexData(url, hashParams).then(res => {
-                console.log(res);
                     _this.actions = res.actions;
                     _this.colNames = res.colNames;
                     _this.pageCount = res.countPage;
                     if (res.data !== null && typeof (res.data) !== 'undefined') {
                         _this.objects = res.data;
                     }
+
                 },
                 error => {
                     console.log(error);
@@ -86,11 +63,38 @@ var app = new Vue({
         //过滤部分数据
         filterResult: function () {
             this.getList();
+            toastr.success("刷新数据成功");
+        },
+        //对form 表单对数据进行过滤
+        getFilerResult: function () {
+            let str = [];
+            $.each(this.customer, function (k, v) {
+                if (v) {
+                    if (['IsVip'].indexOf(k) > -1) {
+                        let value = 0;
+                        if (v.code) {
+                            value = 1;
+                        }
+                        str.push(k + ":" + value);
+                    } else if (['AccountPeriod', 'Status'].indexOf(k) > -1) {
+                        str.push(k + ":" + v['code']);
+                    } else if (['AuditUser', 'CreateUser',
+                        'SaleUser', 'Company'].indexOf(k) > -1) {
+                        str.push(k+":"+v.Id);
+                    } else {
+                        str.push(k + ":" + v);
+                    }
+                }
+            });
+            console.log(str);
+            return str.join(',');
+
         },
         //清空数据
         refreshResult: function () {
             $('.filter-form')[0].reset();
             this.getList();
+            toastr.success("刷新数据成功");
         },
     }
 });

@@ -127,10 +127,18 @@ func (c *CompaniesController) GetAll() {
 			"countPage": mapValue,
 			"data":      companies,
 			"colNames":  colNames,
-			"actions":   map[string]string{"edit": "/company/edit/:id", "destroy": "/company/:id"},
+			"actions":   companyActions(),
 		}
 		c.ServeJSON()
 	}
+}
+
+func companyActions() []models.CustomerSlice {
+	actions := []models.CustomerSlice{
+		{"name": "修改", "url": "/company/edit/:id", "remote": false},
+		{"name": "删除", "url": "/company/:id", "remote": true, "method": "delete"},
+	}
+	return actions
 }
 
 // Put ...

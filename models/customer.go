@@ -3,6 +3,7 @@ package models
 import (
 	"errors"
 	"fmt"
+	"github.com/astaxie/beego/logs"
 	"github.com/astaxie/beego/validation"
 	"reflect"
 	"strings"
@@ -42,6 +43,7 @@ func init() {
 // AddCustomer insert a new Customer into database and returns
 // last inserted Id on success.
 func AddCustomer(m *Customer) (id int64, err error) {
+	m.Status = "init"
 	o := orm.NewOrm()
 	id, err = o.Insert(m)
 	return
@@ -131,6 +133,7 @@ func GetAllCustomer(query map[string]string, fields []string, sortby []string, o
 			m["IsVip"] = v.ShowVip()
 			m["CompanyType"] = v.ShowCompanyType()
 			m["AccountPeriod"] = v.ShowPeriod()
+			m["CreatedAt"] = v.CreatedAt.Format("2006-01-02 15:04:05")
 			ml = append(ml, m)
 		}
 		return ml, count, nil
@@ -267,6 +270,8 @@ func (c *Customer) Validate() (b bool, err map[string]interface{}) {
 	valid.Tel(c.Telephone, "联系电话格式")
 	valid.Required(c.Email, "邮箱")
 	valid.Email(c.Email, "邮箱格式")
+	logs.Info(c.AccountPeriod)
+	logs.Info(c.AuditUser)
 	valid.Required(c.AccountPeriod, "账期")
 	valid.Required(c.Company, "所属公司")
 	valid.Required(c.AuditUser, "审核者")

@@ -34,9 +34,21 @@ func (c *CustomerController) Post() {
 	var v models.Customer
 	//logs.Info(c.Ctx.Input.RequestBody)
 	_ = json.Unmarshal(c.Ctx.Input.RequestBody, &v)
+	//RequestBody失效
+	auditId := c.GetString("audit_id")
+	saleId := c.GetString("sale_id")
 	user := new(models.User)
+	company := new(models.Company)
 	user.Id = c.currentUser.Id
 	v.CreateUser = user
+	user.Id, _ = strconv.ParseInt(auditId, 0, 64)
+	v.AuditUser = user
+	user.Id, _ = strconv.ParseInt(saleId, 0, 64)
+	v.SaleUser = user
+	v.AccountPeriod = c.GetString("period")
+	v.CompanyType, _ = strconv.Atoi(c.GetString("company_type"))
+	company.Id, _ = strconv.ParseInt(c.GetString("company_id"),0,64)
+	v.Company = company
 	status, errs := v.Validate()
 	if status {
 		if _, err := models.AddCustomer(&v); err == nil {
@@ -134,11 +146,19 @@ func (c *CustomerController) GetAll() {
 			"countPage": mapValue,
 			"data":      l,
 			"colNames":  colNames,
-			"actions": map[string]string{"edit": "/customer/edit/:id",
-				"show": "/customer/show/:id", "destroy": "/customer/:id"},
+			"actions":   customerActions(),
 		}
 	}
 	c.ServeJSON()
+}
+
+func customerActions() []models.CustomerSlice {
+	actions := []models.CustomerSlice{
+		{"name": "修改", "url": "/customer/edit/:id", "remote": false},
+		{"name": "详情", "url": "/customer/show/:id", "remote": false},
+		{"name": "删除", "url": "/customer/:id", "remote": true, "method": "delete"},
+	}
+	return actions
 }
 
 // Put ...
@@ -202,7 +222,6 @@ func (c *CustomerController) Edit() {
 
 func (c *CustomerController) GetStatus() {
 	actionType := c.GetString("actionType")
-	logs.Info(actionType)
 	switch actionType {
 	case "Status":
 		c.Data["json"] = models.CustomerStatusArray()

@@ -147,12 +147,18 @@ func (c *UserController) GetAll() {
 			"countPage": mapValue,
 			"data":      l,
 			"colNames":  colNames,
-			"actions":   map[string]string{"edit": "/user/edit/:id", "destroy": "",},
+			"actions":   UserActions(),
 		}
 	}
 	c.ServeJSON()
 }
-
+func UserActions() []models.CustomerSlice {
+	actions := []models.CustomerSlice{
+		{"name": "修改", "url": "/user/edit/:id", "remote": false},
+		{"name": "删除", "url": "/user/:id", "remote": true, "method": "delete"},
+	}
+	return actions
+}
 // Put ...
 // @Title Put
 // @Description update the User

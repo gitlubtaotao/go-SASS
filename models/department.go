@@ -110,7 +110,6 @@ func GetAllDepartment(query map[string]string, fields []string, sortby []string,
 		fields = StrutFields(new(Department))
 	}
 	if _, err = qs.Limit(limit, offset).All(&l, fields...); err == nil {
-		
 		// trim unused fields
 		for _, v := range l {
 			m := make(map[string]interface{})
@@ -119,6 +118,7 @@ func GetAllDepartment(query map[string]string, fields []string, sortby []string,
 			for _, fname := range fields {
 				m[fname] = val.FieldByName(fname).Interface()
 			}
+			m["CreatedAt"] = v.CreatedAt.Format("2006-01-02 15:04:05")
 			ml = append(ml, m)
 		}
 		return ml, count, nil

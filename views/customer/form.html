@@ -236,6 +236,11 @@
                 if (this.validateForm()) {
                     console.log(this.customer);
                     this.defaultValue();
+                    url = url+"?audit_id="+this.customer.AuditUser.Id;
+                    url = url+"&sale_id="+this.customer.SaleUser.Id;
+                    url = url+"&period="+this.customer.AccountPeriod;
+                    url = url+'&company_id='+this.customer.Company.Id;
+                    url = url+"&company_type="+this.customer.CompanyType;
                     window.submitForm(method, url, this.customer).then(res => {
                             if (res.length !== 0) {
                                 $.each(res, function (key, value) {

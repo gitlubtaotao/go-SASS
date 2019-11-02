@@ -1,5 +1,5 @@
 <template>
-    <table :id="options.id" class="table table-bordered table-hover table-responsive" >
+    <table :id="options.id" class="table table-bordered table-hover table-responsive">
         <thead>
         <tr>
             <th v-if="showActions()">操作</th>
@@ -8,21 +8,20 @@
         </thead>
         <tbody>
         <tr v-for="(record,index) in objects">
-            <td v-if="showActions()">
-                <button v-if="isShowButton('show')" class="btn btn-xs btn-success"
-                        @click="showMethod(record['Id'],index)">
-                    <i class="ace-icon fa fa-check bigger-120"></i>
-                    详情
-                </button>
-                <button v-if="isShowButton('edit')" class="btn btn-xs btn-info" @click="editMethod(record['Id'],index)">
-                    <i class="ace-icon fa fa-pencil bigger-120"></i>
-                    修改
-                </button>
-                <button v-if="isShowButton('destroy')" class="btn btn-xs btn-danger"
-                        @click="destroyMethod(record['Id'],index)">
-                    <i class="ace-icon fa fa-trash-o bigger-120"></i>
-                    删除
-                </button>
+            <td v-if="showActions()" class="col-sm-2">
+                <a href="javascript:void(0);" class="btn-xs btn-success btn btn-white"
+                   @click="clickMethod(actions[0],record.Id,index)">{{actions[0]['name']}}</a>
+                <div v-if="otherActions.length > 0" class="btn-group">
+                    <button data-toggle="dropdown" class="btn btn-sm btn-info dropdown-toggle btn-white">
+                        更多
+                        <i class="ace-icon fa fa-angle-down icon-on-right"></i>
+                    </button>
+                    <ul class="dropdown-menu">
+                        <li v-for="action in otherActions">
+                            <a href="javascript:void(0);" @click="clickMethod(action,record.Id,index)">{{action['name']}}</a>
+                        </li>
+                    </ul>
+                </div>
             </td>
             <td v-for="item in colNames" v-if="item.key !== 'Id'">{{showItem(record,item.key)}}</td>
         </tr>
@@ -46,29 +45,30 @@
                     return {id: 'index-table', class: ''}
                 }
             },
-            actions: {}
+            actions: {
+                type: Array,
+                required: true
+            }
         },
-        computed: {},
-        methods: {
-            isShowButton: function (action) {
-                let value = false;
-                if (this.options[action] !== "" && typeof (this.actions[action]) !== "undefined") {
-                    value = true;
-                }
-                return value;
+        computed: {
+            //其他actions
+            otherActions: function () {
+                let other_actions = this.actions;
+                return other_actions.slice(1, this.actions.length);
             },
+        },
+        methods: {
             //是否显示操作
             showActions: function () {
-                let value = false;
-                if (typeof (this.actions) !== 'undefined') {
-                    value = true;
+                let value = true;
+                if (this.actions.length === 0) {
+                    value = false;
                 }
                 return value;
             },
-
             //取数据的表关联的其他字段的值
             showItem: function (record, item) {
-                if(toString.call(record[item]) === '[object Object]'){
+                if (toString.call(record[item]) === '[object Object]') {
                     return record[item]['Name']
                 }
                 let arrayItem = item.split('.');
@@ -84,18 +84,20 @@
                     }
                 }
             },
-            editMethod: function (id, index) {
-                let url = this.actions.edit;
-                url = url.replace(":id",id);
-                window.location.href = url;
-            },
-            showMethod: function (id, index) {
+            clickMethod: function (action, id, index) {
+                let url = action['url'];
+                url = url.replace(":id", id);
+                if (action.method === 'delete') {
+                    this.destroyMethod(url, index)
+                } else if (action['remote'] === false) {
+                    window.location.href = url;
+                } else {
 
+                }
             },
             //删除对应的记录
-            destroyMethod: function (id, index) {
+            destroyMethod: function (url, index) {
                 let _this = this;
-                let url = this.actions.destroy.replace(":id", id);
                 if (confirm("确定删除该记录？")) {
                     axios.delete(url, {
                         headers: {'X-Requested-With': 'XMLHttpRequest'},
@@ -119,5 +121,10 @@
 <style lang="css" scoped>
     a {
         cursor: pointer;
+    }
+
+    .dropdown-menu {
+        min-width: 65px;
+        padding: 2px;
     }
 </style>

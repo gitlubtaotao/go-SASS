@@ -34,7 +34,9 @@ func (c *DepartmentController) URLMapping() {
 func (c *DepartmentController) Post() {
 	var v models.Department
 	_ = json.Unmarshal(c.Ctx.Input.RequestBody, &v)
-	logs.Info(v)
+	company :=	new(models.Company)
+	company.Id, _ = strconv.ParseInt(c.GetString("company_id"),0,64)
+	v.Company = company
 	if _, err := models.AddDepartment(&v); err == nil {
 		c.Ctx.Output.SetStatus(201)
 		c.Data["json"] = "OK"
@@ -128,10 +130,18 @@ func (c *DepartmentController) GetAll() {
 			"countPage": mapValue,
 			"data":      l,
 			"colNames":  colNames,
-			"actions":   map[string]string{"edit": "/department/edit/:id", "destroy": "/department/:id",},
+			"actions":   departmentActions(),
 		}
 	}
 	c.ServeJSON()
+}
+
+func departmentActions() []models.CustomerSlice {
+	actions := []models.CustomerSlice{
+		{"name": "修改", "url": "/department/edit/:id", "remote": false},
+		{"name": "删除", "url": "/department/:id", "remote": true, "method": "delete"},
+	}
+	return actions
 }
 
 // Put ...

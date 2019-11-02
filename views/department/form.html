@@ -98,7 +98,7 @@
                     method = 'put';
                 }
                 if (this.validateForm()) {
-                    console.log(this.department);
+                    url = url + "?company_id=" + this.department.Company.Id;
                     window.submitForm(method, url, this.department).then(res => {
                             if (res.length !== 0) {
                                 $.each(res, function (key, value) {
