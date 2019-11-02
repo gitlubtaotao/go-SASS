@@ -1,5 +1,5 @@
 <template>
-    <table :id="options.id" class="table table-bordered table-hover">
+    <table :id="options.id" class="table table-bordered table-hover table-responsive" >
         <thead>
         <tr>
             <th v-if="showActions()">操作</th>
@@ -68,6 +68,9 @@
 
             //取数据的表关联的其他字段的值
             showItem: function (record, item) {
+                if(toString.call(record[item]) === '[object Object]'){
+                    return record[item]['Name']
+                }
                 let arrayItem = item.split('.');
                 if (record[item] !== "" && typeof (record[item]) !== 'undefined') {
                     return record[item]

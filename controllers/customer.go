@@ -5,7 +5,6 @@ import (
 	"errors"
 	"github.com/astaxie/beego/logs"
 	"quickstart/models"
-	"quickstart/models/crm"
 	"strconv"
 	"strings"
 )
@@ -32,13 +31,23 @@ func (c *CustomerController) URLMapping() {
 // @Failure 403 body is empty
 // @router / [post]
 func (c *CustomerController) Post() {
-	var v crm.Customer
+	var v models.Customer
+	//logs.Info(c.Ctx.Input.RequestBody)
 	_ = json.Unmarshal(c.Ctx.Input.RequestBody, &v)
-	if _, err := crm.AddCustomer(&v); err == nil {
-		c.Ctx.Output.SetStatus(201)
-		c.Data["json"] = v
+	user := new(models.User)
+	user.Id = c.currentUser.Id
+	v.CreateUser = user
+	status, errs := v.Validate()
+	if status {
+		if _, err := models.AddCustomer(&v); err == nil {
+			c.Ctx.Output.SetStatus(201)
+			c.Data["json"] = "OK"
+		} else {
+			c.Data["json"] = err.Error()
+		}
 	} else {
-		c.Data["json"] = err.Error()
+		logs.Info(errs)
+		c.Data["json"] = errs
 	}
 	c.ServeJSON()
 }
@@ -53,7 +62,7 @@ func (c *CustomerController) Post() {
 func (c *CustomerController) GetOne() {
 	idStr := c.Ctx.Input.Param(":id")
 	id, _ := strconv.ParseInt(idStr, 0, 64)
-	v, err := crm.GetCustomerById(id)
+	v, err := models.GetCustomerById(id)
 	if err != nil {
 		c.Data["json"] = err.Error()
 	} else {
@@ -82,7 +91,6 @@ func (c *CustomerController) GetAll() {
 	limit := models.UserPerPage()
 	page, _ := strconv.Atoi(c.GetString("page", "1"))
 	offset := models.GetOffsetPage(int64(page))
-	
 	// fields: col1,col2,entity.col3
 	if v := c.GetString("fields"); v != "" {
 		fields = strings.Split(v, ",")
@@ -116,13 +124,14 @@ func (c *CustomerController) GetAll() {
 			query[k] = v
 		}
 	}
-	_, colNames := crm.GetCustomerCols()
-	l, countPage, err := crm.GetAllCustomer(query, fields, sortby, order, offset, limit)
+	_, colNames := models.GetCustomerCols()
+	l, countPage, err := models.GetAllCustomer(query, fields, sortby, order, offset, limit, "customer")
+	mapValue := models.SetPaginator(countPage)
 	if err != nil {
 		c.Data["json"] = err.Error()
 	} else {
 		c.Data["json"] = map[string]interface{}{
-			"countPage": countPage,
+			"countPage": mapValue,
 			"data":      l,
 			"colNames":  colNames,
 			"actions": map[string]string{"edit": "/customer/edit/:id",
@@ -143,12 +152,17 @@ func (c *CustomerController) GetAll() {
 func (c *CustomerController) Put() {
 	idStr := c.Ctx.Input.Param(":id")
 	id, _ := strconv.ParseInt(idStr, 0, 64)
-	v := crm.Customer{Id: id}
-	json.Unmarshal(c.Ctx.Input.RequestBody, &v)
-	if err := crm.UpdateCustomerById(&v); err == nil {
-		c.Data["json"] = "OK"
+	v := models.Customer{Id: id}
+	_ = json.Unmarshal(c.Ctx.Input.RequestBody, &v)
+	status, errs := v.Validate()
+	if status {
+		if err := models.UpdateCustomerById(&v); err == nil {
+			c.Data["json"] = "OK"
+		} else {
+			c.Data["json"] = err.Error()
+		}
 	} else {
-		c.Data["json"] = err.Error()
+		c.Data["json"] = errs
 	}
 	c.ServeJSON()
 }
@@ -163,7 +177,7 @@ func (c *CustomerController) Put() {
 func (c *CustomerController) Delete() {
 	idStr := c.Ctx.Input.Param(":id")
 	id, _ := strconv.ParseInt(idStr, 0, 64)
-	if err := crm.DeleteCustomer(id); err == nil {
+	if err := models.DeleteCustomer(id); err == nil {
 		c.Data["json"] = "OK"
 	} else {
 		c.Data["json"] = err.Error()
@@ -191,9 +205,12 @@ func (c *CustomerController) GetStatus() {
 	logs.Info(actionType)
 	switch actionType {
 	case "Status":
-		c.Data["json"] = crm.CustomerStatusArray()
+		c.Data["json"] = models.CustomerStatusArray()
 	case "AccountPeriod":
-		c.Data["json"] = crm.CustomerAccountPeriodArray()
+		c.Data["json"] = models.CustomerAccountPeriodArray()
+	case "CompanyType":
+		c.Data["json"] = models.CustomerTransportTypeArray()
+		
 	}
 	c.ServeJSON()
 }

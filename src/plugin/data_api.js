@@ -48,11 +48,10 @@ function submitForm(method, url, data) {
                 resolve([])
             } else {
                 if (Array.isArray(response.data)) {
-                    resolve(response.data);
+                    resolve(response.data[0]);
                 } else {
-                    resolve([response.data]);
+                    resolve(response.data);
                 }
-
             }
         }).catch(function (error) {
             reject(error)

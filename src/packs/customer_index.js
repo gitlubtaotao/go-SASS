@@ -71,6 +71,7 @@ var app = new Vue({
             }
             hashParams['page'] = page;
             window.indexData(url, hashParams).then(res => {
+                console.log(res);
                     _this.actions = res.actions;
                     _this.colNames = res.colNames;
                     _this.pageCount = res.countPage;

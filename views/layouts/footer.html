@@ -12,15 +12,11 @@
     if ('ontouchstart' in document.documentElement) document.write("<script src='/assets/js/jquery.mobile.custom.min.js'>" + "<" + "/script>");
     jQuery(function ($) {
         var namespace = '{{.Namespace}}';
-        console.log(namespace);
         var currentRoot = $('.nav-list');
         currentRoot.find('li').removeClass('open').removeClass('active');
         currentRoot.find('#' + namespace).addClass('active').addClass('open');
-        console.log(currentRoot);
         currentRoot.find('.submenu').hide();
         var submenu = currentRoot.find('.submenu').find('#' + '{{.ControllerName}}');
-        console.log(submenu);
-
         submenu.parent().show();
         submenu.addClass('active');
     });

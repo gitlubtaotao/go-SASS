@@ -2,7 +2,7 @@
     <ul class="breadcrumb">
         {{template "layouts/breadcrumb.html" .}}
         <li class="">
-            <a href="/customer/index">客户信息</a>
+            <a href="/department/index">部门信息</a>
         </li>
         <li class="active">
             {{.PageTitle}}
@@ -12,7 +12,8 @@
 <div class="page-content">
     <div class="row">
         <div class="space-12"></div>
-        <form class="form-horizontal" action="" method="post" id="create_form" @submit.prevent="submitForm">
+        <form class="form-horizontal" action="" method="post" id="create_form" @submit.prevent="submitForm"
+              @submit.prevent="submitForm">
             {{template "../common/errors.html" .}}
             <fieldset>
                 <div class="col-sm-6 col-xs-12 col-md-5">
@@ -20,7 +21,7 @@
                         <label class="control-label col-sm-4">客户名称</label>
                         <div class="col-sm-8">
                             <input class="form-control" name="Name" v-model.trim="customer.Name"
-                                   placeholder="请输入客户名称" required>
+                                   placeholder="请输入部门名称" required>
                         </div>
                     </div>
                     <div class="form-group">
@@ -30,47 +31,58 @@
                                    placeholder="请输入联系电话" required>
                         </div>
                     </div>
-
                     <div class="form-group">
                         <label class="control-label col-sm-4">邮箱信息</label>
                         <div class="col-sm-8">
                             <input class="form-control" name="Email" v-model.trim="customer.Email"
-                                   placeholder="请输入邮箱" required>
+                                   placeholder="请输入邮箱" type="email" required>
                         </div>
                     </div>
                     <div class="form-group">
                         <label class="control-label col-sm-4">通讯地址</label>
                         <div class="col-sm-8">
-                            <input class="form-control" name="Email" v-model.trim="customer.Address"
-                                   placeholder="请输入邮箱" required>
+                            <input class="form-control" name="Address" v-model.trim="customer.Address"
+                                   placeholder="请输入通讯地址">
                         </div>
                     </div>
                     <div class="form-group">
                         <label class="control-label col-sm-4">公司网站</label>
                         <div class="col-sm-8">
                             <input class="form-control" name="Email" v-model.trim="customer.Website"
-                                   placeholder="请输入邮箱" required>
+                                   placeholder="请输入公司网站" type="url">
                         </div>
                     </div>
                     <div class="form-group">
                         <label class="control-label col-sm-4">业务类型</label>
                         <div class="col-sm-8">
-                            <input class="form-control" name="Email" v-model.trim="customer.BusinessTypeName"
-                                   placeholder="请输入业务类型" required>
+                            <input class="form-control" name="BusinessTypeName" v-model.trim="customer.BusinessTypeName"
+                                   placeholder="请输入业务类型">
                         </div>
                     </div>
+
+
+                    <div class="form-group">
+                        <label class="control-label col-sm-4">所属公司</label>
+                        <div class="col-sm-8">
+                            <vue-select class="vue-select2" name="select2" label="Name"
+                                        :options="options" v-model.trim="customer.Company"
+                                        :searchable="true" language="zh-CN" @search:focus="clickCompany" required>
+                            </vue-select>
+                        </div>
+
+                    </div>
+                </div>
+                <div class="col-sm-6 col-xs-12 col-md-5">
                     <div class="form-group">
                         <label class="control-label col-sm-4">账期</label>
                         <div class="col-sm-8">
                             <vue-select class="vue-select2" name="select2" label="label"
-                                        :options="select2Data" v-model.trim="customer.AccountPeriod"
+                                        :options="select2Data" v-model.trim="selectPeriod"
                                         :searchable="true" language="zh-CN" :placeholder="'请选择账期'"
-                                        @search:focus="select2Method('AccountPeriod')">
+                                        @search:focus="select2Method('AccountPeriod')" required>
                             </vue-select>
                         </div>
                     </div>
-                </div>
-                <div class="col-sm-6 col-xs-12 col-md-5">
                     <div class="form-group">
                         <label class="control-label col-sm-4">账龄</label>
                         <div class="col-sm-8">
@@ -88,19 +100,19 @@
                         </div>
                     </div>
                     <div class="form-group">
-                        <label class="control-label col-sm-4">VIP客户</label>
+                        <label class="control-label col-sm-4">类型</label>
                         <div class="col-sm-8">
-                            <vue-select v-model.trim="customer.IsVip"
-                                        :options="[{label: '是', code: true},{label: '否',code: false}]"></vue-select>
+                            <vue-select class="vue-select2" name="select2" label="label"
+                                        :options="select2Data" v-model.trim="selectCompanyType"
+                                        :searchable="true" language="zh-CN" :placeholder="'请选择类型'"
+                                        @search:focus="select2Method('CompanyType')" required>
+                            </vue-select>
                         </div>
                     </div>
                     <div class="form-group">
-                        <label class="control-label col-sm-4">所属公司</label>
+                        <label class="control-label col-sm-4">VIP客户</label>
                         <div class="col-sm-8">
-                            <vue-select class="vue-select2" name="select2" label="Name"
-                                        :options="companyOptions" v-model.trim="customer.Company"
-                                        :searchable="true" language="zh-CN" @search:focus="clickCompany">
-                            </vue-select>
+                            <vue-select v-model.trim="selectVip" :options="[{label: '是', code: true},{label: '否',code: false}]"></vue-select>
                         </div>
                     </div>
                     <div class="form-group">
@@ -112,8 +124,7 @@
                                         :options="userOptions"
                                         label="Name"
                                         :searchable="true" language="zh-CN"
-
-                            ></vue-select>
+                                        required></vue-select>
                         </div>
                     </div>
                     <div class="form-group">
@@ -125,12 +136,13 @@
                                         :options="userOptions"
                                         label="Name"
                                         :searchable="true" language="zh-CN"
-                            ></vue-select>
+                                        required></vue-select>
                         </div>
                     </div>
                 </div>
+
             </fieldset>
-            <div class="space-12"></div>
+            <div class="space-6"></div>
             <div class="clearfix form-group ">
                 <div class="col-sm-offset-5 col-xs-offset-3">
                     <button class="btn btn-success btn-sm " type="submit">
@@ -147,35 +159,41 @@
     </div>
 </div>
 <script type="text/javascript">
-    var app = new Vue({
-        el: "#create_form",
+    app = new Vue({
+        el: '#create_form',
+        delimiters: ['{', '}'],
         data: {
+            errors: [],
             customer: {
-                Id: '',
                 Name: '',
                 Telephone: '',
-                Address: '',
                 Email: '',
-                Remarks: '',
-                Website: '',
-                CreatedAt: '',
-                Aging: '',
-                Amount: '',
-                AccountPeriod: '',
-                IsVip: '',
-                AuditUser: '',
-                CreateUser: '',
-                SaleUser: '',
-                Company: '',
                 BusinessTypeName: '',
+                Company: '',
+                AccountPeriod: '',
+                Id: '',
+                Address: '',
+                Website: '',
+                Amount: 0,
+                Aging: 0,
+                CompanyType: '',
+                IsVip: false,
+                SaleUser: '',
+                AuditUser: '',
+
             },
-            errors: [],
             select2Data: [],
-            companyOptions: [],
+            options: [],
             userOptions: [],
+            selectCompanyType: {},
+            selectPeriod: {},
+            selectVip: {},
+
+        },
+        mounted: function () {
+            this.initData();
         },
         methods: {
-            //获取select2数据
             select2Method: function (actionType) {
                 let data = window.selectApi("/customer/get_status", {actionType: actionType}, 1);
                 if (data.status) {
@@ -183,7 +201,7 @@
                 }
             },
             clickCompany: function () {
-                this.companyOptions = this.$select2Company()
+                this.options = this.$select2Company();
             },
             clickUser: function () {
                 let str = "";
@@ -193,6 +211,94 @@
                 }
                 this.userOptions = this.$select2User({query: str})
             },
-        },
+            initData: function () {
+                let _this = this;
+                let id = "{{.Id}}";
+                if (id !== "" && typeof (id) !== "undefined") {
+                    window.initData("/customer/" + id).then(res => {
+                            _this.department = res;
+                        },
+                        error => {
+                            console.log(error);
+                        });
+                }
+            },
+            submitForm: function () {
+                let _this = this;
+                let url, method;
+                if (this.customer.Id === '') {
+                    url = "/customer";
+                    method = 'post';
+                } else {
+                    url = "/customer/" + this.customer.Id;
+                    method = 'put';
+                }
+                if (this.validateForm()) {
+                    console.log(this.customer);
+                    this.defaultValue();
+                    window.submitForm(method, url, this.customer).then(res => {
+                            if (res.length !== 0) {
+                                $.each(res, function (key, value) {
+                                    console.log(value);
+                                    _this.errors.push(key + ':' + value);
+                                });
+                            }
+                        },
+                        error => {
+                            console.log(error);
+                        });
+                }
+            },
+            //验证表单是否通过
+            validateForm: function () {
+                this.errors = [];
+                if (!this.customer.Name) {
+                    this.errors.push("客户名称不能为空");
+                    return false;
+                }
+                if (!this.customer.Telephone) {
+                    this.errors.push('联系电话不能为空');
+                    return false;
+                }
+                if (!this.customer.Email) {
+                    this.errors.push('邮箱不能为空');
+                    return false;
+                }
+                if (!this.selectPeriod) {
+                    this.errors.push("账期不能为空");
+                    return false;
+                }
+                if (!this.customer.Company) {
+                    this.errors.push("所属公司不能为空");
+                    return false;
+                }
+                if(!this.selectCompanyType){
+                    this.errors.push("类型不能为空");
+                    return false;
+                }
+                if (!this.customer.SaleUser) {
+                    this.errors.push("业务员不能为空");
+                    return false;
+                }
+                if (!this.customer.AuditUser) {
+                    this.errors.push("审核者不能为空");
+                    return false;
+                }
+                return true;
+            },
+            defaultValue: function () {
+                if(this.selectPeriod){
+                    this.customer.AccountPeriod = this.selectPeriod.code;
+                }
+                if(this.selectCompanyType){
+                    this.customer.CompanyType = this.selectCompanyType.code;
+                }
+                if(this.selectVip){
+                    this.customer.IsVip = this.selectVip.code;
+                }
+                this.customer.Aging = parseInt(this.customer.Aging);
+                this.customer.Amount = parseInt(this.customer.Amount);
+            }
+        }
     });
 </script>

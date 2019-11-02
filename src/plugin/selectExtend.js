@@ -18,8 +18,12 @@ selectExtend.install = function (Vue, options) {
     Vue.prototype.$select2User = function (options = {}, page = 1) {
         let result = selectApi('/user', $.extend({fields: 'Name,Id'}, options), page);
         if (result.status) {
+            let options = [];
             if (Array.isArray(result.data.data)) {
-                return result.data.data;
+                $.each(result.data.data,function (key,value) {
+                   options.push({Id: value.Id,Name: value.Name});
+                });
+                return options;
             } else {
                 return []
             }

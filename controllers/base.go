@@ -6,7 +6,6 @@ import (
 	"github.com/lhtzbj12/sdrms/enums"
 	"html/template"
 	"quickstart/models"
-	"quickstart/models/oa"
 	"strings"
 )
 
@@ -18,7 +17,7 @@ type BaseController struct {
 	beego.Controller
 	controllerName string
 	actionName     string
-	currentUser    oa.User
+	currentUser    models.User
 	namespace      string //命名空间
 }
 
@@ -69,7 +68,7 @@ func (this *BaseController) jsonResult(code enums.JsonResultCode, msg string, ob
 func (this *BaseController) adapterUserInfo() {
 	user := this.GetSession("currentName")
 	if user != nil {
-		this.currentUser = user.(oa.User)
+		this.currentUser = user.(models.User)
 		this.Data["currentUser"] = user
 	}
 }
