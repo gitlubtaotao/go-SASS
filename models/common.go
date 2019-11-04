@@ -5,7 +5,7 @@ import "github.com/lhtzbj12/sdrms/enums"
 // JsonResult 用于返回ajax请求的基类
 type JsonResult struct {
 	Code enums.JsonResultCode `json:"code"`
-	Msg  string               `json:"msg"`
+	Msg  interface{}               `json:"msg"`
 	Obj  interface{}          `json:"obj"`
 }
 

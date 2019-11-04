@@ -15,19 +15,44 @@ func ModelCount(tableName string) int64 {
 	return cnt
 }
 
-
 //获取struct所有的字段
 func StrutFields(models interface{}) []string {
 	var fields []string
 	s := reflect.ValueOf(models).Elem()
+	t := reflect.TypeOf(models)
 	typeOfT := s.Type()
-	for i := 0; i < s.NumField(); i++ {
-		rel := s.Field(i)
-		if rel.Kind().String() != "slice" {
-			fields = append(fields, typeOfT.Field(i).Name)
+	if t.Kind() == reflect.Ptr || t.Kind() == reflect.Struct {
+		for i := 0; i < s.NumField(); i++ {
+			rel := s.Field(i)
+			if rel.Kind().String() != "slice" {
+				fields = append(fields, typeOfT.Field(i).Name)
+			}
 		}
-		//logs.Info(rel.Kind(),rel.Type(),rel)
-		//fmt.Printf("%d: %s %s = %v\n", i, f.Type(), f.Interface())
 	}
 	return fields
 }
+
+//获取struct 字段对应的类型
+func StructFieldType(model interface{}, field string) (TypeName interface{}) {
+	t := reflect.TypeOf(model)
+	if t.Kind() == reflect.Struct || t.Kind() == reflect.Ptr {
+		for i := 0; i < t.NumField(); i++ {
+			if t.Field(i).Name == field {
+				return t.Field(i).Type
+			}
+		}
+	}
+	return TypeName
+}
+
+//获取对象所有的方法
+func structMethods(model interface{}) (methods []string) {
+	t := reflect.TypeOf(model)
+	if t.Kind() == reflect.Struct || t.Kind() == reflect.Ptr {
+		for i := 0; i < t.NumMethod(); i++ {
+			methods = append(methods, t.Method(i).Name)
+		}
+	}
+	return methods
+}
+

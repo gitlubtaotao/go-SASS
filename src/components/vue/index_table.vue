@@ -122,6 +122,9 @@
     a {
         cursor: pointer;
     }
+    td,th{
+        font-size: 12px;
+    }
 
     .dropdown-menu {
         min-width: 65px;

@@ -32,6 +32,7 @@ func (c *DepartmentController) URLMapping() {
 // @Failure 403 body is empty
 // @router / [post]
 func (c *DepartmentController) Post() {
+
 	var v models.Department
 	_ = json.Unmarshal(c.Ctx.Input.RequestBody, &v)
 	company :=	new(models.Company)
@@ -40,10 +41,10 @@ func (c *DepartmentController) Post() {
 	if _, err := models.AddDepartment(&v); err == nil {
 		c.Ctx.Output.SetStatus(201)
 		c.Data["json"] = "OK"
+		c.jsonResult(500,"","OK")
 	} else {
-		c.Data["json"] = err.Error()
+		c.jsonResult(201,err.Error(),"")
 	}
-	c.ServeJSON()
 }
 
 // GetOne ...

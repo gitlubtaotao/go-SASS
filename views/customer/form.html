@@ -112,7 +112,11 @@
                     <div class="form-group">
                         <label class="control-label col-sm-4">VIP客户</label>
                         <div class="col-sm-8">
-                            <vue-select v-model.trim="selectVip" :options="[{label: '是', code: true},{label: '否',code: false}]"></vue-select>
+                            <vue-select class="vue-select2" name="select2" label="label"
+                                        :options="select2Data" v-model.trim="selectVip"
+                                        :searchable="true" language="zh-CN"
+                                        @search:focus="select2Method('IsVip')" required>
+                            </vue-select>
                         </div>
                     </div>
                     <div class="form-group">
@@ -216,7 +220,12 @@
                 let id = "{{.Id}}";
                 if (id !== "" && typeof (id) !== "undefined") {
                     window.initData("/customer/" + id).then(res => {
-                            _this.department = res;
+                            console.log(res);
+                            _this.customer = res.data;
+                            _this.selectVip = res['other']['IsVip'];
+                            _this.selectCompanyType = res['other']['selectCompanyType'];
+                            _this.selectPeriod = res['other']['selectPeriod'];
+                            console.log(_this.selectPeriod);
                         },
                         error => {
                             console.log(error);
@@ -236,11 +245,11 @@
                 if (this.validateForm()) {
                     console.log(this.customer);
                     this.defaultValue();
-                    url = url+"?audit_id="+this.customer.AuditUser.Id;
-                    url = url+"&sale_id="+this.customer.SaleUser.Id;
-                    url = url+"&period="+this.customer.AccountPeriod;
-                    url = url+'&company_id='+this.customer.Company.Id;
-                    url = url+"&company_type="+this.customer.CompanyType;
+                    url = url + "?audit_id=" + this.customer.AuditUser.Id;
+                    url = url + "&sale_id=" + this.customer.SaleUser.Id;
+                    url = url + "&period=" + this.customer.AccountPeriod;
+                    url = url + '&company_id=' + this.customer.Company.Id;
+                    url = url + "&company_type=" + this.customer.CompanyType;
                     window.submitForm(method, url, this.customer).then(res => {
                             if (res.length !== 0) {
                                 $.each(res, function (key, value) {
@@ -277,7 +286,7 @@
                     this.errors.push("所属公司不能为空");
                     return false;
                 }
-                if(!this.selectCompanyType){
+                if (!this.selectCompanyType) {
                     this.errors.push("类型不能为空");
                     return false;
                 }
@@ -292,13 +301,13 @@
                 return true;
             },
             defaultValue: function () {
-                if(this.selectPeriod){
+                if (this.selectPeriod) {
                     this.customer.AccountPeriod = this.selectPeriod.code;
                 }
-                if(this.selectCompanyType){
+                if (this.selectCompanyType) {
                     this.customer.CompanyType = this.selectCompanyType.code;
                 }
-                if(this.selectVip){
+                if (this.selectVip) {
                     this.customer.IsVip = this.selectVip.code;
                 }
                 this.customer.Aging = parseInt(this.customer.Aging);

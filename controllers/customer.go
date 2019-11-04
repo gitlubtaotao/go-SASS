@@ -47,7 +47,7 @@ func (c *CustomerController) Post() {
 	v.SaleUser = user
 	v.AccountPeriod = c.GetString("period")
 	v.CompanyType, _ = strconv.Atoi(c.GetString("company_type"))
-	company.Id, _ = strconv.ParseInt(c.GetString("company_id"),0,64)
+	company.Id, _ = strconv.ParseInt(c.GetString("company_id"), 0, 64)
 	v.Company = company
 	status, errs := v.Validate()
 	if status {
@@ -75,10 +75,17 @@ func (c *CustomerController) GetOne() {
 	idStr := c.Ctx.Input.Param(":id")
 	id, _ := strconv.ParseInt(idStr, 0, 64)
 	v, err := models.GetCustomerById(id)
+	var otherInfo map[string]interface{}
+	otherInfo = make(map[string]interface{})
 	if err != nil {
 		c.Data["json"] = err.Error()
 	} else {
-		c.Data["json"] = v
+		otherInfo["selectVip"] = v.ShowVip(false)
+		otherInfo["selectPeriod"] = v.ShowPeriod(false)
+		otherInfo["selectCompanyType"] = v.ShowCompanyType(false)
+		c.Data["json"] = map[string]interface{}{
+			"data": v, "other": otherInfo,
+		}
 	}
 	c.ServeJSON()
 }
@@ -217,7 +224,11 @@ func (c *CustomerController) New() {
 	c.setTpl("customer/form.html")
 }
 func (c *CustomerController) Edit() {
-
+	c.Data["Namespace"] = "customer_manage"
+	c.Data["PageTitle"] = "修改客户信息"
+	idStr := c.Ctx.Input.Param(":id")
+	c.Data["Id"] = idStr
+	c.setTpl("customer/form.html")
 }
 
 func (c *CustomerController) GetStatus() {
@@ -229,7 +240,8 @@ func (c *CustomerController) GetStatus() {
 		c.Data["json"] = models.CustomerAccountPeriodArray()
 	case "CompanyType":
 		c.Data["json"] = models.CustomerTransportTypeArray()
-		
+	case "IsVip":
+		c.Data["json"] = models.CustomerIsVipArray()
 	}
 	c.ServeJSON()
 }

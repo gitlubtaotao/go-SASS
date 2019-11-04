@@ -129,10 +129,10 @@ func GetAllCustomer(query map[string]string, fields []string, sortby []string, o
 			for _, fname := range fields {
 				m[fname] = val.FieldByName(fname).Interface()
 			}
-			m["Status"] = v.ShowStatus()
-			m["IsVip"] = v.ShowVip()
-			m["CompanyType"] = v.ShowCompanyType()
-			m["AccountPeriod"] = v.ShowPeriod()
+			m["Status"] = v.ShowStatus(true).(string)
+			m["IsVip"] = v.ShowVip(true).(string)
+			m["CompanyType"] = v.ShowCompanyType(true).(string)
+			m["AccountPeriod"] = v.ShowPeriod(true).(string)
 			m["CreatedAt"] = v.CreatedAt.Format("2006-01-02 15:04:05")
 			ml = append(ml, m)
 		}
@@ -203,11 +203,15 @@ func CustomerStatusArray() []CustomerSlice {
 	return data
 }
 
-func (c *Customer) ShowStatus() string {
+func (c *Customer) ShowStatus(isString bool) interface{} {
 	data := CustomerStatusArray()
 	for _, v := range data {
 		if v["code"] == c.Status {
-			return v["label"].(string) //interface to string
+			if isString {
+				return v["label"]
+			} else {
+				return v
+			}
 		}
 	}
 	return "等待审核"
@@ -223,11 +227,15 @@ func CustomerAccountPeriodArray() []CustomerSlice {
 }
 
 //显示账期
-func (c *Customer) ShowPeriod() string {
+func (c *Customer) ShowPeriod(isString bool) interface{} {
 	data := CustomerAccountPeriodArray()
 	for _, v := range data {
 		if v["code"] == c.AccountPeriod {
-			return v["label"].(string)
+			if isString {
+				return v["label"].(string)
+			} else {
+				return v
+			}
 		}
 	}
 	return ""
@@ -242,21 +250,38 @@ func CustomerTransportTypeArray() []CustomerSlice {
 }
 
 //显示对应的公司类型
-func (c *Customer) ShowCompanyType() string {
+func (c *Customer) ShowCompanyType(isString bool) interface{} {
 	data := CustomerTransportTypeArray()
 	for _, v := range data {
 		if v["code"] == c.CompanyType {
-			return v["label"].(string)
+			if isString {
+				return v["label"]
+			} else {
+				return v
+			}
 		}
 	}
 	return ""
 }
-func (c *Customer) ShowVip() string {
-	value := "否"
-	if c.IsVip {
-		value = "是"
+func CustomerIsVipArray() []CustomerSlice {
+	data := []CustomerSlice{
+		{"label": "是", "code": true,},
+		{"label": "否", "code": false},
 	}
-	return value
+	return data
+}
+func (c *Customer) ShowVip(isString bool) interface{} {
+	data := CustomerStatusArray()
+	for _, v := range data {
+		if c.IsVip == v["code"] {
+			if isString {
+				return v["code"]
+			} else {
+				return v
+			}
+		}
+	}
+	return ""
 }
 
 //创建客户对应的验证
