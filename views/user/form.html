@@ -159,7 +159,7 @@
                     method = 'put'
                 }
                 if (this.validateSubmit()) {
-                    window.submitForm(method, url, this.user).then(res => {
+                    this.$submitFormData(method, url, this.user).then(res => {
                             if (res.length !== 0) {
                                 $.each(res, function (key, value) {
                                     _this.errors.push(key + ':' + value);
@@ -231,8 +231,7 @@
                 let id = "{{.Id}}";
                 let _this = this;
                 if (id !== "" && typeof (id) !== 'undefined') {
-                    window.initData("/user/" + id).then(res => {
-                            console.log(res);
+                    this.$showInitData("/user/" + id).then(res => {
                             _this.user = res;
                         },
                         error => {
@@ -241,6 +240,7 @@
                 }
             },
             selectDepartment: function (value) {
+                console.log(value);
                 if (value === null || typeof (value) === 'undefined') {
                     return
                 }

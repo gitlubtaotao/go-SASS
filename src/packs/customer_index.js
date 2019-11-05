@@ -2,13 +2,13 @@ var app = new Vue({
     el: '#page_content',
     delimiters: ['{', '}'],
     data: {
-        pageCount: 1,colNames: [],objects: [],actions: [],
+        pageCount: 1, colNames: [], objects: [], actions: [],
         customer: {
-            Name: '',Telephone: '',Email: '',
+            Name: '', Telephone: '', Email: '',
             AccountPeriod: '', IsVip: '',
-            Status: '',BusinessTypeName: '',
-            AuditUser: '',CreateUser: '',
-            SaleUser: '',Company: ''
+            Status: '', BusinessTypeName: '',
+            AuditUser: '', CreateUser: '',
+            SaleUser: '', Company: ''
         },
         select2Data: [],
         companyOptions: [],
@@ -47,7 +47,7 @@ var app = new Vue({
             let url = "/customer";
             hashParams["query"] = this.getFilerResult();
             hashParams['page'] = page;
-            window.indexData(url, hashParams).then(res => {
+            this.$indexData(url, hashParams).then(res => {
                     _this.actions = res.actions;
                     _this.colNames = res.colNames;
                     _this.pageCount = res.countPage;
@@ -80,13 +80,12 @@ var app = new Vue({
                         str.push(k + ":" + v['code']);
                     } else if (['AuditUser', 'CreateUser',
                         'SaleUser', 'Company'].indexOf(k) > -1) {
-                        str.push(k+":"+v.Id);
+                        str.push(k + ":" + v.Id);
                     } else {
                         str.push(k + ":" + v);
                     }
                 }
             });
-            console.log(str);
             return str.join(',');
 
         },

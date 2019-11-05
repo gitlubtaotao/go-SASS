@@ -32,18 +32,19 @@ func (c *DepartmentController) URLMapping() {
 // @Failure 403 body is empty
 // @router / [post]
 func (c *DepartmentController) Post() {
-
+	ss := c.Ctx.Request.PostForm["Company"][0]
+	logs.Info(ss)
 	var v models.Department
 	_ = json.Unmarshal(c.Ctx.Input.RequestBody, &v)
-	company :=	new(models.Company)
-	company.Id, _ = strconv.ParseInt(c.GetString("company_id"),0,64)
+	company := new(models.Company)
+	company.Id, _ = strconv.ParseInt(c.GetString("company_id"), 0, 64)
 	v.Company = company
 	if _, err := models.AddDepartment(&v); err == nil {
 		c.Ctx.Output.SetStatus(201)
 		c.Data["json"] = "OK"
-		c.jsonResult(500,"","OK")
+		c.jsonResult(200, "", "OK")
 	} else {
-		c.jsonResult(201,err.Error(),"")
+		c.jsonResult(500, err.Error(), "")
 	}
 }
 
@@ -59,11 +60,11 @@ func (c *DepartmentController) GetOne() {
 	id, _ := strconv.ParseInt(idStr, 0, 64)
 	v, err := models.GetDepartmentById(id)
 	if err != nil {
-		c.Data["json"] = err.Error()
+		c.jsonResult(500, err.Error(), "")
 	} else {
+		c.jsonResult(200, "", v)
 		c.Data["json"] = v
 	}
-	c.ServeJSON()
 }
 
 // GetAll ...
@@ -113,8 +114,7 @@ func (c *DepartmentController) GetAll() {
 		for _, cond := range strings.Split(v, ",") {
 			kv := strings.SplitN(cond, ":", 2)
 			if len(kv) != 2 {
-				c.Data["json"] = errors.New("Error: invalid query key/value pair")
-				c.ServeJSON()
+				c.jsonResult(500, errors.New("Error: invalid query key/value pair"), "")
 				return
 			}
 			k, v := kv[0], kv[1]
@@ -124,17 +124,17 @@ func (c *DepartmentController) GetAll() {
 	
 	l, countPage, err := models.GetAllDepartment(query, fields, sortby, order, offset, limit)
 	if err != nil {
-		c.Data["json"] = err.Error()
+		c.jsonResult(500, err.Error(), "")
 	} else {
 		mapValue := models.SetPaginator(countPage)
-		c.Data["json"] = map[string]interface{}{
+		result := map[string]interface{}{
 			"countPage": mapValue,
 			"data":      l,
 			"colNames":  colNames,
 			"actions":   departmentActions(),
 		}
+		c.jsonResult(200, "", result)
 	}
-	c.ServeJSON()
 }
 
 func departmentActions() []models.CustomerSlice {
@@ -157,13 +157,12 @@ func (c *DepartmentController) Put() {
 	idStr := c.Ctx.Input.Param(":id")
 	id, _ := strconv.ParseInt(idStr, 0, 64)
 	v := models.Department{Id: id}
-	json.Unmarshal(c.Ctx.Input.RequestBody, &v)
+	_ = json.Unmarshal(c.Ctx.Input.RequestBody, &v)
 	if err := models.UpdateDepartmentById(&v); err == nil {
-		c.Data["json"] = "OK"
+		c.jsonResult(200, "", "OK")
 	} else {
-		c.Data["json"] = err.Error()
+		c.jsonResult(500, err.Error(), "")
 	}
-	c.ServeJSON()
 }
 
 // Delete ...
@@ -177,11 +176,10 @@ func (c *DepartmentController) Delete() {
 	idStr := c.Ctx.Input.Param(":id")
 	id, _ := strconv.ParseInt(idStr, 0, 64)
 	if err := models.DeleteDepartment(id); err == nil {
-		c.Data["json"] = "OK"
+		c.jsonResult(200, "OK", "")
 	} else {
-		c.Data["json"] = err.Error()
+		c.jsonResult(500, err.Error(), "")
 	}
-	c.ServeJSON()
 }
 
 func (c *DepartmentController) Get() {

@@ -104,7 +104,7 @@
                         dataType: 'json',
                     }).then(function (response) {
                         console.log(response);
-                        if (response.data === "OK") {
+                        if (response.data.code === 200) {
                             toastr.success("删除成功");
                             _this.objects.splice(index, 1)
                         } else {

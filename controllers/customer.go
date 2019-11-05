@@ -3,7 +3,6 @@ package controllers
 import (
 	"encoding/json"
 	"errors"
-	"github.com/astaxie/beego/logs"
 	"quickstart/models"
 	"strconv"
 	"strings"
@@ -52,16 +51,13 @@ func (c *CustomerController) Post() {
 	status, errs := v.Validate()
 	if status {
 		if _, err := models.AddCustomer(&v); err == nil {
-			c.Ctx.Output.SetStatus(201)
-			c.Data["json"] = "OK"
+			c.jsonResult(200, "", "OK")
 		} else {
-			c.Data["json"] = err.Error()
+			c.jsonResult(500, err.Error(), "")
 		}
 	} else {
-		logs.Info(errs)
-		c.Data["json"] = errs
+		c.jsonResult(500, errs, "")
 	}
-	c.ServeJSON()
 }
 
 // GetOne ...
@@ -78,16 +74,16 @@ func (c *CustomerController) GetOne() {
 	var otherInfo map[string]interface{}
 	otherInfo = make(map[string]interface{})
 	if err != nil {
-		c.Data["json"] = err.Error()
+		c.jsonResult(500, err.Error(), "")
 	} else {
 		otherInfo["selectVip"] = v.ShowVip(false)
 		otherInfo["selectPeriod"] = v.ShowPeriod(false)
 		otherInfo["selectCompanyType"] = v.ShowCompanyType(false)
-		c.Data["json"] = map[string]interface{}{
+		result := map[string]interface{}{
 			"data": v, "other": otherInfo,
 		}
+		c.jsonResult(200, "", result)
 	}
-	c.ServeJSON()
 }
 
 // GetAll ...
@@ -135,8 +131,7 @@ func (c *CustomerController) GetAll() {
 		for _, cond := range strings.Split(v, ",") {
 			kv := strings.SplitN(cond, ":", 2)
 			if len(kv) != 2 {
-				c.Data["json"] = errors.New("Error: invalid query key/value pair")
-				c.ServeJSON()
+				c.jsonResult(500, errors.New("Error: invalid query key/value pair"), "")
 				return
 			}
 			k, v := kv[0], kv[1]
@@ -147,16 +142,16 @@ func (c *CustomerController) GetAll() {
 	l, countPage, err := models.GetAllCustomer(query, fields, sortby, order, offset, limit, "customer")
 	mapValue := models.SetPaginator(countPage)
 	if err != nil {
-		c.Data["json"] = err.Error()
+		c.jsonResult(500, err.Error(), "")
 	} else {
-		c.Data["json"] = map[string]interface{}{
+		result := map[string]interface{}{
 			"countPage": mapValue,
 			"data":      l,
 			"colNames":  colNames,
 			"actions":   customerActions(),
 		}
+		c.jsonResult(200, "", result)
 	}
-	c.ServeJSON()
 }
 
 func customerActions() []models.CustomerSlice {
@@ -184,14 +179,13 @@ func (c *CustomerController) Put() {
 	status, errs := v.Validate()
 	if status {
 		if err := models.UpdateCustomerById(&v); err == nil {
-			c.Data["json"] = "OK"
+			c.jsonResult(200, "", "OK")
 		} else {
-			c.Data["json"] = err.Error()
+			c.jsonResult(500, err.Error(), "")
 		}
 	} else {
-		c.Data["json"] = errs
+		c.jsonResult(500, errs, "")
 	}
-	c.ServeJSON()
 }
 
 // Delete ...
@@ -205,11 +199,10 @@ func (c *CustomerController) Delete() {
 	idStr := c.Ctx.Input.Param(":id")
 	id, _ := strconv.ParseInt(idStr, 0, 64)
 	if err := models.DeleteCustomer(id); err == nil {
-		c.Data["json"] = "OK"
+		c.jsonResult(200,"","OK")
 	} else {
-		c.Data["json"] = err.Error()
+		c.jsonResult(500,err.Error(),"")
 	}
-	c.ServeJSON()
 }
 
 func (c *CustomerController) Get() {

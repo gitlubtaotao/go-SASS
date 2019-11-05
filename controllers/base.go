@@ -26,7 +26,7 @@ func (this *BaseController) Prepare() {
 	//跨站请求伪造
 	this.TplExt = "html"
 	this.Data["xsrfdata"] = template.HTML(this.XSRFFormHTML())
-	//this.controllerName, this.actionName = this.GetControllerAndAction()
+	this.controllerName, this.actionName = this.GetControllerAndAction()
 	this.Data["ControllerName"] = this.controllerName
 	this.adapterUserInfo()
 	//登录页面可以不需要进行登录判断
@@ -57,7 +57,6 @@ func (this *BaseController) checkLogin() {
 		this.StopRun()
 	}
 }
-
 func (this *BaseController) jsonResult(code enums.JsonResultCode, msg interface{}, obj interface{}) {
 	r := &models.JsonResult{Code: code, Msg: msg, Obj: obj}
 	this.Data["json"] = r

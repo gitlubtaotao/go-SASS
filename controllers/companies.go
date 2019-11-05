@@ -2,7 +2,7 @@ package controllers
 
 import (
 	"encoding/json"
-	"github.com/astaxie/beego/logs"
+	"errors"
 	"strings"
 	
 	"quickstart/models"
@@ -45,15 +45,13 @@ func (c *CompaniesController) Post() {
 	status, errors := company.Validate()
 	if status {
 		if _, err := models.AddCompany(&company); err == nil {
-			c.Ctx.Output.SetStatus(201)
-			c.Data["json"] = "OK"
+			c.jsonResult(200, "", "OK")
 		} else {
-			c.Data["json"] = err.Error()
+			c.jsonResult(500, err.Error(), "")
 		}
 	} else {
-		c.Data["json"] = errors
+		c.jsonResult(500, errors, "")
 	}
-	c.ServeJSON()
 }
 
 //Get 首页
@@ -74,14 +72,11 @@ func (c *CompaniesController) Get() {
 func (c *CompaniesController) GetOne() {
 	idStr := c.Ctx.Input.Param(":id")
 	id, _ := strconv.ParseInt(idStr, 0, 64)
-	v, err := models.GetCompanyById(id)
-	logs.Info(v)
-	if err != nil {
-		c.Data["json"] = err.Error()
+	if v, err := models.GetCompanyById(id); err != nil {
+		c.jsonResult(500, err.Error(), "")
 	} else {
-		c.Data["json"] = v
+		c.jsonResult(200, "", v)
 	}
-	c.ServeJSON()
 }
 
 // GetAll ...
@@ -98,38 +93,42 @@ func (c *CompaniesController) GetOne() {
 // @router / [get]
 func (c *CompaniesController) GetAll() {
 	var fields []string
-	companyFiler := map[string]string{
-		"Name":      c.GetString("Name"),
-		"Telephone": c.GetString("Telephone"),
-		"Email":     c.GetString("Email"),
-		"Address":   c.GetString("Address"),
-	}
+	var query = make(map[string]string)
+	sortBy := make([]string, 1)
+	order := make([]string, 1)
 	if v := c.GetString("fields"); v != "" {
 		fields = strings.Split(v, ",")
 	}
-	sortBy := make([]string, 1)
-	order := make([]string, 1)
 	sortBy[0] = "Id"
 	order[0] = "desc"
 	//进行数据的分页
 	limit := models.UserPerPage()
-	var offset int64
 	page, _ := strconv.Atoi(c.GetString("page", "1"))
-	offset = models.GetOffsetPage(int64(page))
+	offset := models.GetOffsetPage(int64(page))
+	if v := c.GetString("query"); v != "" {
+		for _, cond := range strings.Split(v, ",") {
+			kv := strings.SplitN(cond, ":", 2)
+			if len(kv) != 2 {
+				c.jsonResult(500, errors.New("Error: invalid query key/value pair"), "")
+				return
+			}
+			k, v := kv[0], kv[1]
+			query[k] = v
+		}
+	}
 	colNames := models.GetCompanyCols()
-	companies, countPage, err := models.GetAllCompany(companyFiler, fields, sortBy, order, offset, limit)
+	companies, countPage, err := models.GetAllCompany(query, fields, sortBy, order, offset, limit)
 	if err != nil {
-		logs.Error(err)
-		c.ServeJSON()
+		c.jsonResult(500, err.Error(), "")
 	} else {
 		mapValue := models.SetPaginator(countPage)
-		c.Data["json"] = map[string]interface{}{
+		result := map[string]interface{}{
 			"countPage": mapValue,
 			"data":      companies,
 			"colNames":  colNames,
 			"actions":   companyActions(),
 		}
-		c.ServeJSON()
+		c.jsonResult(200, "", result)
 	}
 }
 
@@ -156,13 +155,13 @@ func (c *CompaniesController) Put() {
 	_ = json.Unmarshal(c.Ctx.Input.RequestBody, &v)
 	status, errors := v.Validate()
 	if status {
-		if err := models.UpdateCompanyById(&v); err == nil{
-				c.Data["json"] = "OK"
-		}else{
-			c.Data["json"] = err.Error()
+		if err := models.UpdateCompanyById(&v); err == nil {
+			c.jsonResult(200, "", "OK")
+		} else {
+			c.jsonResult(500, err.Error(), "")
 		}
 	} else {
-		c.Data["json"] = errors
+		c.jsonResult(500, errors, "")
 	}
 	c.ServeJSON()
 }
@@ -178,11 +177,10 @@ func (c *CompaniesController) Delete() {
 	idStr := c.Ctx.Input.Param(":id")
 	id, _ := strconv.ParseInt(idStr, 0, 64)
 	if err := models.DeleteCompany(id); err == nil {
-		c.Data["json"] = "OK"
+		c.jsonResult(200,"","OK")
 	} else {
-		c.Data["json"] = err.Error()
+		c.jsonResult(500,err.Error(),"")
 	}
-	c.ServeJSON()
 }
 
 func (this *CompaniesController) Edit() {

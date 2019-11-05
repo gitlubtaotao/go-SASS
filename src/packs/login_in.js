@@ -1,19 +1,19 @@
 console.log('sdsdsds');
 var app = new Vue({
     el: '#login_in',
-    data:{
+    data: {
         userName: '',
         Password: '',
         Remember: false,
         action: '/login'
     },
-    methods:{
+    methods: {
         submitForm: function () {
-            if(!this.userName){
+            if (!this.userName) {
                 toastr.error('账号不能为空');
                 return false;
             }
-            if(!this.Password){
+            if (!this.Password) {
                 toastr.error('密码不能为空');
                 return false;
             }
@@ -26,12 +26,11 @@ var app = new Vue({
                     Remember: this.Remember
                 },
             }).then(function (response) {
-                console.log(response);
-                if (response.data.status) {
+                if (response.data.code === 200) {
                     toastr.success('登录成功');
                     location.href = response.data['url'];
                 } else {
-                    toastr.error(response.data['message']);
+                    toastr.error(response.data.msg);
                 }
             }).catch(function (error) {
                 console.log(error);

@@ -75,8 +75,7 @@
                 let _this = this;
                 let id = "{{.Id}}";
                 if (id !== "" && typeof (id) !== "undefined") {
-                    window.initData("/department/" + id).then(res => {
-                            console.log(res);
+                    this.$showInitData("/department/" + id).then(res => {
                             _this.department = res;
                         },
                         error => {
@@ -99,7 +98,7 @@
                 }
                 if (this.validateForm()) {
                     url = url + "?company_id=" + this.department.Company.Id;
-                    window.submitForm(method, url, this.department).then(res => {
+                    this.$submitFormData(method, url, this.department).then(res => {
                             if (res.length !== 0) {
                                 $.each(res, function (key, value) {
                                     _this.errors.push(key + ':' + value);

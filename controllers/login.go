@@ -35,16 +35,11 @@ func (c *LoginController) Post() {
 	}
 	v := Login{}
 	_ = json.Unmarshal(c.Ctx.Input.RequestBody, &v)
-	logs.Info(v)
 	Account := v.UserName
 	Password := v.Password
-	
 	//验证账号和密码是否为空
 	if Account == "" || Password == "" {
-		c.Data["json"] = map[string]interface{}{"status": false,
-			"message": "账号或者密码不能为空"}
-		c.ServeJSON()
-		c.StopRun()
+		c.jsonResult(500,"账号或者密码不能为空","")
 	}
 	//验证登录的账号是手机或者邮箱
 	o := orm.NewOrm()
@@ -58,19 +53,13 @@ func (c *LoginController) Post() {
 		err = o.Read(&user, "Phone")
 		logs.Info(err)
 		if err != nil {
-			c.Data["json"] = map[string]interface{}{"status": false,
-				"message": "账号或者密码错误"}
-			c.ServeJSON()
-			c.StopRun()
+			c.jsonResult(500,"账号或者密码错误","")
 		}
 	}
 	//验证密码是否正确
 	status := c.validatePassword(Password, user.EncodePassword)
 	if !status {
-		c.Data["json"] = map[string]interface{}{"status": false,
-			"message": "账号或者密码错误"}
-		c.ServeJSON()
-		c.StopRun()
+		c.jsonResult(500,"账号或者密码错误","")
 	}
 	remember := v.Remember
 	if remember {
@@ -83,10 +72,7 @@ func (c *LoginController) Post() {
 	} else {
 		url = "/"
 	}
-	logs.Info(url)
-	c.Data["json"] = map[string]interface{}{"status": true,
-		"url": url}
-	c.ServeJSON()
+	c.jsonResult(200,"",url)
 }
 
 //LoginOut 退出登录
@@ -99,8 +85,6 @@ func (c *LoginController) LoginOut() {
 //验证输入的密码是否正确
 func (c *LoginController) validatePassword(password string, encodePassword string) (status bool) {
 	err := bcrypt.CompareHashAndPassword([]byte(encodePassword), []byte(password))
-	logs.Info("sdsdsdsssssss ")
-	logs.Info(err)
 	if err != nil {
 		return false
 	} else {

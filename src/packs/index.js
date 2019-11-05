@@ -32,7 +32,7 @@ var app = new Vue({
                 url = $(this.$el).attr('data-url');
             }
             hashParams['page'] = page;
-            window.indexData(url, hashParams).then(res => {
+            this.$indexData(url, hashParams).then(res => {
                     _this.actions = res.actions;
                     _this.colNames = res.colNames;
                     _this.pageCount = res.countPage;
