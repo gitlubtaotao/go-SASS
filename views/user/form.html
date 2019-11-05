@@ -158,6 +158,8 @@
                     url = "/user/" + this.user.Id;
                     method = 'put'
                 }
+                url+=("?Company="+this.user.Company.Id);
+                url+=("&Department="+this.user.Department.Id);
                 if (this.validateSubmit()) {
                     this.$submitFormData(method, url, this.user).then(res => {
                             if (res.length !== 0) {

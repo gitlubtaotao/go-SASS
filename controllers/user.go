@@ -35,7 +35,14 @@ func (c *UserController) URLMapping() {
 func (c *UserController) Post() {
 	var v models.User
 	_ = json.Unmarshal(c.Ctx.Input.RequestBody, &v)
-	logs.Info(v)
+	department := new(models.Department)
+	company := new(models.Company)
+	companyId, _ := strconv.ParseInt(c.GetString("Company"), 0, 64)
+	company.Id = companyId
+	departmentId, _ := strconv.ParseInt(c.GetString("Department"), 0, 64)
+	department.Id = departmentId
+	v.Department = department
+	v.Company = company
 	encodePassword := c.generatePassword(v.Pwd)
 	v.EncodePassword = encodePassword
 	v.Pwd = ""
@@ -65,9 +72,9 @@ func (c *UserController) GetOne() {
 	id, _ := strconv.ParseInt(idStr, 0, 64)
 	v, err := models.GetUserById(id)
 	if err != nil {
-		c.jsonResult(500,err.Error(),"")
+		c.jsonResult(500, err.Error(), "")
 	} else {
-		c.jsonResult(200,"",v)
+		c.jsonResult(200, "", v)
 	}
 }
 
@@ -123,7 +130,7 @@ func (c *UserController) GetAll() {
 		for _, cond := range strings.Split(v, ",") {
 			kv := strings.SplitN(cond, ":", 2)
 			if len(kv) != 2 {
-				c.jsonResult(500,errors.New("Error: invalid query key/value pair"),"")
+				c.jsonResult(500, errors.New("Error: invalid query key/value pair"), "")
 				return
 			}
 			k, v := kv[0], kv[1]
@@ -135,7 +142,7 @@ func (c *UserController) GetAll() {
 	}
 	l, countPage, err := models.GetAllUser(query, fields, sortby, order, offset, limit)
 	if err != nil {
-		c.jsonResult(500,err.Error(),"")
+		c.jsonResult(500, err.Error(), "")
 	} else {
 		mapValue := models.SetPaginator(countPage)
 		result := map[string]interface{}{
@@ -144,7 +151,7 @@ func (c *UserController) GetAll() {
 			"colNames":  colNames,
 			"actions":   UserActions(),
 		}
-		c.jsonResult(200,"",result)
+		c.jsonResult(200, "", result)
 	}
 }
 func UserActions() []models.CustomerSlice {
@@ -174,12 +181,12 @@ func (c *UserController) Put() {
 	valid, vErrors := v.Validate()
 	if valid {
 		if err := models.UpdateUserById(&v); err == nil {
-			c.jsonResult(200,"","OK")
+			c.jsonResult(200, "", "OK")
 		} else {
-			c.jsonResult(500,err.Error(),"")
+			c.jsonResult(500, err.Error(), "")
 		}
 	} else {
-		c.jsonResult(500,vErrors,"")
+		c.jsonResult(500, vErrors, "")
 	}
 }
 
@@ -194,9 +201,9 @@ func (c *UserController) Delete() {
 	idStr := c.Ctx.Input.Param(":id")
 	id, _ := strconv.ParseInt(idStr, 0, 64)
 	if err := models.DeleteUser(id); err == nil {
-		c.jsonResult(200,"","OK")
+		c.jsonResult(200, "", "OK")
 	} else {
-		c.jsonResult(500,err.Error(),"")
+		c.jsonResult(500, err.Error(), "")
 	}
 }
 

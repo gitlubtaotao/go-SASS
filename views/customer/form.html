@@ -200,9 +200,8 @@
         methods: {
             select2Method: function (actionType) {
                 let data = window.selectApi("/customer/get_status", {actionType: actionType}, 1);
-                if (data.status) {
-                    this.select2Data = data.data
-                }
+                this.select2Data = data
+
             },
             clickCompany: function () {
                 this.options = this.$select2Company();

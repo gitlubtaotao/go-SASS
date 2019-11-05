@@ -199,9 +199,9 @@ func (c *CustomerController) Delete() {
 	idStr := c.Ctx.Input.Param(":id")
 	id, _ := strconv.ParseInt(idStr, 0, 64)
 	if err := models.DeleteCustomer(id); err == nil {
-		c.jsonResult(200,"","OK")
+		c.jsonResult(200, "", "OK")
 	} else {
-		c.jsonResult(500,err.Error(),"")
+		c.jsonResult(500, err.Error(), "")
 	}
 }
 
@@ -226,15 +226,16 @@ func (c *CustomerController) Edit() {
 
 func (c *CustomerController) GetStatus() {
 	actionType := c.GetString("actionType")
+	var result []models.CustomerSlice
 	switch actionType {
 	case "Status":
-		c.Data["json"] = models.CustomerStatusArray()
+		result = models.CustomerStatusArray()
 	case "AccountPeriod":
-		c.Data["json"] = models.CustomerAccountPeriodArray()
+		result = models.CustomerAccountPeriodArray()
 	case "CompanyType":
-		c.Data["json"] = models.CustomerTransportTypeArray()
+		result = models.CustomerTransportTypeArray()
 	case "IsVip":
-		c.Data["json"] = models.CustomerIsVipArray()
+		result = models.CustomerIsVipArray()
 	}
-	c.ServeJSON()
+	c.jsonResult(200,"",result)
 }

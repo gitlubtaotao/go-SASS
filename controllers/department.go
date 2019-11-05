@@ -32,8 +32,6 @@ func (c *DepartmentController) URLMapping() {
 // @Failure 403 body is empty
 // @router / [post]
 func (c *DepartmentController) Post() {
-	ss := c.Ctx.Request.PostForm["Company"][0]
-	logs.Info(ss)
 	var v models.Department
 	_ = json.Unmarshal(c.Ctx.Input.RequestBody, &v)
 	company := new(models.Company)

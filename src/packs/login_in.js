@@ -28,7 +28,7 @@ var app = new Vue({
             }).then(function (response) {
                 if (response.data.code === 200) {
                     toastr.success('登录成功');
-                    location.href = response.data['url'];
+                    location.href = response.data.obj;
                 } else {
                     toastr.error(response.data.msg);
                 }

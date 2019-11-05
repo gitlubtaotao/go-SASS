@@ -20,10 +20,8 @@ var app = new Vue({
     methods: {
         //获取select2数据
         select2Method: function (actionType) {
-            let data = window.selectApi("/customer/get_status", {actionType: actionType}, 1);
-            if (data.status) {
-                this.select2Data = data.data
-            }
+            let result = window.selectApi("/customer/get_status", {actionType: actionType}, 1);
+            this.select2Data = result
         },
         clickCompany: function () {
             this.companyOptions = this.$select2Company()
