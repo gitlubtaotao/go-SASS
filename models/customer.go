@@ -31,7 +31,7 @@ type Customer struct {
 	Status           string   `orm:"size(32);default(init);"`
 	AuditUser        *User    `orm:"rel(fk);index"`
 	CreateUser       *User    `orm:"rel(fk);index"`
-	SaleUser         *User    `orm:"rel(fk);index"`
+	SaleUser         *User    `orm:"rel(fk);index;NULL"`
 	Company          *Company `orm:"rel(fk);index"`
 	BusinessTypeName string   `orm:"size(256)"`
 }
@@ -140,6 +140,8 @@ func GetAllCustomer(query map[string]string, fields []string, sortby []string, o
 	}
 	return nil, 0, err
 }
+
+
 
 // UpdateCustomer updates Customer by Id and returns error if
 // the record to be updated doesn't exist

@@ -41,16 +41,23 @@ var app = new Vue({
         //获取所有的数据
         getList: function (page = 1) {
             let _this = this;
-            let hashParams = {};
-            let url = "/customer";
+            let hashParams = {}, url = "";
+            if (location.pathname === "/supplier/index") {
+                url = "/supplier";
+            } else {
+                url = "/customer";
+            }
             hashParams["query"] = this.getFilerResult();
             hashParams['page'] = page;
             this.$indexData(url, hashParams).then(res => {
+                    console.log(res);
                     _this.actions = res.actions;
                     _this.colNames = res.colNames;
                     _this.pageCount = res.countPage;
                     if (res.data !== null && typeof (res.data) !== 'undefined') {
                         _this.objects = res.data;
+                    } else {
+                        _this.objects = [];
                     }
 
                 },
@@ -90,6 +97,11 @@ var app = new Vue({
         //清空数据
         refreshResult: function () {
             $('.filter-form')[0].reset();
+
+            this.customer.SaleUser = "";
+            this.customer.CreateUser = "";
+            this.customer.AuditUser = "";
+            this.customer.Company = "";
             this.getList();
             toastr.success("刷新数据成功");
         },

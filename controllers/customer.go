@@ -212,11 +212,13 @@ func (c *CustomerController) Get() {
 	c.setTpl("customer/index.html")
 }
 func (c *CustomerController) New() {
+	c.Data["JsName"] = "customer_form"
 	c.Data["Namespace"] = "customer_manage"
 	c.Data["PageTitle"] = "新增客户信息"
 	c.setTpl("customer/form.html")
 }
 func (c *CustomerController) Edit() {
+	c.Data["JsName"] = "customer_form"
 	c.Data["Namespace"] = "customer_manage"
 	c.Data["PageTitle"] = "修改客户信息"
 	idStr := c.Ctx.Input.Param(":id")

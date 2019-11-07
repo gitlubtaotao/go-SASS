@@ -15,6 +15,7 @@ module.exports = {
         index: './src/packs/index.js',
         login_in: './src/packs/login_in.js',
         customer_index: './src/packs/customer_index.js',
+        customer_form: './src/packs/customer_form.js',
     },
     output: {
         path: path.resolve(__dirname, 'dist'),
