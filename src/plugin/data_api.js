@@ -5,6 +5,7 @@
 function selectApi(url, options = {}, page = 1) {
     let returnValue = {};
     if (url === "") {
+        return "url不能为空"
     }
     $.ajax({
         url: url,

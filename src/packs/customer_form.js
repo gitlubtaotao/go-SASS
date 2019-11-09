@@ -10,7 +10,6 @@ var app = new Vue({
             BusinessTypeName: '',
             Company: '',
             AccountPeriod: '',
-            Id: '',
             Address: '',
             Website: '',
             Amount: 0,
@@ -21,31 +20,39 @@ var app = new Vue({
             AuditUser: '',
 
         },
-        select2Data: [],
-        options: [],
+        AccountPeriodOptions: [],
+        CompanyOptions: [],
         userOptions: [],
-        selectCompanyType: {},
-        selectPeriod: {},
-        selectVip: {},
-
+        CompanyTypeOptions: [],
+        IsVipOptions: [],
+        Id: '',
     },
     mounted: function () {
         this.initData();
+        this.select2Method();
     },
     methods: {
         select2Method: function (actionType) {
-            let data = window.selectApi("/customer/get_status", {actionType: actionType}, 1);
-            this.select2Data = data
-
+            let data = window.selectApi("/customer/get_status", {actionType: 'all'}, 1);
+            this.AccountPeriodOptions = data.AccountPeriod;
+            this.CompanyTypeOptions = data.CompanyType;
+            this.IsVipOptions = data.IsVip;
         },
-        clickCompany: function () {
-            this.options = this.$select2Company();
+        clickCompany: function (search) {
+            let options = {};
+            if (search) {
+                options['query'] = "Name:" + search;
+            }
+            this.CompanyOptions = this.$select2Company(options);
         },
-        clickUser: function () {
+        clickUser: function (search) {
             let str = "";
             let company = this.customer.Company;
             if (company !== '' && company !== null) {
                 str = "Company:" + company.Id;
+            }
+            if (search) {
+                str += "Name:" + search;
             }
             this.userOptions = this.$select2User({query: str})
         },
@@ -53,15 +60,10 @@ var app = new Vue({
             let _this = this;
             let location_url = location.pathname.split('/');
             let id = location_url[location_url.length - 1];
-            console.log(id);
-            if (id !== "" && typeof (id) !== "undefined") {
+            if (!isNaN(parseInt(id))) {
                 this.$showInitData("/customer/" + id).then(res => {
-                        console.log(res);
                         _this.customer = res.data;
-                        _this.selectVip = res['other']['IsVip'];
-                        _this.selectCompanyType = res['other']['selectCompanyType'];
-                        _this.selectPeriod = res['other']['selectPeriod'];
-                        console.log(_this.selectPeriod);
+                        _this.Id = res.data.Id;
                     },
                     error => {
                         console.log(error);
@@ -71,20 +73,15 @@ var app = new Vue({
         submitForm: function () {
             let _this = this;
             let url, method;
-            if (this.customer.Id === '') {
+            if (this.Id === '') {
                 url = "/customer";
                 method = 'post';
             } else {
-                url = "/customer/" + this.customer.Id;
+                url = "/customer/" + this.Id;
                 method = 'put';
             }
             if (this.validateForm()) {
                 this.defaultValue();
-                url = url + "?audit_id=" + this.customer.AuditUser.Id;
-                url = url + "&sale_id=" + this.customer.SaleUser.Id;
-                url = url + "&period=" + this.customer.AccountPeriod;
-                url = url + '&company_id=' + this.customer.Company.Id;
-                url = url + "&company_type=" + this.customer.CompanyType;
                 this.$submitFormData(method, url, this.customer).then(res => {
                         if (res.length !== 0) {
                             $.each(res, function (key, value) {
@@ -113,7 +110,7 @@ var app = new Vue({
                 this.errors.push('邮箱不能为空');
                 return false;
             }
-            if (!this.selectPeriod) {
+            if (!this.customer.AccountPeriod) {
                 this.errors.push("账期不能为空");
                 return false;
             }
@@ -121,7 +118,7 @@ var app = new Vue({
                 this.errors.push("所属公司不能为空");
                 return false;
             }
-            if (!this.selectCompanyType) {
+            if (!this.customer.CompanyType) {
                 this.errors.push("类型不能为空");
                 return false;
             }
@@ -136,15 +133,6 @@ var app = new Vue({
             return true;
         },
         defaultValue: function () {
-            if (this.selectPeriod) {
-                this.customer.AccountPeriod = this.selectPeriod.code;
-            }
-            if (this.selectCompanyType) {
-                this.customer.CompanyType = this.selectCompanyType.code;
-            }
-            if (this.selectVip) {
-                this.customer.IsVip = this.selectVip.code;
-            }
             this.customer.Aging = parseInt(this.customer.Aging);
             this.customer.Amount = parseInt(this.customer.Amount);
         }

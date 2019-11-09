@@ -23,8 +23,8 @@ type User struct {
 	Gender         string      `orm:"size(64)"`
 	Positions      []*Position `orm:"rel(m2m)"`
 	EntryTime      time.Time   `orm:"auto_now;type(datetime)"`
-	Company        *Company    `orm:"rel(fk);index"`
-	Department     *Department `orm:"rel(fk);index;NULL"`
+	Company        *Company    `orm:"rel(fk);index" json:"Company"`
+	Department     *Department `orm:"rel(fk);index;NULL" json:"Department"`
 }
 
 func init() {

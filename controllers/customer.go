@@ -34,20 +34,9 @@ func (c *CustomerController) Post() {
 	//logs.Info(c.Ctx.Input.RequestBody)
 	_ = json.Unmarshal(c.Ctx.Input.RequestBody, &v)
 	//RequestBody失效
-	auditId := c.GetString("audit_id")
-	saleId := c.GetString("sale_id")
 	user := new(models.User)
-	company := new(models.Company)
 	user.Id = c.currentUser.Id
 	v.CreateUser = user
-	user.Id, _ = strconv.ParseInt(auditId, 0, 64)
-	v.AuditUser = user
-	user.Id, _ = strconv.ParseInt(saleId, 0, 64)
-	v.SaleUser = user
-	v.AccountPeriod = c.GetString("period")
-	v.CompanyType, _ = strconv.Atoi(c.GetString("company_type"))
-	company.Id, _ = strconv.ParseInt(c.GetString("company_id"), 0, 64)
-	v.Company = company
 	status, errs := v.Validate()
 	if status {
 		if _, err := models.AddCustomer(&v); err == nil {
@@ -229,6 +218,7 @@ func (c *CustomerController) Edit() {
 func (c *CustomerController) GetStatus() {
 	actionType := c.GetString("actionType")
 	var result []models.CustomerSlice
+	returnJson := make(map[string]interface{})
 	switch actionType {
 	case "Status":
 		result = models.CustomerStatusArray()
@@ -238,6 +228,15 @@ func (c *CustomerController) GetStatus() {
 		result = models.CustomerTransportTypeArray()
 	case "IsVip":
 		result = models.CustomerIsVipArray()
+	default:
+		returnJson["Status"] = models.CustomerStatusArray()
+		returnJson["AccountPeriod"] = models.CustomerAccountPeriodArray()
+		returnJson["CompanyType"] = models.CustomerTransportTypeArray()
+		returnJson["IsVip"] = models.CustomerIsVipArray()
 	}
-	c.jsonResult(200,"",result)
+	if actionType != "all" {
+		c.jsonResult(200, "", result)
+	}else{
+		c.jsonResult(200,"",returnJson)
+	}
 }

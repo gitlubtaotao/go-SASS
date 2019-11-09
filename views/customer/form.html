@@ -65,8 +65,8 @@
                         <label class="control-label col-sm-4">所属公司</label>
                         <div class="col-sm-8">
                             <vue-select class="vue-select2" name="select2" label="Name"
-                                        :options="options" v-model.trim="customer.Company"
-                                        :searchable="true" language="zh-CN" @search:focus="clickCompany" required>
+                                        :options="CompanyOptions" v-model.trim="customer.Company"
+                                        @search:focus="clickCompany" @search="clickCompany" required>
                             </vue-select>
                         </div>
 
@@ -77,9 +77,8 @@
                         <label class="control-label col-sm-4">账期</label>
                         <div class="col-sm-8">
                             <vue-select class="vue-select2" name="select2" label="label"
-                                        :options="select2Data" v-model.trim="selectPeriod"
-                                        :searchable="true" language="zh-CN" :placeholder="'请选择账期'"
-                                        @search:focus="select2Method('AccountPeriod')" required>
+                                        :options="AccountPeriodOptions" v-model.trim="customer.AccountPeriod"
+                                        :reduce="label => label.code" required>
                             </vue-select>
                         </div>
                     </div>
@@ -103,9 +102,8 @@
                         <label class="control-label col-sm-4">类型</label>
                         <div class="col-sm-8">
                             <vue-select class="vue-select2" name="select2" label="label"
-                                        :options="select2Data" v-model.trim="selectCompanyType"
-                                        :searchable="true" language="zh-CN" :placeholder="'请选择类型'"
-                                        @search:focus="select2Method('CompanyType')" required>
+                                        :options="CompanyTypeOptions" v-model.trim="customer.CompanyType"
+                                        :reduce="label => label.code" required>
                             </vue-select>
                         </div>
                     </div>
@@ -113,9 +111,8 @@
                         <label class="control-label col-sm-4">VIP客户</label>
                         <div class="col-sm-8">
                             <vue-select class="vue-select2" name="select2" label="label"
-                                        :options="select2Data" v-model.trim="selectVip"
-                                        :searchable="true" language="zh-CN"
-                                        @search:focus="select2Method('IsVip')" required>
+                                        v-model.trim="customer.IsVip"
+                                        :options="IsVipOptions" :reduce="label => label.code" required>
                             </vue-select>
                         </div>
                     </div>
@@ -124,11 +121,8 @@
                         <div class="col-sm-8">
                             <vue-select v-model.trim="customer.SaleUser" id="sale_user"
                                         :placeholder="'请选择业务人员'"
-                                        @search:focus="clickUser"
-                                        :options="userOptions"
-                                        label="Name"
-                                        :searchable="true" language="zh-CN"
-                                        required></vue-select>
+                                        @search:focus="clickUser" @search="clickUser" :options="userOptions"
+                                        label="Name" required></vue-select>
                         </div>
                     </div>
                     <div class="form-group">
@@ -136,11 +130,8 @@
                         <div class="col-sm-8">
                             <vue-select v-model.trim="customer.AuditUser" id="audit_user"
                                         :placeholder="'请选择审核者'"
-                                        @search:focus="clickUser"
-                                        :options="userOptions"
-                                        label="Name"
-                                        :searchable="true" language="zh-CN"
-                                        required></vue-select>
+                                        @search:focus="clickUser" :options="userOptions"
+                                        @search="clickUser" label="Name" required></vue-select>
                         </div>
                     </div>
                 </div>

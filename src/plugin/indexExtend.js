@@ -5,10 +5,9 @@ indexExtend.install = function (Vue, options) {
         return new Promise((resolve, reject) => {
             axios.get(url, {
                 headers: {'X-Requested-With': 'XMLHttpRequest'},
-                params: options,
+                params: $.extend({page: 1},options),
                 dataType: 'json',
             }).then(function (response) {
-                console.log(response);
                 if (response.data.code === 200) {
                     resolve(response.data.obj);
                 } else {

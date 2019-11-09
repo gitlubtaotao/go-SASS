@@ -42,7 +42,7 @@ func init() {
 	beego.Router("/customer/new",&controllers.CustomerController{},"get:New")
 	beego.Router("/customer/edit/:id",&controllers.CustomerController{},"get:Edit")
 	beego.Router("/customer/:id",&controllers.CustomerController{},"put:Put;get:GetOne;delete:Delete")
-	
+	beego.Router("/customer/get_status",&controllers.CustomerController{},"get:GetStatus")
 	beego.Router("/supplier",&controllers.SupplierController{},"get:GetAll;post:Post")
 	beego.Router("/supplier/index",&controllers.SupplierController{},"get:Get")
 	beego.Router("/supplier/new",&controllers.SupplierController{},"get:New")

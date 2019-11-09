@@ -16,7 +16,7 @@ type Department struct {
 	CreatedAt time.Time `orm:"auto_now;type(datetime)"`
 	UpdatedAt time.Time
 	DeletedAt time.Time
-	Company   *Company `orm:"rel(fk);index" json:"Company"` 
+	Company   *Company `orm:"rel(fk);index" json:"Company"`
 }
 
 func init() {
@@ -63,7 +63,13 @@ func GetAllDepartment(query map[string]string, fields []string, sortby []string,
 	for k, v := range query {
 		// rewrite dot-notation to Object__Attribute
 		k = strings.Replace(k, ".", "__", -1)
-		qs = qs.Filter(k, v)
+		if v != "" {
+			if k == "Name" {
+				qs = qs.Filter("name__icontains", v)
+			} else {
+				qs = qs.Filter(k, v)
+			}
+		}
 	}
 	// order by:
 	var sortFields []string
@@ -114,11 +120,12 @@ func GetAllDepartment(query map[string]string, fields []string, sortby []string,
 		for _, v := range l {
 			m := make(map[string]interface{})
 			val := reflect.ValueOf(v)
-			m["Company.Name"] = v.Company.Name
 			for _, fname := range fields {
 				m[fname] = val.FieldByName(fname).Interface()
 			}
-			m["CreatedAt"] = v.CreatedAt.Format("2006-01-02 15:04:05")
+			if ArrayExistItem("CreatedAt", fields) {
+				m["CreatedAt"] = v.CreatedAt.Format("2006-01-02 15:04:05")
+			}
 			ml = append(ml, m)
 		}
 		return ml, count, nil

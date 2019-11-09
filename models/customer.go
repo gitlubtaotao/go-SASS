@@ -32,7 +32,7 @@ type Customer struct {
 	AuditUser        *User    `orm:"rel(fk);index"`
 	CreateUser       *User    `orm:"rel(fk);index"`
 	SaleUser         *User    `orm:"rel(fk);index;NULL"`
-	Company          *Company `orm:"rel(fk);index"`
+	Company          *Company `orm:"rel(fk);index" json:"Company"`
 	BusinessTypeName string   `orm:"size(256)"`
 }
 
@@ -70,14 +70,19 @@ func GetAllCustomer(query map[string]string, fields []string, sortby []string, o
 	for k, v := range query {
 		// rewrite dot-notation to Object__Attribute
 		k = strings.Replace(k, ".", "__", -1)
-		qs = qs.Filter(k, v)
+		if v != "" {
+			if k == "Name" {
+				qs = qs.Filter("name__icontains", v)
+			} else{
+				qs = qs.Filter(k, v)
+			}
+		}
 	}
 	if typeValue == "customer" {
 		qs = qs.Filter("company_type__in", 0, 1, 3)
 	} else {
 		qs = qs.Filter("company_type__in", 2, 3)
 	}
-	
 	// order by:
 	var sortFields []string
 	if len(sortby) != 0 {
@@ -129,19 +134,27 @@ func GetAllCustomer(query map[string]string, fields []string, sortby []string, o
 			for _, fname := range fields {
 				m[fname] = val.FieldByName(fname).Interface()
 			}
-			m["Status"] = v.ShowStatus(true).(string)
-			m["IsVip"] = v.ShowVip(true).(string)
-			m["CompanyType"] = v.ShowCompanyType(true).(string)
-			m["AccountPeriod"] = v.ShowPeriod(true).(string)
-			m["CreatedAt"] = v.CreatedAt.Format("2006-01-02 15:04:05")
+			if ArrayExistItem("Status",fields) {
+				m["Status"] = v.ShowStatus(true).(string)
+			}
+			if ArrayExistItem("IsVip",fields) {
+				m["IsVip"] = v.ShowVip(true).(string)
+			}
+			if ArrayExistItem("CompanyType",fields) {
+				m["CompanyType"] = v.ShowCompanyType(true).(string)
+			}
+			if ArrayExistItem("AccountPeriod",fields) {
+				m["AccountPeriod"] = v.ShowPeriod(true).(string)
+			}
+			if ArrayExistItem("CreatedAt",fields) {
+				m["CreatedAt"] = v.CreatedAt.Format("2006-01-02 15:04:05")
+			}
 			ml = append(ml, m)
 		}
 		return ml, count, nil
 	}
 	return nil, 0, err
 }
-
-
 
 // UpdateCustomer updates Customer by Id and returns error if
 // the record to be updated doesn't exist

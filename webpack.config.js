@@ -4,7 +4,7 @@ const path = require('path');
 // const nodeExternals = require('webpack-node-externals');
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 const VueLoaderPlugin = require('vue-loader/lib/plugin');
-const  glob = require('glob');
+const glob = require('glob');
 
 module.exports = {
     // entry: glob.sync('./src/packs/*.js',['dist']),
@@ -12,8 +12,9 @@ module.exports = {
         main: './src/index.js',
         foot_before: './src/foot_before.js',
         css: './src/css.js',
-        index: './src/packs/index.js',
         login_in: './src/packs/login_in.js',
+        index: './src/packs/index.js',
+        company_index: './src/packs/company_index',
         customer_index: './src/packs/customer_index.js',
         customer_form: './src/packs/customer_form.js',
     },
@@ -57,7 +58,7 @@ module.exports = {
                 }
             },
             {
-                test:/\.css$/,
+                test: /\.css$/,
                 use: [
                     'vue-style-loader',
                     'style-loader',

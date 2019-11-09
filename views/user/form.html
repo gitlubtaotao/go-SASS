@@ -76,7 +76,7 @@
                         <div class="col-sm-8">
                             <vue-select class="vue-select2" name="select2" label="Name"
                                         :options="companyOptions" v-model.trim="user.Company"
-                                        :searchable="true" language="zh-CN" @input="selectDepartment">
+                                        @search="selectData">
                             </vue-select>
                         </div>
                     </div>
@@ -85,7 +85,7 @@
                         <div class="col-sm-8">
                             <vue-select class="vue-select2" name="select2" label="Name"
                                         :options="departmentOptions" v-model.trim="user.Department"
-                                        :searchable="true" language="zh-CN">
+                                        @search="selectDepartment" @search:focus="selectDepartment">
                             </vue-select>
                         </div>
                     </div>
@@ -126,7 +126,6 @@
         delimiters: ['{', '}'],
         data: {
             user: {
-                Id: '',
                 Name: '',//姓名
                 Email: '',//邮箱
                 Phone: '',//电话
@@ -140,6 +139,7 @@
             errors: [], //错误
             companyOptions: [],
             departmentOptions: [],
+            Id: '',
         },
         mounted: function () {
             this.selectData();
@@ -151,15 +151,13 @@
                 this.errors = [];
                 let _this = this;
                 let url, method;
-                if (this.user.Id === '') {
+                if (this.Id === '') {
                     url = "/user";
                     method = 'post';
                 } else {
-                    url = "/user/" + this.user.Id;
+                    url = "/user/" + this.Id;
                     method = 'put'
                 }
-                url+=("?Company="+this.user.Company.Id);
-                url+=("&Department="+this.user.Department.Id);
                 if (this.validateSubmit()) {
                     this.$submitFormData(method, url, this.user).then(res => {
                             if (res.length !== 0) {
@@ -225,8 +223,12 @@
                 return true;
             },
             //所属公司下拉数据
-            selectData: function () {
-                this.companyOptions = this.$select2Company();
+            selectData: function (search) {
+                let options = {};
+                if (search) {
+                    options["query"] = "Name:" + search;
+                }
+                this.companyOptions = this.$select2Company(options);
             },
             //修改时初始化数据
             initData: function () {
@@ -235,19 +237,22 @@
                 if (id !== "" && typeof (id) !== 'undefined') {
                     this.$showInitData("/user/" + id).then(res => {
                             _this.user = res;
+                            _this.Id = res.Id;
                         },
                         error => {
                             console.log(error);
                         });
                 }
             },
-            selectDepartment: function (value) {
-                console.log(value);
-                if (value === null || typeof (value) === 'undefined') {
+            selectDepartment: function (search) {
+                let company = this.user.Company;
+                if (company === "") {
                     return
                 }
-                this.user.Department = '';
-                let str = "Company:" + value.Id;
+                let str = "Company:" + company.Id;
+                if (search) {
+                    str += ",Name:" + search;
+                }
                 this.departmentOptions = this.$select2Department({query: str});
             }
         }

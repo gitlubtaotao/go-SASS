@@ -56,7 +56,7 @@ func (c *CompaniesController) Post() {
 
 //Get 首页
 func (c *CompaniesController) Get() {
-	c.Data["JsName"] = "index"
+	c.Data["JsName"] = "company_index"
 	c.Data["Namespace"] = "company"
 	c.Data["PageTitle"] = "公司信息"
 	c.setTpl("companies/index.html")

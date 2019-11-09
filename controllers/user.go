@@ -34,21 +34,14 @@ func (c *UserController) URLMapping() {
 // @router / [post]
 func (c *UserController) Post() {
 	var v models.User
-	_ = json.Unmarshal(c.Ctx.Input.RequestBody, &v)
-	department := new(models.Department)
-	company := new(models.Company)
-	companyId, _ := strconv.ParseInt(c.GetString("Company"), 0, 64)
-	company.Id = companyId
-	departmentId, _ := strconv.ParseInt(c.GetString("Department"), 0, 64)
-	department.Id = departmentId
-	v.Department = department
-	v.Company = company
+	err := json.Unmarshal(c.Ctx.Input.RequestBody, &v)
+	logs.Info(err)
+	logs.Info(v.Company)
 	encodePassword := c.generatePassword(v.Pwd)
 	v.EncodePassword = encodePassword
 	v.Pwd = ""
 	//插入数据前进行验证
 	valid, vErrors := v.Validate()
-	logs.Info(valid, vErrors)
 	if valid {
 		if _, err := models.AddUser(&v); err == nil {
 			c.jsonResult(200, "", "OK")
@@ -238,10 +231,8 @@ func (c *UserController) Edit() {
 func (c *UserController) generatePassword(pwd string) (encodePassword string) {
 	hash, err := bcrypt.GenerateFromPassword([]byte(pwd), bcrypt.DefaultCost)
 	if err != nil {
-		logs.Error(err)
 		return ""
 	}
 	encodePW := string(hash) // 保存在数据库的密码，虽然每次生成都不同，只需保存一份即可
-	logs.Info(encodePW)
 	return encodePW
 }
