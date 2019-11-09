@@ -16,7 +16,6 @@ type DepartmentController struct {
 
 // URLMapping ...
 func (c *DepartmentController) URLMapping() {
-	logs.Info(c)
 	c.Mapping("Post", c.Post)
 	c.Mapping("GetOne", c.GetOne)
 	c.Mapping("GetAll", c.GetAll)
@@ -33,10 +32,9 @@ func (c *DepartmentController) URLMapping() {
 // @router / [post]
 func (c *DepartmentController) Post() {
 	var v models.Department
-	_ = json.Unmarshal(c.Ctx.Input.RequestBody, &v)
-	company := new(models.Company)
-	company.Id, _ = strconv.ParseInt(c.GetString("company_id"), 0, 64)
-	v.Company = company
+	err:= json.Unmarshal(c.Ctx.Input.RequestBody, &v)
+	logs.Info(err)
+	logs.Info(v.Company)
 	if _, err := models.AddDepartment(&v); err == nil {
 		c.Ctx.Output.SetStatus(201)
 		c.Data["json"] = "OK"

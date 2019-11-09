@@ -88,7 +88,11 @@ func GetAllCompany(query map[string]string, fields []string, sortby []string, or
 		// rewrite dot-notation to Object__Attribute
 		k = strings.Replace(k, ".", "__", -1)
 		if v != "" {
-			qs = qs.Filter(k, v)
+			if k == "Name"{
+				qs = qs.Filter("name__icontains",v)
+			}else {
+				qs = qs.Filter(k, v)
+			}
 		}
 	}
 	count, _ := qs.Count()
@@ -149,7 +153,9 @@ func GetAllCompany(query map[string]string, fields []string, sortby []string, or
 				for _, fname := range fields {
 					m[fname] = val.FieldByName(fname).Interface()
 				}
-				m["CreatedAt"] = v.CreatedAt.Format("2006-01-02 15:04:05")
+				if ArrayExistItem("CreatedAt",fields) {
+					m["CreatedAt"] = v.CreatedAt.Format("2006-01-02 15:04:05")
+				}
 				ml = append(ml, m)
 			}
 		}

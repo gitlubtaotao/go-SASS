@@ -56,3 +56,22 @@ func structMethods(model interface{}) (methods []string) {
 	return methods
 }
 
+//数组元素是否保护某元素
+//ArrayExistItem(2,[]int{1,23})
+func ArrayExistItem(obj interface{}, target interface{}) bool {
+	targetValue := reflect.ValueOf(target)
+	switch reflect.TypeOf(target).Kind() {
+	case reflect.Slice, reflect.Array:
+		for i := 0; i < targetValue.Len(); i++ {
+			if targetValue.Index(i).Interface() == obj {
+				return true
+			}
+		}
+	case reflect.Map:
+		if targetValue.MapIndex(reflect.ValueOf(obj)).IsValid() {
+			return true
+		}
+	}
+	return false
+	
+}

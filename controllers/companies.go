@@ -105,6 +105,7 @@ func (c *CompaniesController) GetAll() {
 	limit := models.UserPerPage()
 	page, _ := strconv.Atoi(c.GetString("page", "1"))
 	offset := models.GetOffsetPage(int64(page))
+	
 	if v := c.GetString("query"); v != "" {
 		for _, cond := range strings.Split(v, ",") {
 			kv := strings.SplitN(cond, ":", 2)
@@ -115,6 +116,9 @@ func (c *CompaniesController) GetAll() {
 			k, v := kv[0], kv[1]
 			query[k] = v
 		}
+	}
+	if v, err := c.GetInt64("limit"); err == nil {
+		limit = v
 	}
 	colNames := models.GetCompanyCols()
 	companies, countPage, err := models.GetAllCompany(query, fields, sortBy, order, offset, limit)

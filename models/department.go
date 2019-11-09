@@ -16,7 +16,7 @@ type Department struct {
 	CreatedAt time.Time `orm:"auto_now;type(datetime)"`
 	UpdatedAt time.Time
 	DeletedAt time.Time
-	Company   *Company `orm:"rel(fk);index"`
+	Company   *Company `orm:"rel(fk);index" json:"Company"` 
 }
 
 func init() {

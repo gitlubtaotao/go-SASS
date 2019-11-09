@@ -30,7 +30,7 @@
                         <div class="col-sm-8">
                             <vue-select class="vue-select2" name="select2" label="Name"
                                         :options="options" v-model.trim="department.Company"
-                                        :searchable="true" language="zh-CN">
+                                        @search="selectData">
                             </vue-select>
                         </div>
 
@@ -62,8 +62,8 @@
             department: {
                 Name: '',
                 Company: '',
-                Id: '',
             },
+            Id: 0,
             options: [],
         },
         mounted: function () {
@@ -77,27 +77,31 @@
                 if (id !== "" && typeof (id) !== "undefined") {
                     this.$showInitData("/department/" + id).then(res => {
                             _this.department = res;
+                            _this.Id = res.Id;
                         },
                         error => {
                             console.log(error);
                         });
                 }
             },
-            selectData: function () {
-                this.options = this.$select2Company();
+            selectData: function (search) {
+                let options = {};
+                if (search) {
+                    options["query"] = "Name:" + search;
+                }
+                this.options = this.$select2Company(options);
             },
             submitForm: function () {
                 let _this = this;
                 let url, method;
-                if (this.department.Id === '') {
+                if (this.Id === 0) {
                     url = "/department";
                     method = 'post';
                 } else {
-                    url = "/department/" + this.department.Id;
+                    url = "/department/" + this.Id;
                     method = 'put';
                 }
                 if (this.validateForm()) {
-                    url = url + "?company_id=" + this.department.Company.Id;
                     this.$submitFormData(method, url, this.department).then(res => {
                             if (res.length !== 0) {
                                 $.each(res, function (key, value) {
