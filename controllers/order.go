@@ -81,7 +81,7 @@ func (c *OrderController) New()  {
 func (c *OrderController) Edit()  {
 
 }
-func (c *OrderController) Get()  {
+func (c *OrderController) Index()  {
 	c.Data["JsName"] = "index"
 	c.Data["Namespace"] = "order_manage"
 	c.Data["PageTitle"] = "订单列表"

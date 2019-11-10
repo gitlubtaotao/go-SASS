@@ -129,9 +129,6 @@ func (c *UserController) GetAll() {
 			k, v := kv[0], kv[1]
 			query[k] = v
 		}
-	} else {
-		query["Name"] = c.GetString("Name")
-		query["Email"] = c.GetString("Email")
 	}
 	l, countPage, err := models.GetAllUser(query, fields, sortby, order, offset, limit)
 	if err != nil {
@@ -201,7 +198,7 @@ func (c *UserController) Delete() {
 }
 
 //用户列表
-func (c *UserController) Get() {
+func (c *UserController) Index() {
 	c.Data["Namespace"] = "company"
 	c.Data["PageTitle"] = "员工信息"
 	c.Data["JsName"] = "index"
@@ -222,7 +219,7 @@ func (c *UserController) Edit() {
 	c.Data["Namespace"] = "company"
 	c.Data["PageTitle"] = "修改员工信息"
 	//获取 :Id
-	idStr := c.Ctx.Input.Param(":id")
+	idStr := c.Ctx.Input.Params()["0"]
 	c.Data["Id"] = idStr
 	c.setTpl("user/form.html")
 }

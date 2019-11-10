@@ -8,7 +8,6 @@
         }
     </style>
     {{template "layouts/head.html" .}}
-
     {{.HtmlHead}}
 </head>
 <body class="no-skin">
@@ -38,9 +37,8 @@
 <footer>
     {{template "layouts/footer.html" .}}
     {{if .JsName | ShowAssets}}
-        <script src="/dist/{{.JsName}}.js"></script>
+        <script src="/dist/{{.JsName}}.js?version={{RandNumber}}"></script>
     {{end}}
     {{.Scripts}}
-
 </footer>
 </body>

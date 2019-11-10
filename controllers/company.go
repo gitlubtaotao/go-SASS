@@ -9,23 +9,22 @@ import (
 	"strconv"
 )
 
-// CompaniesController operations for Companies
-type CompaniesController struct {
+// CompanyController operations for Companies
+type CompanyController struct {
 	BaseController
 }
 
 // URLMapping ...
-//func (c *CompaniesController) URLMapping() {
-//	c.Mapping("Post", c.Post)
-//	c.Mapping("GetOne", c.GetOne)
-//	c.Mapping("GetAll", c.GetAll)
-//	c.Mapping("Put", c.Put)
-//	c.Mapping("Delete", c.Delete)
-//
-//}
+func (c *CompanyController) URLMapping() {
+	c.Mapping("Post", c.Post)
+	c.Mapping("GetOne", c.GetOne)
+	c.Mapping("GetAll", c.GetAll)
+	c.Mapping("Put", c.Put)
+	c.Mapping("Delete", c.Delete)
+}
 
 //New 新增公司信息
-func (this *CompaniesController) New() {
+func (this *CompanyController) New() {
 	this.namespace = "company"
 	this.Data["Namespace"] = "company"
 	this.Data["PageTitle"] = "新增公司"
@@ -39,7 +38,7 @@ func (this *CompaniesController) New() {
 // @Success 201 {object} models.Companies
 // @Failure 403 body is empty
 // @router / [post]
-func (c *CompaniesController) Post() {
+func (c *CompanyController) Post() {
 	company := models.Company{}
 	_ = json.Unmarshal(c.Ctx.Input.RequestBody, &company)
 	status, errors := company.Validate()
@@ -55,7 +54,7 @@ func (c *CompaniesController) Post() {
 }
 
 //Get 首页
-func (c *CompaniesController) Get() {
+func (c *CompanyController) Index() {
 	c.Data["JsName"] = "company_index"
 	c.Data["Namespace"] = "company"
 	c.Data["PageTitle"] = "公司信息"
@@ -69,7 +68,7 @@ func (c *CompaniesController) Get() {
 // @Success 200 {object} models.Companies
 // @Failure 403 :id is empty
 // @router /:id [get]
-func (c *CompaniesController) GetOne() {
+func (c *CompanyController) GetOne() {
 	idStr := c.Ctx.Input.Param(":id")
 	id, _ := strconv.ParseInt(idStr, 0, 64)
 	if v, err := models.GetCompanyById(id); err != nil {
@@ -91,7 +90,7 @@ func (c *CompaniesController) GetOne() {
 // @Success 200 {object} models.Companies
 // @Failure 403
 // @router / [get]
-func (c *CompaniesController) GetAll() {
+func (c *CompanyController) GetAll() {
 	var fields []string
 	var query = make(map[string]string)
 	sortBy := make([]string, 1)
@@ -152,7 +151,7 @@ func companyActions() []models.CustomerSlice {
 // @Success 200 {object} models.Companies
 // @Failure 403 :id is not int
 // @router /:id [put]
-func (c *CompaniesController) Put() {
+func (c *CompanyController) Put() {
 	idStr := c.Ctx.Input.Param(":id")
 	id, _ := strconv.ParseInt(idStr, 0, 64)
 	v := models.Company{Id: id}
@@ -177,7 +176,7 @@ func (c *CompaniesController) Put() {
 // @Success 200 {string} delete success!
 // @Failure 403 id is empty
 // @router /:id [delete]
-func (c *CompaniesController) Delete() {
+func (c *CompanyController) Delete() {
 	idStr := c.Ctx.Input.Param(":id")
 	id, _ := strconv.ParseInt(idStr, 0, 64)
 	if err := models.DeleteCompany(id); err == nil {
@@ -187,8 +186,8 @@ func (c *CompaniesController) Delete() {
 	}
 }
 
-func (this *CompaniesController) Edit() {
-	idStr := this.Ctx.Input.Param(":id")
+func (this *CompanyController) Edit() {
+	idStr := this.Ctx.Input.Params()["0"]
 	this.namespace = "company"
 	this.Data["Namespace"] = "company"
 	this.Data["PageTitle"] = "修改公司信息"

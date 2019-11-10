@@ -24,10 +24,10 @@ type BaseController struct {
 //Prepare before action
 func (this *BaseController) Prepare() {
 	//跨站请求伪造
-	this.TplExt = "html"
 	this.Data["xsrfdata"] = template.HTML(this.XSRFFormHTML())
 	this.controllerName, this.actionName = this.GetControllerAndAction()
 	this.Data["ControllerName"] = this.controllerName
+	this.Data["JsName"] = ""
 	this.adapterUserInfo()
 	//登录页面可以不需要进行登录判断
 	if this.controllerName != "LoginController" {
@@ -109,7 +109,3 @@ func (this *BaseController) setTpl(template ...string) {
 	//设置模版名称
 	this.TplName = tplName
 }
-
-
-
-

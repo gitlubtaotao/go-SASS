@@ -20,17 +20,23 @@ var app = new Vue({
     methods: {
         //获取select2数据
         select2Method: function (actionType) {
-            let result = window.selectApi("/customer/get_status", {actionType: actionType}, 1);
-            this.select2Data = result
+            this.select2Data = window.selectApi("/customer/status", {actionType: actionType}, 1);
         },
-        clickCompany: function () {
-            this.companyOptions = this.$select2Company()
+        clickCompany: function (search) {
+            let str = "";
+            if (search) {
+                str += ("Name:" + search)
+            }
+            this.companyOptions = this.$select2Company({query: str})
         },
-        clickUser: function () {
+        clickUser: function (search) {
             let str = "";
             let company = this.customer.Company;
             if (company !== '' && company !== null) {
-                str = "Company:" + company.Id;
+                str = "Company:" + company;
+            }
+            if (search) {
+                str += (",Name:" + search)
             }
             this.userOptions = this.$select2User({query: str})
         },
@@ -41,16 +47,14 @@ var app = new Vue({
         //获取所有的数据
         getList: function (page = 1) {
             let _this = this;
-            let hashParams = {}, url = "";
+            let url = "";
             if (location.pathname === "/supplier/index") {
                 url = "/supplier";
             } else {
                 url = "/customer";
             }
-            hashParams["query"] = this.getFilerResult();
-            hashParams['page'] = page;
-            this.$indexData(url, hashParams).then(res => {
-                    console.log(res);
+            console.log(this.getFilerResult());
+            this.$indexData(url, {query: this.getFilerResult()}).then(res => {
                     _this.actions = res.actions;
                     _this.colNames = res.colNames;
                     _this.pageCount = res.countPage;
@@ -75,33 +79,17 @@ var app = new Vue({
             let str = [];
             $.each(this.customer, function (k, v) {
                 if (v) {
-                    if (['IsVip'].indexOf(k) > -1) {
-                        let value = 0;
-                        if (v.code) {
-                            value = 1;
-                        }
-                        str.push(k + ":" + value);
-                    } else if (['AccountPeriod', 'Status'].indexOf(k) > -1) {
-                        str.push(k + ":" + v['code']);
-                    } else if (['AuditUser', 'CreateUser',
-                        'SaleUser', 'Company'].indexOf(k) > -1) {
-                        str.push(k + ":" + v.Id);
-                    } else {
-                        str.push(k + ":" + v);
-                    }
+                    str.push(k + ":" + v);
                 }
             });
             return str.join(',');
-
         },
         //清空数据
         refreshResult: function () {
-            $('.filter-form')[0].reset();
-
-            this.customer.SaleUser = "";
-            this.customer.CreateUser = "";
-            this.customer.AuditUser = "";
-            this.customer.Company = "";
+            let _this = this;
+            $.each(this.customer, function (k, v) {
+                _this.$data.customer[k] = "";
+            });
             this.getList();
             toastr.success("刷新数据成功");
         },

@@ -59,7 +59,7 @@ func (c *DepartmentController) GetOne() {
 		c.jsonResult(500, err.Error(), "")
 	} else {
 		c.jsonResult(200, "", v)
-		c.Data["json"] = v
+		
 	}
 }
 
@@ -178,7 +178,7 @@ func (c *DepartmentController) Delete() {
 	}
 }
 
-func (c *DepartmentController) Get() {
+func (c *DepartmentController) Index() {
 	c.namespace = "company"
 	c.Data["JsName"] = "index"
 	c.Data["Namespace"] = "company"
@@ -196,7 +196,7 @@ func (c *DepartmentController) New() {
 
 //
 func (c *DepartmentController) Edit() {
-	idStr := c.Ctx.Input.Param(":id")
+	idStr := c.Ctx.Input.Params()["0"]
 	c.namespace = "company"
 	c.Data["Namespace"] = "company"
 	c.Data["PageTitle"] = "修改部门信息"

@@ -34,13 +34,42 @@
                                 <div class="col-sm-3 col-xs-12 col-md-3">
                                     <label class="control-label col-sm-4">姓名</label>
                                     <div class="col-sm-8">
-                                        <input class="form-control" value="" placeholder="请输入姓名" name="Name">
+                                        <input class="form-control" value="" placeholder="请输入姓名"
+                                               name="Name" v-model.trim="index.Name">
                                     </div>
                                 </div>
                                 <div class="col-sm-3 col-xs-12 col-md-3">
                                     <label class="control-label col-sm-4">邮箱</label>
                                     <div class="col-sm-8">
-                                        <input class="form-control" value="" placeholder="请输入邮箱" name="Email">
+                                        <input class="form-control" value="" placeholder="请输入邮箱"
+                                               name="Email" v-model.trim="index.Email">
+                                    </div>
+                                </div>
+                                <div class="col-sm-3 col-xs-12 col-md-3">
+                                    <label class="control-label col-sm-4">电话</label>
+                                    <div class="col-sm-8">
+                                        <input class="form-control" value="" placeholder="请输入电话"
+                                               name="Telephone" v-model.trim="index.Phone">
+                                    </div>
+                                </div>
+                                <div class="col-sm-3 col-xs-12 col-md-3">
+                                    <label class="control-label col-sm-4">所属公司</label>
+                                    <div class="col-sm-8">
+                                        <vue-select v-model.trim="index.Company" id="company_id" label="Name"
+                                                    :placeholder="'请选择所属公司'" :reduce="Name => Name.Id"
+                                                    :options="CompanyArray"
+                                                    @search:focus="clickCompany" @search="clickCompany">
+                                        </vue-select>
+                                    </div>
+                                </div>
+                                <div class="col-sm-3 col-xs-12 col-md-3">
+                                    <label class="control-label col-sm-4">所属部门</label>
+                                    <div class="col-sm-8">
+                                        <vue-select v-model.trim="index.Department" id="company_id" label="Name"
+                                                    :placeholder="'请选择所属公司'" :reduce="Name => Name.Id"
+                                                    :options="DepartmentArray"
+                                                    @search:focus="clickDepartment" @search="clickDepartment">
+                                        </vue-select>
                                     </div>
                                 </div>
                             </div>
@@ -67,12 +96,12 @@
     <div class="row">
         <div class="col-xs-12 col-sm-12">
             <div class="table-responsive">
-               <index-table
-                       :col-Names="colNames"
-                       :objects="objects"
-                       :actions="actions"
-               >
-               </index-table>
+                <index-table
+                        :col-Names="colNames"
+                        :objects="objects"
+                        :actions="actions"
+                >
+                </index-table>
             </div>
         </div>
     </div>

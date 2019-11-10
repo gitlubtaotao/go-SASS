@@ -2,41 +2,52 @@ var app = new Vue({
     el: '#page_content',
     delimiters: ['{', '}'],
     data: {
-        pageCount: 1,
-        //col names
-        colNames: [],
-        //objects
-        objects: [],
-        //对应的actions
-        actions: [],
+        pageCount: 1, colNames: [], objects: [], actions: [],
+        index: {
+            Name: "", Department: '', Email: '', Telephone: '',
+            Company: '', Gender: '', Phone: '',
+        },
+        url: '', DepartmentArray: [], CompanyArray: [],
     },
     mounted: function () {
+        this.setUrl();
         this.getList();
+
     },
     methods: {
+        clickDepartment: function (search) {
+            let str = "Company:" + this.index.Company;
+            if (search) {
+                str += ("Name:" + search)
+            }
+            this.DepartmentArray = this.$select2Department({"query": str})
+        },
+        clickCompany: function (search) {
+            let str = "";
+            if (search) {
+                str += ("Name:" + search)
+            }
+            this.CompanyArray = this.$select2Company({"query": str});
+        },
+        setUrl: function () {
+            let url = location.pathname;
+            this.url = url.slice(0, url.length - 6);
+        },
         clickCallback: function (pageNum) {
             this.getList(pageNum);
         },
         //获取所有的数据
-        getList: function (page = 1) {
+        getList: function () {
             let _this = this;
-            let hashParams = {};
-            let currentFilter = $('.filter-form');
-            let url = '';
-            if (currentFilter.length !== 0) {
-                $.each(currentFilter.serializeArray(), function (key, value) {
-                    hashParams[value['name']] = value['value'];
-                });
-                url = currentFilter.attr('action');
-            } else {
-                url = $(this.$el).attr('data-url');
-            }
-            hashParams['page'] = page;
-            this.$indexData(url, hashParams).then(res => {
+            this.$indexData(this.url, {"query": this.getQueryStr()}).then(res => {
                     _this.actions = res.actions;
                     _this.colNames = res.colNames;
                     _this.pageCount = res.countPage;
-                    _this.objects = res.data;
+                    if (res.data !== null && typeof (res.data) !== 'undefined') {
+                        _this.objects = res.data;
+                    } else {
+                        _this.objects = [];
+                    }
                 },
                 error => {
                     console.log(error);
@@ -44,12 +55,27 @@ var app = new Vue({
         },
         //过滤部分数据
         filterResult: function () {
-            app.getList();
+            this.getList();
+            toastr.success("刷新数据成功");
+        },
+        getQueryStr: function () {
+            let str = [];
+            $.each(this.index, function (k, v) {
+                if (v !== "") {
+                    str.push(k + ":" + v)
+                }
+            });
+            return str.join(',');
         },
         //清空数据
         refreshResult: function () {
-            $('.filter-form')[0].reset();
-            app.getList();
+            let _this = this;
+            $.each(this.index, function (k, v) {
+                _this.$data.index[k] = '';
+            });
+            this.getList();
+            toastr.success("刷新数据成功");
+
         },
     }
 });

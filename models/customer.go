@@ -15,10 +15,10 @@ import (
 //客户信息
 type Customer struct {
 	Id               int64     `orm:"pk;auto"`
-	Name             string    `orm:"size(128);unique;NOT NULL"`
-	Telephone        string    `orm:"size(128);unique;NOT NULL"`
+	Name             string    `orm:"size(128);unique"`
+	Telephone        string    `orm:"size(128);unique"`
 	Address          string    `orm:"size(256)"`
-	Email            string    `orm:"size(128);unique;NOT NULL"`
+	Email            string    `orm:"size(128);unique"`
 	Remarks          string    `orm:"size(128)"`
 	Website          string    `orm:"size(128)"`
 	CreatedAt        time.Time `orm:"auto_now_add;type(datetime)"`

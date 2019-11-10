@@ -74,6 +74,7 @@
             initData: function () {
                 let _this = this;
                 let id = "{{.Id}}";
+                console.log(id);
                 if (id !== "" && typeof (id) !== "undefined") {
                     this.$showInitData("/department/" + id).then(res => {
                             _this.department = res;

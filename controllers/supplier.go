@@ -1,7 +1,9 @@
 package controllers
 
 import (
+	"encoding/json"
 	"errors"
+	"github.com/astaxie/beego/logs"
 	"quickstart/models"
 	"strconv"
 	"strings"
@@ -29,7 +31,22 @@ func (c *SupplierController) URLMapping() {
 // @Failure 403 body is empty
 // @router / [post]
 func (c *SupplierController) Post() {
-
+	var v models.Customer
+	err := json.Unmarshal(c.Ctx.Input.RequestBody, &v)
+	logs.Error(err)
+	user := new(models.User)
+	user.Id = c.currentUser.Id
+	v.CreateUser = user
+	status, errs := v.Validate()
+	if status {
+		if _, err := models.AddCustomer(&v); err == nil {
+			c.jsonResult(200, "", "OK")
+		} else {
+			c.jsonResult(500, err.Error(), "")
+		}
+	} else {
+		c.jsonResult(500, errs, "")
+	}
 }
 
 // GetOne ...
@@ -40,7 +57,13 @@ func (c *SupplierController) Post() {
 // @Failure 403 :id is empty
 // @router /:id [get]
 func (c *SupplierController) GetOne() {
-
+	idStr := c.Ctx.Input.Param(":id")
+	id, _ := strconv.ParseInt(idStr, 0, 64)
+	if v, err := models.GetCustomerById(id); err != nil {
+		c.jsonResult(500, err.Error(), "")
+	} else {
+		c.jsonResult(200, "", v)
+	}
 }
 
 // GetAll ...
@@ -83,8 +106,13 @@ func (c *SupplierController) GetAll() {
 			query[k] = v
 		}
 	}
+	if v, err := c.GetInt64("limit"); err == nil {
+		limit = v
+	}
 	_, colNames := models.GetCustomerCols()
-	l, countPage, err := models.GetAllCustomer(query, fields, sortBy, order, offset, limit, "supplier")
+	l, countPage, err := models.GetAllCustomer(query, fields, sortBy,
+		order, offset, limit,
+		"supplier")
 	if err != nil {
 		c.jsonResult(500, err.Error(), "")
 	} else {
@@ -93,10 +121,20 @@ func (c *SupplierController) GetAll() {
 			"countPage": mapValue,
 			"data":      l,
 			"colNames":  colNames,
-			"actions":   customerActions(),
+			"actions":   c.actions(),
 		}
 		c.jsonResult(200, "", result)
 	}
+}
+
+//获取对应的actions
+func (c *SupplierController) actions() []models.CustomerSlice {
+	actions := []models.CustomerSlice{
+		{"name": "修改", "url": "/supplier/edit/:id", "remote": false},
+		{"name": "详情", "url": "/supplier/show/:id", "remote": false},
+		{"name": "删除", "url": "/supplier/:id", "remote": true, "method": "delete"},
+	}
+	return actions
 }
 
 // Put ...
@@ -108,7 +146,22 @@ func (c *SupplierController) GetAll() {
 // @Failure 403 :id is not int
 // @router /:id [put]
 func (c *SupplierController) Put() {
-
+	idStr := c.Ctx.Input.Param(":id")
+	id, _ := strconv.ParseInt(idStr, 0, 64)
+	v := models.Customer{Id: id}
+	err := json.Unmarshal(c.Ctx.Input.RequestBody, &v)
+	logs.Error(err)
+	status, errs := v.Validate()
+	if status {
+		if err = models.UpdateCustomerById(&v); err == nil {
+			c.jsonResult(200, "", "OK")
+		} else {
+			c.jsonResult(500, err.Error(), "")
+		}
+	} else {
+		c.jsonResult(500, errs, "")
+	}
+	
 }
 
 // Delete ...
@@ -119,21 +172,32 @@ func (c *SupplierController) Put() {
 // @Failure 403 id is empty
 // @router /:id [delete]
 func (c *SupplierController) Delete() {
-
+	idStr := c.Ctx.Input.Param(":id")
+	id, _ := strconv.ParseInt(idStr, 0, 64)
+	if err := models.DeleteCustomer(id); err == nil {
+		c.jsonResult(200, "", "OK")
+	} else {
+		c.jsonResult(500, err.Error(), "")
+	}
 }
 
-func (c *SupplierController) Get() {
+func (c *SupplierController) Index() {
 	c.Data["JsName"] = "customer_index"
 	c.Data["Namespace"] = "customer_manage"
 	c.Data["PageTitle"] = "供应商信息"
-	c.setTpl("supplier/index.html")
+	c.setTpl("customer/index.html")
 }
 func (c *SupplierController) Edit() {
 	c.Data["JsName"] = "customer_form"
+	idStr := c.Ctx.Input.Params()["0"]
+	c.Data["Namespace"] = "customer_manage"
+	c.Data["PageTitle"] = "修改供应商信息"
+	c.Data["Id"] = idStr
+	c.setTpl("customer/form.html")
 }
 func (c *SupplierController) New() {
 	c.Data["JsName"] = "customer_form"
 	c.Data["Namespace"] = "customer_manage"
 	c.Data["PageTitle"] = "新增供应商信息"
-	c.setTpl("supplier/form.html")
+	c.setTpl("customer/form.html")
 }

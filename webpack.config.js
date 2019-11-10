@@ -1,6 +1,6 @@
 // webpack v4
 const path = require('path');
-
+const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 // const nodeExternals = require('webpack-node-externals');
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 const VueLoaderPlugin = require('vue-loader/lib/plugin');
@@ -34,6 +34,7 @@ module.exports = {
             ignoreOrder: false, // Enable to remove warnings about conflicting order
         }),
         new VueLoaderPlugin(),
+        new CleanWebpackPlugin(),
     ],
     resolve: {
         extensions: ['.js', '.vue', '.json'],

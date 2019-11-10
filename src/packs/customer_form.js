@@ -26,17 +26,32 @@ var app = new Vue({
         CompanyTypeOptions: [],
         IsVipOptions: [],
         Id: '',
+        Url: '',
     },
     mounted: function () {
+        this.confirmUrl();
         this.initData();
         this.select2Method();
     },
     methods: {
-        select2Method: function (actionType) {
-            let data = window.selectApi("/customer/get_status", {actionType: 'all'}, 1);
+        confirmUrl: function () {
+            if (location.pathname.indexOf("supplier") > -1) {
+                this.Url = "/supplier"
+            } else {
+                this.Url = "/customer"
+            }
+        },
+        select2Method: function () {
+            let data = window.selectApi("/customer/status", {actionType: 'all'}, 1);
             this.AccountPeriodOptions = data.AccountPeriod;
             this.CompanyTypeOptions = data.CompanyType;
             this.IsVipOptions = data.IsVip;
+            if (this.Url === '/supplier') {
+                this.CompanyTypeOptions.splice(0, 1)
+            } else {
+                this.CompanyTypeOptions.splice(1, 1)
+            }
+
         },
         clickCompany: function (search) {
             let options = {};
@@ -61,9 +76,10 @@ var app = new Vue({
             let location_url = location.pathname.split('/');
             let id = location_url[location_url.length - 1];
             if (!isNaN(parseInt(id))) {
-                this.$showInitData("/customer/" + id).then(res => {
-                        _this.customer = res.data;
-                        _this.Id = res.data.Id;
+                this.$showInitData((this.Url + "/" + id)).then(res => {
+                        console.log(res);
+                        _this.customer = res;
+                        _this.Id = res.Id;
                     },
                     error => {
                         console.log(error);
@@ -74,10 +90,10 @@ var app = new Vue({
             let _this = this;
             let url, method;
             if (this.Id === '') {
-                url = "/customer";
+                url = this.Url;
                 method = 'post';
             } else {
-                url = "/customer/" + this.Id;
+                url = this.Url + "/" + this.Id;
                 method = 'put';
             }
             if (this.validateForm()) {
@@ -122,7 +138,7 @@ var app = new Vue({
                 this.errors.push("类型不能为空");
                 return false;
             }
-            if (!this.customer.SaleUser) {
+            if (!this.customer.SaleUser && this.Url === "/customer") {
                 this.errors.push("业务员不能为空");
                 return false;
             }

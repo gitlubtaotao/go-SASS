@@ -63,7 +63,11 @@ func GetAllUser(query map[string]string, fields []string, sortby []string, order
 		// rewrite dot-notation to Object__Attribute
 		k = strings.Replace(k, ".", "__", -1)
 		if v != "" {
-			qs = qs.Filter(k, v)
+			if k == "Name" || k == "Phone" {
+				qs = qs.Filter(k+"__icontains", v)
+			} else {
+				qs = qs.Filter(k, v)
+			}
 		}
 	}
 	count, _ := qs.Count()
@@ -118,7 +122,9 @@ func GetAllUser(query map[string]string, fields []string, sortby []string, order
 			for _, fname := range fields {
 				m[fname] = val.FieldByName(fname).Interface()
 			}
-			m["EntryTime"] = v.EntryTime.Format("2006-01-02 15:04:05")
+			if ArrayExistItem("EntryTime", fields) {
+				m["EntryTime"] = v.EntryTime.Format("2006-01-02 15:04:05")
+			}
 			m["Company.Name"] = v.Company.Name
 			m["Company.Email"] = v.Company.Email
 			ml = append(ml, m)
@@ -150,6 +156,7 @@ func GetUserCols() ([]string, []CustomerSlice) {
 		{"key": "Company.Email", "value": "公司邮箱", "class": "col-xs-2"},
 		{"key": "Name", "value": "姓名", "class": "col-xs-1"},
 		{"key": "Email", "value": "邮箱", "class": "col-xs-1"},
+		{"key": "Phone", "value": "电话", "class": ""},
 		{"key": "Gender", "value": "性别", "class": "col-xs-1"},
 		{"key": "EntryTime", "value": "入职时间", "class": "col-xs-1"},
 		{"key": "Department.Name", "value": "部门", "class": "col-xs-1"},

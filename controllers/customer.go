@@ -1,5 +1,6 @@
 package controllers
 
+import "C"
 import (
 	"encoding/json"
 	"errors"
@@ -17,7 +18,7 @@ type CustomerController struct {
 func (c *CustomerController) URLMapping() {
 	c.Mapping("Post", c.Post)
 	c.Mapping("GetOne", c.GetOne)
-	c.Mapping("GetAll", c.GetAll)
+	c.Mapping("Get", c.GetAll)
 	c.Mapping("Put", c.Put)
 	c.Mapping("Delete", c.Delete)
 }
@@ -60,18 +61,10 @@ func (c *CustomerController) GetOne() {
 	idStr := c.Ctx.Input.Param(":id")
 	id, _ := strconv.ParseInt(idStr, 0, 64)
 	v, err := models.GetCustomerById(id)
-	var otherInfo map[string]interface{}
-	otherInfo = make(map[string]interface{})
 	if err != nil {
 		c.jsonResult(500, err.Error(), "")
 	} else {
-		otherInfo["selectVip"] = v.ShowVip(false)
-		otherInfo["selectPeriod"] = v.ShowPeriod(false)
-		otherInfo["selectCompanyType"] = v.ShowCompanyType(false)
-		result := map[string]interface{}{
-			"data": v, "other": otherInfo,
-		}
-		c.jsonResult(200, "", result)
+		c.jsonResult(200, "", v)
 	}
 }
 
@@ -200,6 +193,12 @@ func (c *CustomerController) Get() {
 	c.Data["PageTitle"] = "客户信息"
 	c.setTpl("customer/index.html")
 }
+func (c *CustomerController) Index()  {
+	c.Data["JsName"] = "customer_index"
+	c.Data["Namespace"] = "customer_manage"
+	c.Data["PageTitle"] = "客户信息"
+	c.setTpl("customer/index.html")
+}
 func (c *CustomerController) New() {
 	c.Data["JsName"] = "customer_form"
 	c.Data["Namespace"] = "customer_manage"
@@ -210,12 +209,12 @@ func (c *CustomerController) Edit() {
 	c.Data["JsName"] = "customer_form"
 	c.Data["Namespace"] = "customer_manage"
 	c.Data["PageTitle"] = "修改客户信息"
-	idStr := c.Ctx.Input.Param(":id")
+	idStr := c.Ctx.Input.Params()["0"]
 	c.Data["Id"] = idStr
 	c.setTpl("customer/form.html")
 }
 
-func (c *CustomerController) GetStatus() {
+func (c *CustomerController) Status() {
 	actionType := c.GetString("actionType")
 	var result []models.CustomerSlice
 	returnJson := make(map[string]interface{})
