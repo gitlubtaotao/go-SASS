@@ -8,7 +8,7 @@ $(document).ready(function () {
     let formDatetime = $(".datepicker");
     if (formDatetime.length > 0) {
         $('.datepicker').datepicker({
-            format: 'yyyy-m-d',
+            format: 'yyyy-mm-dd ',
             language: 'zh-CN',
         }).next().on(ace.click_event, function () {
             $(this).prev().focus();
