@@ -14,7 +14,10 @@ import (
 	_ "quickstart/utils"
 )
 
+
+
 func main() {
+
 	orm.Debug = true
 	log := logs.NewLogger(10000)
 	_ = logs.SetLogger(logs.AdapterConsole, `{"level":7,"color":true}`)
@@ -23,15 +26,12 @@ func main() {
 	beego.Run()
 }
 
-
-
-
-func init()  {
-	beego.BConfig.WebConfig.DirectoryIndex=true
-	beego.SetStaticPath("/static","static")
-	beego.SetStaticPath("/assets","assets")
-	beego.SetStaticPath("/dist","dist")
-	beego.SetStaticPath("/views","views")
+func init() {
+	beego.BConfig.WebConfig.DirectoryIndex = true
+	beego.SetStaticPath("/static", "static")
+	beego.SetStaticPath("/assets", "assets")
+	beego.SetStaticPath("/dist", "dist")
+	beego.SetStaticPath("/views", "views")
 	//链接数据库
 	dataConnection()
 	//链接redis
@@ -39,7 +39,7 @@ func init()  {
 	
 }
 
-func dataConnection()  {
+func dataConnection() {
 	//需要配置时间为东八区,否则取出来的时间少8个小时
 	_ = orm.RegisterDataBase("default", "mysql",
 		"root:qweqwe123@tcp(127.0.0.1:3306)/go_quick_start?charset=utf8&loc=Asia%2FShanghai")

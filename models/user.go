@@ -22,7 +22,9 @@ type User struct {
 	Pwd            string
 	Gender         string      `orm:"size(64)"`
 	Positions      []*Position `orm:"rel(m2m)"`
-	EntryTime      time.Time   `orm:"auto_now;type(datetime)"`
+	EntryTime      time.Time
+	CreatedAt      time.Time   `orm:"auto_now_add;type(datetime)" json:"CreatedAt"`
+	UpdatedAt      time.Time   `orm:"auto_now;type(datetime)"`
 	Company        *Company    `orm:"rel(fk);index" json:"Company"`
 	Department     *Department `orm:"rel(fk);index;NULL" json:"Department"`
 }

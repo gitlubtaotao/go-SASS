@@ -36,7 +36,7 @@ func (c *UserController) Post() {
 	var v models.User
 	err := json.Unmarshal(c.Ctx.Input.RequestBody, &v)
 	logs.Info(err)
-	logs.Info(v.Company)
+	logs.Info(v)
 	encodePassword := c.generatePassword(v.Pwd)
 	v.EncodePassword = encodePassword
 	v.Pwd = ""

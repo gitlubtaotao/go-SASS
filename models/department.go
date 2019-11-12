@@ -13,9 +13,8 @@ import (
 type Department struct {
 	Id        int64     `orm:"pk;auto"`
 	Name      string    `orm:"size(128)"`
-	CreatedAt time.Time `orm:"auto_now;type(datetime)"`
-	UpdatedAt time.Time
-	DeletedAt time.Time
+	CreatedAt time.Time `orm:"auto_now_add;type(datetime)" json:"CreatedAt"`
+	UpdatedAt time.Time `orm:"auto_now;type(datetime)"`
 	Company   *Company `orm:"rel(fk);index" json:"Company"`
 }
 

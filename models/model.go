@@ -3,6 +3,7 @@ package models
 import (
 	"github.com/astaxie/beego/orm"
 	"reflect"
+	
 )
 
 type CustomerSlice map[string]interface{}
@@ -75,3 +76,5 @@ func ArrayExistItem(obj interface{}, target interface{}) bool {
 	return false
 	
 }
+
+

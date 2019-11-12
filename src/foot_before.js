@@ -1,4 +1,5 @@
 'use strict';
+
 window.Vue = require('vue');
 import Paginate from 'vuejs-paginate';
 import vueSelect from 'vue-select';
@@ -16,4 +17,7 @@ window.toastr = toastr;
 
 import {selectApi} from './plugin/data_api';
 window.selectApi = selectApi;
+require("./plugin/dateExtend");
+
+
 

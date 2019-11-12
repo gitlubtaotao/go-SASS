@@ -35,3 +35,5 @@ func ShowSaleUser(controllerName string) bool {
 func RandNumber() int  {
 	return rand.Intn(10)
 }
+
+

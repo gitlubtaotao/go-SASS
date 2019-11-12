@@ -34,7 +34,7 @@ func (c *DepartmentController) Post() {
 	var v models.Department
 	err:= json.Unmarshal(c.Ctx.Input.RequestBody, &v)
 	logs.Info(err)
-	logs.Info(v.Company)
+	logs.Info(v.CreatedAt)
 	if _, err := models.AddDepartment(&v); err == nil {
 		c.Ctx.Output.SetStatus(201)
 		c.Data["json"] = "OK"
