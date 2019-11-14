@@ -16,7 +16,7 @@ function selectApi(url, options = {}, page = 1) {
         headers: {'X-Requested-With': 'XMLHttpRequest'},
         success: function (data) {
             if (data.code === 200) {
-                returnValue = data.obj
+                returnValue = data.obj;
             }
         },
         error: function (data) {

@@ -96,8 +96,7 @@
                             <div class="input-group">
                                 <span class="input-group-addon"><i class="fa fa-clock-o bigger-110"></i>
                                 </span>
-                                <input name="EntryTime" v-model="user.EntryTime" type="text" value=""
-                                       class="form-control form_datetime datepicker"/>
+                                <datetime v-model="user.EntryTime"  type="datetime" format="yyyy-MM-dd HH:mm"></datetime>
                             </div>
 
                         </div>
@@ -158,6 +157,7 @@
                     url = "/user/" + this.Id;
                     method = 'put'
                 }
+                // let entryTime = this.user.EntryTime;
                 if (this.validateSubmit()) {
                     this.$submitFormData(method, url, this.user).then(res => {
                             if (res.length !== 0) {
@@ -204,7 +204,8 @@
                     this.errors.push('请输入有效的手机号码');
                     return false;
                 }
-
+                console.log(this.user.EntryTime);
+                // this.user.EntryTime = this.$dateFormat(this.user.EntryTime,"YYYY-MM-DDTHH:mm:ssZ");
                 return true;
             },
             validatePassword: function () {
@@ -238,6 +239,7 @@
                     this.$showInitData("/user/" + id).then(res => {
                             _this.user = res;
                             _this.Id = res.Id;
+
                         },
                         error => {
                             console.log(error);

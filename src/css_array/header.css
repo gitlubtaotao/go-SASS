@@ -1,2 +1,11 @@
+.vdatetime-input{
+    width: 100%;
+}
 
-
+.vdatetime-popup__header{
+    background: #438EB9 !important;
+}
+.vdatetime-calendar__month__day--selected > span > span,
+.vdatetime-calendar__month__day--selected:hover > span > span{
+    background: #438EB9 !important;
+}
