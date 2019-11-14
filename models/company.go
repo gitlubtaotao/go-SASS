@@ -7,6 +7,7 @@ import (
 	"github.com/astaxie/beego/orm"
 	"github.com/astaxie/beego/validation"
 	"log"
+	"quickstart/utils"
 	"reflect"
 	"strings"
 	
@@ -88,11 +89,8 @@ func GetAllCompany(query map[string]string, fields []string, sortby []string, or
 		// rewrite dot-notation to Object__Attribute
 		k = strings.Replace(k, ".", "__", -1)
 		if v != "" {
-			if k == "Name" || k == "Address" {
-				qs = qs.Filter(k+"__icontains", v)
-			} else {
-				qs = qs.Filter(k, v)
-			}
+			qs = qs.Filter(k, v)
+			
 		}
 	}
 	count, _ := qs.Count()
@@ -154,7 +152,7 @@ func GetAllCompany(query map[string]string, fields []string, sortby []string, or
 					m[fname] = val.FieldByName(fname).Interface()
 				}
 				if ArrayExistItem("CreatedAt", fields) {
-					m["CreatedAt"] = v.CreatedAt.Format("2006-01-02 15:04:05")
+					m["CreatedAt"] = utils.LongTime(v.CreatedAt)
 				}
 				ml = append(ml, m)
 			}

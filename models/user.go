@@ -6,6 +6,7 @@ import (
 	"github.com/astaxie/beego/logs"
 	"github.com/astaxie/beego/validation"
 	"log"
+	"quickstart/utils"
 	"reflect"
 	"strings"
 	"time"
@@ -65,11 +66,7 @@ func GetAllUser(query map[string]string, fields []string, sortby []string, order
 		// rewrite dot-notation to Object__Attribute
 		k = strings.Replace(k, ".", "__", -1)
 		if v != "" {
-			if k == "Name" || k == "Phone" {
-				qs = qs.Filter(k+"__icontains", v)
-			} else {
-				qs = qs.Filter(k, v)
-			}
+			qs = qs.Filter(k, v)
 		}
 	}
 	count, _ := qs.Count()
@@ -125,7 +122,7 @@ func GetAllUser(query map[string]string, fields []string, sortby []string, order
 				m[fname] = val.FieldByName(fname).Interface()
 			}
 			if ArrayExistItem("EntryTime", fields) {
-				m["EntryTime"] = v.EntryTime.Format("2006-01-02 15:04:05")
+				m["EntryTime"] = utils.LongTime(v.EntryTime)
 			}
 			m["Company.Name"] = v.Company.Name
 			m["Company.Email"] = v.Company.Email

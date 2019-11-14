@@ -3,6 +3,7 @@ package models
 import (
 	"errors"
 	"fmt"
+	"quickstart/utils"
 	"reflect"
 	"strings"
 	"time"
@@ -15,7 +16,7 @@ type Department struct {
 	Name      string    `orm:"size(128)"`
 	CreatedAt time.Time `orm:"auto_now_add;type(datetime)" json:"CreatedAt"`
 	UpdatedAt time.Time `orm:"auto_now;type(datetime)"`
-	Company   *Company `orm:"rel(fk);index" json:"Company"`
+	Company   *Company  `orm:"rel(fk);index" json:"Company"`
 }
 
 func init() {
@@ -63,11 +64,7 @@ func GetAllDepartment(query map[string]string, fields []string, sortby []string,
 		// rewrite dot-notation to Object__Attribute
 		k = strings.Replace(k, ".", "__", -1)
 		if v != "" {
-			if k == "Name" {
-				qs = qs.Filter("name__icontains", v)
-			} else {
-				qs = qs.Filter(k, v)
-			}
+			qs = qs.Filter(k, v)
 		}
 	}
 	// order by:
@@ -123,7 +120,7 @@ func GetAllDepartment(query map[string]string, fields []string, sortby []string,
 				m[fname] = val.FieldByName(fname).Interface()
 			}
 			if ArrayExistItem("CreatedAt", fields) {
-				m["CreatedAt"] = v.CreatedAt.Format("2006-01-02 15:04:05")
+				m["CreatedAt"] = utils.LongTime(v.CreatedAt)
 			}
 			ml = append(ml, m)
 		}

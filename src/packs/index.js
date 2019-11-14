@@ -4,8 +4,9 @@ var app = new Vue({
     data: {
         pageCount: 1, colNames: [], objects: [], actions: [],
         index: {
-            Name: "", Department: '', Email: '', Telephone: '',
-            Company: '', Gender: '', Phone: '',
+            name__icontains: "", Department: '', email__contains: '', telephone__icontains: '',
+            Company: '', Gender: '', phone__contains: '', entry_time__lte: '',entry_time__gte: '',
+            created_at__lte: "",created_at__gte: '',
         },
         url: '', DepartmentArray: [], CompanyArray: [],
     },
@@ -16,16 +17,16 @@ var app = new Vue({
     },
     methods: {
         clickDepartment: function (search) {
-            let str = "Company:" + this.index.Company;
+            let str = "company.id:" + this.index.Company;
             if (search) {
-                str += ("Name:" + search)
+                str += ("name__icontains:" + search)
             }
             this.DepartmentArray = this.$select2Department({"query": str})
         },
         clickCompany: function (search) {
             let str = "";
             if (search) {
-                str += ("Name:" + search)
+                str += ("name__icontains:" + search)
             }
             this.CompanyArray = this.$select2Company({"query": str});
         },

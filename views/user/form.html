@@ -204,8 +204,6 @@
                     this.errors.push('请输入有效的手机号码');
                     return false;
                 }
-                console.log(this.user.EntryTime);
-                // this.user.EntryTime = this.$dateFormat(this.user.EntryTime,"YYYY-MM-DDTHH:mm:ssZ");
                 return true;
             },
             validatePassword: function () {
@@ -227,7 +225,7 @@
             selectData: function (search) {
                 let options = {};
                 if (search) {
-                    options["query"] = "Name:" + search;
+                    options["query"] = "name__icontains:" + search;
                 }
                 this.companyOptions = this.$select2Company(options);
             },
@@ -251,9 +249,9 @@
                 if (company === "") {
                     return
                 }
-                let str = "Company:" + company.Id;
+                let str = "company.id:" + company.Id;
                 if (search) {
-                    str += ",Name:" + search;
+                    str += ",name__icontains:" + search;
                 }
                 this.departmentOptions = this.$select2Department({query: str});
             }

@@ -88,7 +88,7 @@
             selectData: function (search) {
                 let options = {};
                 if (search) {
-                    options["query"] = "Name:" + search;
+                    options["query"] = "name__icontains:" + search;
                 }
                 this.options = this.$select2Company(options);
             },

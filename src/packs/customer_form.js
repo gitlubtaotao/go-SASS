@@ -56,7 +56,7 @@ var app = new Vue({
         clickCompany: function (search) {
             let options = {};
             if (search) {
-                options['query'] = "Name:" + search;
+                options['query'] = "name__icontains:" + search;
             }
             this.CompanyOptions = this.$select2Company(options);
         },
@@ -64,10 +64,10 @@ var app = new Vue({
             let str = "";
             let company = this.customer.Company;
             if (company !== '' && company !== null) {
-                str = "Company:" + company.Id;
+                str = "company.id:" + company.Id;
             }
             if (search) {
-                str += "Name:" + search;
+                str += "name__icontains:" + search;
             }
             this.userOptions = this.$select2User({query: str})
         },

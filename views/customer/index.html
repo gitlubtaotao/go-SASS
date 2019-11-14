@@ -39,7 +39,7 @@
                                 <div class="col-sm-3 col-xs-12">
                                     <label class="control-label col-sm-4">公司名称</label>
                                     <div class="col-sm-8">
-                                        <input class="form-control " value="" name="Name" v-model.trim="customer.Name"
+                                        <input class="form-control " value="" name="Name" v-model.trim="customer.name__icontains"
                                                placeholder="请输入公司名称">
                                     </div>
                                 </div>
@@ -47,14 +47,14 @@
                                     <label class="control-label col-sm-4">公司座机</label>
                                     <div class="col-sm-8">
                                         <input class="form-control " value="" name="Telephone"
-                                               v-model.trim="customer.Telephone"
+                                               v-model.trim="customer.telephone__icontains"
                                                placeholder="请输入公司座机">
                                     </div>
                                 </div>
                                 <div class=" col-sm-3 col-xs-12">
                                     <label class="control-label col-sm-4">公司邮箱</label>
                                     <div class="col-sm-8">
-                                        <input class="form-control " value="" name="Email" v-model.trim="customer.Email"
+                                        <input class="form-control " value="" name="Email" v-model.trim="customer.email__contains"
                                                placeholder="请输入公司邮箱">
                                     </div>
                                 </div>
@@ -62,7 +62,7 @@
                                     <label class="control-label col-sm-4">业务类型</label>
                                     <div class="col-sm-8">
                                         <input class="form-control" type="text" value="" name="BusinessTypeName"
-                                               v-model.trim="customer.BusinessTypeName"
+                                               v-model.trim="customer.business_type_name__contains"
                                                placeholder="请输入业务类型">
                                     </div>
                                 </div>

@@ -2,7 +2,7 @@ var app = new Vue({
     el: '#page_content',
     delimiters: ['{', '}'],
     data: {
-        company: {Name: '', Telephone: '', Email: '', Address: ''},
+        company: {name__icontains: '', telephone__icontains: '', email__contains: '', address__contains: ''},
         pageCount: 1, colNames: [], objects: [], actions: [],
     },
     mounted: function () {

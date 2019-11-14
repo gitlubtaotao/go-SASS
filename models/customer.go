@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"github.com/astaxie/beego/logs"
 	"github.com/astaxie/beego/validation"
+	"quickstart/utils"
 	"reflect"
 	"strings"
 	"time"
@@ -71,11 +72,8 @@ func GetAllCustomer(query map[string]string, fields []string, sortby []string, o
 		// rewrite dot-notation to Object__Attribute
 		k = strings.Replace(k, ".", "__", -1)
 		if v != "" {
-			if k == "Name" {
-				qs = qs.Filter("name__icontains", v)
-			} else{
-				qs = qs.Filter(k, v)
-			}
+			qs = qs.Filter(k, v)
+			
 		}
 	}
 	if typeValue == "customer" {
@@ -134,20 +132,20 @@ func GetAllCustomer(query map[string]string, fields []string, sortby []string, o
 			for _, fname := range fields {
 				m[fname] = val.FieldByName(fname).Interface()
 			}
-			if ArrayExistItem("Status",fields) {
+			if ArrayExistItem("Status", fields) {
 				m["Status"] = v.ShowStatus(true).(string)
 			}
-			if ArrayExistItem("IsVip",fields) {
+			if ArrayExistItem("IsVip", fields) {
 				m["IsVip"] = v.ShowVip(true).(string)
 			}
-			if ArrayExistItem("CompanyType",fields) {
+			if ArrayExistItem("CompanyType", fields) {
 				m["CompanyType"] = v.ShowCompanyType(true).(string)
 			}
-			if ArrayExistItem("AccountPeriod",fields) {
+			if ArrayExistItem("AccountPeriod", fields) {
 				m["AccountPeriod"] = v.ShowPeriod(true).(string)
 			}
-			if ArrayExistItem("CreatedAt",fields) {
-				m["CreatedAt"] = v.CreatedAt.Format("2006-01-02 15:04:05")
+			if ArrayExistItem("CreatedAt", fields) {
+				m["CreatedAt"] = utils.LongTime(v.CreatedAt)
 			}
 			ml = append(ml, m)
 		}

@@ -4,9 +4,9 @@ var app = new Vue({
     data: {
         pageCount: 1, colNames: [], objects: [], actions: [],
         customer: {
-            Name: '', Telephone: '', Email: '',
+            name__icontains: '', telephone__icontains: '', email__contains: '',
             AccountPeriod: '', IsVip: '',
-            Status: '', BusinessTypeName: '',
+            Status: '', business_type_name__contains: '',
             AuditUser: '', CreateUser: '',
             SaleUser: '', Company: ''
         },
@@ -25,7 +25,7 @@ var app = new Vue({
         clickCompany: function (search) {
             let str = "";
             if (search) {
-                str += ("Name:" + search)
+                str += ("name__icontains:" + search)
             }
             this.companyOptions = this.$select2Company({query: str})
         },
@@ -33,10 +33,10 @@ var app = new Vue({
             let str = "";
             let company = this.customer.Company;
             if (company !== '' && company !== null) {
-                str = "Company:" + company;
+                str = "company.id:" + company;
             }
             if (search) {
-                str += (",Name:" + search)
+                str += (",name__icontains:" + search)
             }
             this.userOptions = this.$select2User({query: str})
         },

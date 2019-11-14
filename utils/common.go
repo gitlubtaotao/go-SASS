@@ -4,6 +4,7 @@ import (
 	"github.com/astaxie/beego"
 	"github.com/astaxie/beego/logs"
 	"math/rand"
+	"time"
 )
 
 func init() {
@@ -36,4 +37,13 @@ func RandNumber() int  {
 	return rand.Intn(10)
 }
 
+
+//较长的时间格式输出
+func LongTime(t time.Time) string {
+	return t.Format("2006-01-02 15:04:05")
+}
+//简短的时间格式输出
+func ShortTime(t time.Time) string  {
+	return t.Format("2006-01-02")
+}
 
