@@ -132,10 +132,13 @@ func (c *CustomerController) GetAll() {
 			"colNames":  colNames,
 			"actions":   customerActions(),
 		}
-		c.jsonResult(200, "", result)
+		if c.GetString("format") != "" {
+			c.DownLoad(l, colNames)
+		} else {
+			c.jsonResult(200, "", result)
+		}
 	}
 }
-
 func customerActions() []models.CustomerSlice {
 	actions := []models.CustomerSlice{
 		{"name": "修改", "url": "/customer/edit/:id", "remote": false},
@@ -193,16 +196,18 @@ func (c *CustomerController) Get() {
 	c.Data["PageTitle"] = "客户信息"
 	c.setTpl("customer/index.html")
 }
-func (c *CustomerController) Index()  {
+func (c *CustomerController) Index() {
 	c.Data["JsName"] = "customer_index"
 	c.Data["Namespace"] = "customer_manage"
 	c.Data["PageTitle"] = "客户信息"
 	c.setTpl("customer/index.html")
+	
 }
 func (c *CustomerController) New() {
 	c.Data["JsName"] = "customer_form"
 	c.Data["Namespace"] = "customer_manage"
 	c.Data["PageTitle"] = "新增客户信息"
+	
 	c.setTpl("customer/form.html")
 }
 func (c *CustomerController) Edit() {
@@ -235,7 +240,7 @@ func (c *CustomerController) Status() {
 	}
 	if actionType != "all" {
 		c.jsonResult(200, "", result)
-	}else{
-		c.jsonResult(200,"",returnJson)
+	} else {
+		c.jsonResult(200, "", returnJson)
 	}
 }

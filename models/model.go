@@ -56,7 +56,7 @@ func structMethods(model interface{}) (methods []string) {
 	return methods
 }
 
-//数组元素是否保护某元素
+//数组元素是否存在某元素
 //ArrayExistItem(2,[]int{1,23})
 func ArrayExistItem(obj interface{}, target interface{}) bool {
 	targetValue := reflect.ValueOf(target)
@@ -75,5 +75,14 @@ func ArrayExistItem(obj interface{}, target interface{}) bool {
 	return false
 }
 
-
-
+//struct to map
+func Struct2Map(obj interface{}) map[string]interface{} {
+	var fields []string
+	var data = make(map[string]interface{})
+	s := reflect.ValueOf(obj).Elem()
+	fields =  StrutFields(obj)
+	for _, fname := range fields {
+		data[fname] = s.FieldByName(fname).Interface()
+	}
+	return  data
+}

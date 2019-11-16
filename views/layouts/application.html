@@ -37,7 +37,7 @@
 <footer>
     {{template "layouts/footer.html" .}}
     {{if .JsName | ShowAssets}}
-        <script src="/dist/{{.JsName}}.js?version={{RandNumber}}"></script>
+        <script src="/dist/{{.JsName}}.js"></script>
     {{end}}
     {{.Scripts}}
 </footer>

@@ -3,6 +3,7 @@ var app = new Vue({
     delimiters: ['{', '}'],
     data: {
         pageCount: 1, colNames: [], objects: [], actions: [],
+        page: 1,
         customer: {
             name__icontains: '', telephone__icontains: '', email__contains: '',
             AccountPeriod: '', IsVip: '',
@@ -43,10 +44,11 @@ var app = new Vue({
         },
         //获取对应的员工数据
         clickCallback: function (pageNum) {
+            this.page = pageNum;
             this.getList(pageNum);
         },
         //获取所有的数据
-        getList: function (page = 1) {
+        getList: function () {
             let _this = this;
             let url = "";
             if (location.pathname === "/supplier/index") {
@@ -54,8 +56,7 @@ var app = new Vue({
             } else {
                 url = "/customer";
             }
-            console.log(this.getFilerResult());
-            this.$indexData(url, {query: this.getFilerResult()}).then(res => {
+            this.$indexData(url, {query: this.getFilerResult(),page: this.page}).then(res => {
                     _this.actions = res.actions;
                     _this.colNames = res.colNames;
                     _this.pageCount = res.countPage;

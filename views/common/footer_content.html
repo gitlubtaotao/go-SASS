@@ -1,0 +1,17 @@
+<div class="space-12"></div>
+<div class="row">
+    <div class="col-xs-12 col-sm-12">
+        <div class="pull-left">
+            <download-extend :click-handler="getFilerResult()" :page="page"></download-extend>
+        </div>
+        <div class="pull-right">
+            <paginate
+                    :page-count="pageCount"
+                    :click-handler="clickCallback"
+                    :prev-text="'Prev'"
+                    :next-text="'Next'"
+                    :container-class="'pagination'">
+            </paginate>
+        </div>
+    </div>
+</div>

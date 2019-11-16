@@ -38,9 +38,9 @@ var app = new Vue({
             this.getList(pageNum);
         },
         //获取所有的数据
-        getList: function () {
+        getList: function (page = 1) {
             let _this = this;
-            this.$indexData(this.url, {"query": this.getQueryStr()}).then(res => {
+            this.$indexData(this.url, {"query": this.getQueryStr(),page: page}).then(res => {
                     _this.actions = res.actions;
                     _this.colNames = res.colNames;
                     _this.pageCount = res.countPage;

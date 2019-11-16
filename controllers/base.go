@@ -2,11 +2,20 @@ package controllers
 
 import "C"
 import (
+	"bytes"
+	"fmt"
 	"github.com/astaxie/beego"
+	"github.com/astaxie/beego/logs"
 	"github.com/lhtzbj12/sdrms/enums"
+	"github.com/tealeg/xlsx"
 	"html/template"
+	"net/http"
 	"quickstart/models"
+	"reflect"
+	"strconv"
+	
 	"strings"
+	"time"
 )
 
 //BaseController
@@ -109,3 +118,59 @@ func (this *BaseController) setTpl(template ...string) {
 	//设置模版名称
 	this.TplName = tplName
 }
+
+//进行附件的下载
+func (this *BaseController) DownLoad(data []interface{}, cols []models.CustomerSlice) {
+	var file *xlsx.File
+	var sheet *xlsx.Sheet
+	var row *xlsx.Row
+	var cell *xlsx.Cell
+	var err error
+	file = xlsx.NewFile()
+	sheet, err = file.AddSheet("Sheet1")
+	if err != nil {
+		logs.Info(err.Error())
+	}
+	row = sheet.AddRow()
+	for _, iv := range cols {
+		cell = row.AddCell()
+		cell.Value = iv["value"].(string)
+	}
+	cell = row.AddCell()
+	for _, v := range data {
+		row = sheet.AddRow()
+		for _, iv := range cols {
+			value := v.(map[string]interface{})
+			name := iv["key"].(string)
+			cell = row.AddCell()
+			//logs.Info(value[name])
+			if reflect.TypeOf(value[name]).Kind() == reflect.Ptr {
+				cell.Value = models.Struct2Map(value[name])["Name"].(string)
+			} else if reflect.TypeOf(value[name]).Kind() == reflect.String {
+				if value[name] != "" {
+					cell.Value = value[name].(string)
+				}
+			} else if reflect.TypeOf(value[name]).Kind() == reflect.Int {
+				cell.Value = strconv.Itoa(value[name].(int))
+			} else if reflect.TypeOf(value[name]).Kind() == reflect.Int64 {
+				cell.Value = strconv.FormatInt(int64(value[name].(int64)), 10)
+			} else if reflect.TypeOf(value[name]).Kind() == reflect.Bool{
+				cell.Value = strconv.FormatBool(value[name].(bool))
+			}
+		}
+	}
+	this.Ctx.ResponseWriter.Header().Add("Content-Disposition", "attachment")
+	this.Ctx.ResponseWriter.Header().Add("Content-Type",
+		"application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
+	
+	var buffer bytes.Buffer
+	if err = file.Write(&buffer); err != nil {
+		logs.Info(err)
+	}
+	r := bytes.NewReader(buffer.Bytes())
+	http.ServeContent(this.Ctx.ResponseWriter, this.Ctx.Request, "", time.Now(), r)
+	if err != nil {
+		fmt.Printf(err.Error())
+	}
+}
+

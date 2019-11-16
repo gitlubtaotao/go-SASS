@@ -14,10 +14,10 @@ var app = new Vue({
             this.getList(pageNum);
         },
         //获取所有的数据
-        getList: function () {
+        getList: function (page = 1) {
             let url = "/company";
             let _this = this;
-            this.$indexData(url, {query: this.getFilerResult()}).then(res => {
+            this.$indexData(url, {query: this.getFilerResult(),page: page}).then(res => {
                     _this.actions = res.actions;
                     _this.colNames = res.colNames;
                     _this.pageCount = res.countPage;
