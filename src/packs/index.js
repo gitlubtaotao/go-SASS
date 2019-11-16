@@ -2,7 +2,7 @@ var app = new Vue({
     el: '#page_content',
     delimiters: ['{', '}'],
     data: {
-        pageCount: 1, colNames: [], objects: [], actions: [],
+        pageCount: 1, colNames: [], objects: [], actions: [],page: 1,
         index: {
             name__icontains: "", Department: '', email__contains: '', telephone__icontains: '',
             Company: '', Gender: '', phone__contains: '', entry_time__lte: '',entry_time__gte: '',
@@ -35,12 +35,13 @@ var app = new Vue({
             this.url = url.slice(0, url.length - 6);
         },
         clickCallback: function (pageNum) {
+            this.page = pageNum;
             this.getList(pageNum);
         },
         //获取所有的数据
-        getList: function (page = 1) {
+        getList: function () {
             let _this = this;
-            this.$indexData(this.url, {"query": this.getQueryStr(),page: page}).then(res => {
+            this.$indexData(this.url, {"query": this.getQueryStr(),page: this.page}).then(res => {
                     _this.actions = res.actions;
                     _this.colNames = res.colNames;
                     _this.pageCount = res.countPage;

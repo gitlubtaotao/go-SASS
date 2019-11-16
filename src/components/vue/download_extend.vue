@@ -42,7 +42,6 @@
                 window.location = url;
             },
             downloadPdf: function () {
-                this.clickHandler('pdf');
             }
         }
     }

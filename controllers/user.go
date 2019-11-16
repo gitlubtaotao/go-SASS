@@ -133,7 +133,11 @@ func (c *UserController) GetAll() {
 	l, countPage, err := models.GetAllUser(query, fields, sortby, order, offset, limit)
 	if err != nil {
 		c.jsonResult(500, err.Error(), "")
-	} else {
+		return
+	}
+	if c.GetString("format") != "" {
+		c.DownLoad(l, colNames)
+	}else {
 		mapValue := models.SetPaginator(countPage)
 		result := map[string]interface{}{
 			"countPage": mapValue,
@@ -144,6 +148,7 @@ func (c *UserController) GetAll() {
 		c.jsonResult(200, "", result)
 	}
 }
+
 func UserActions() []models.CustomerSlice {
 	actions := []models.CustomerSlice{
 		{"name": "修改", "url": "/user/edit/:id", "remote": false},

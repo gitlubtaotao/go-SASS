@@ -4,20 +4,21 @@ var app = new Vue({
     data: {
         company: {name__icontains: '', telephone__icontains: '', email__contains: '',
             address__contains: '',created_at__gte:'',created_at__lte: ''},
-        pageCount: 1, colNames: [], objects: [], actions: [],
+        pageCount: 1, colNames: [], objects: [], actions: [],page: 1,
     },
     mounted: function () {
         this.getList();
     },
     methods: {
         clickCallback: function (pageNum) {
+            this.page = pageNum;
             this.getList(pageNum);
         },
         //获取所有的数据
-        getList: function (page = 1) {
+        getList: function () {
             let url = "/company";
             let _this = this;
-            this.$indexData(url, {query: this.getFilerResult(),page: page}).then(res => {
+            this.$indexData(url, {query: this.getFilerResult(),page: this.page}).then(res => {
                     _this.actions = res.actions;
                     _this.colNames = res.colNames;
                     _this.pageCount = res.countPage;

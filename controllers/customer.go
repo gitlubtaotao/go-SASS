@@ -125,6 +125,10 @@ func (c *CustomerController) GetAll() {
 	mapValue := models.SetPaginator(countPage)
 	if err != nil {
 		c.jsonResult(500, err.Error(), "")
+		return
+	}
+	if c.GetString("format") != "" {
+		c.DownLoad(l, colNames)
 	} else {
 		result := map[string]interface{}{
 			"countPage": mapValue,
@@ -132,11 +136,7 @@ func (c *CustomerController) GetAll() {
 			"colNames":  colNames,
 			"actions":   customerActions(),
 		}
-		if c.GetString("format") != "" {
-			c.DownLoad(l, colNames)
-		} else {
-			c.jsonResult(200, "", result)
-		}
+		c.jsonResult(200, "", result)
 	}
 }
 func customerActions() []models.CustomerSlice {

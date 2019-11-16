@@ -32,7 +32,7 @@ func (c *DepartmentController) URLMapping() {
 // @router / [post]
 func (c *DepartmentController) Post() {
 	var v models.Department
-	err:= json.Unmarshal(c.Ctx.Input.RequestBody, &v)
+	err := json.Unmarshal(c.Ctx.Input.RequestBody, &v)
 	logs.Info(err)
 	logs.Info(v.CreatedAt)
 	if _, err := models.AddDepartment(&v); err == nil {
@@ -121,6 +121,10 @@ func (c *DepartmentController) GetAll() {
 	l, countPage, err := models.GetAllDepartment(query, fields, sortby, order, offset, limit)
 	if err != nil {
 		c.jsonResult(500, err.Error(), "")
+		return
+	}
+	if c.GetString("format") != "" {
+		c.DownLoad(l, colNames)
 	} else {
 		mapValue := models.SetPaginator(countPage)
 		result := map[string]interface{}{

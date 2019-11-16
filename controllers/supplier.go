@@ -116,14 +116,18 @@ func (c *SupplierController) GetAll() {
 	if err != nil {
 		c.jsonResult(500, err.Error(), "")
 	} else {
-		mapValue := models.SetPaginator(countPage)
-		result := map[string]interface{}{
-			"countPage": mapValue,
-			"data":      l,
-			"colNames":  colNames,
-			"actions":   c.actions(),
+		if c.GetString("format") != "" {
+			c.DownLoad(l, colNames)
+		}else {
+			mapValue := models.SetPaginator(countPage)
+			result := map[string]interface{}{
+				"countPage": mapValue,
+				"data":      l,
+				"colNames":  colNames,
+				"actions":   c.actions(),
+			}
+			c.jsonResult(200, "", result)
 		}
-		c.jsonResult(200, "", result)
 	}
 }
 

@@ -123,16 +123,20 @@ func (c *CompanyController) GetAll() {
 	companies, countPage, err := models.GetAllCompany(query, fields, sortBy, order, offset, limit)
 	if err != nil {
 		c.jsonResult(500, err.Error(), "")
-	} else {
-		mapValue := models.SetPaginator(countPage)
-		result := map[string]interface{}{
-			"countPage": mapValue,
-			"data":      companies,
-			"colNames":  colNames,
-			"actions":   companyActions(),
-		}
-		c.jsonResult(200, "", result)
+		return
 	}
+	if c.GetString("format") != "" {
+		c.DownLoad(companies, colNames)
+		return
+	}
+	mapValue := models.SetPaginator(countPage)
+	result := map[string]interface{}{
+		"countPage": mapValue,
+		"data":      companies,
+		"colNames":  colNames,
+		"actions":   companyActions(),
+	}
+	c.jsonResult(200, "", result)
 }
 
 func companyActions() []models.CustomerSlice {
@@ -180,9 +184,9 @@ func (c *CompanyController) Delete() {
 	idStr := c.Ctx.Input.Param(":id")
 	id, _ := strconv.ParseInt(idStr, 0, 64)
 	if err := models.DeleteCompany(id); err == nil {
-		c.jsonResult(200,"","OK")
+		c.jsonResult(200, "", "OK")
 	} else {
-		c.jsonResult(500,err.Error(),"")
+		c.jsonResult(500, err.Error(), "")
 	}
 }
 
