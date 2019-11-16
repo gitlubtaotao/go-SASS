@@ -14,7 +14,6 @@
         <div class="space-12"></div>
         <form class="form-horizontal" action="" method="post" id="create_form" @submit.prevent="submitForm"
               @submit.prevent="submitForm">
-            {{template "../common/errors.html" .}}
             <fieldset>
                 <div class="col-sm-6 col-sm-offset-2 col-xs-12">
 
@@ -93,7 +92,6 @@
                 this.options = this.$select2Company(options);
             },
             submitForm: function () {
-                let _this = this;
                 let url, method;
                 if (this.Id === 0) {
                     url = "/department";
@@ -104,11 +102,6 @@
                 }
                 if (this.validateForm()) {
                     this.$submitFormData(method, url, this.department).then(res => {
-                            if (res.length !== 0) {
-                                $.each(res, function (key, value) {
-                                    _this.errors.push(key + ':' + value);
-                                });
-                            }
                         },
                         error => {
                             console.log(error);

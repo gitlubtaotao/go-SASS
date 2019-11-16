@@ -5,7 +5,7 @@ indexExtend.install = function (Vue, options) {
         return new Promise((resolve, reject) => {
             axios.get(url, {
                 headers: {'X-Requested-With': 'XMLHttpRequest'},
-                params: $.extend({page: 1},options),
+                params: $.extend({page: 1}, options),
                 dataType: 'json',
             }).then(function (response) {
                 if (response.data.code === 200) {
@@ -46,13 +46,20 @@ indexExtend.install = function (Vue, options) {
                     toastr.success("保存成功");
                     resolve([])
                 } else {
+                    let str = '';
                     let data = response.data.msg;
                     if (!Array.isArray(response.data)) {
                         data = [data];
                     }
-                    resolve(data)
+                    for (let i = 0; i <= data.length; i++) {
+                        $.each(data[i], function (k, v) {
+                            str += (k + ":" + v);
+                        });
+                    }
+                    toastr.error(str);
                 }
             }).catch(function (error) {
+                console.log(error);
                 reject(error)
             });
         });

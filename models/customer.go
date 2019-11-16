@@ -3,7 +3,6 @@ package models
 import (
 	"errors"
 	"fmt"
-	"github.com/astaxie/beego/logs"
 	"github.com/astaxie/beego/validation"
 	"quickstart/utils"
 	"reflect"
@@ -308,8 +307,6 @@ func (c *Customer) Validate() (b bool, err map[string]interface{}) {
 	valid.Tel(c.Telephone, "联系电话格式")
 	valid.Required(c.Email, "邮箱")
 	valid.Email(c.Email, "邮箱格式")
-	logs.Info(c.AccountPeriod)
-	logs.Info(c.AuditUser)
 	valid.Required(c.AccountPeriod, "账期")
 	valid.Required(c.Company, "所属公司")
 	valid.Required(c.AuditUser, "审核者")

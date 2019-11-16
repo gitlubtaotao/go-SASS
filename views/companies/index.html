@@ -60,6 +60,17 @@
                                     </div>
                                 </div>
                             </div>
+                            <div class="form-group">
+                                <div class="col-sm-6 col-xs-12 col-md-6">
+                                    <label class="control-label col-sm-2">创建时间</label>
+                                    <div class="col-sm-4 col-md-4">
+                                        <datetime v-model="company.created_at__gte"  type="datetime" format="yyyy-MM-dd HH:mm"></datetime>
+                                    </div>
+                                    <div class="col-sm-4 col-md-4">
+                                        <datetime v-model="company.created_at__lte"  type="datetime" format="yyyy-MM-dd HH:mm"></datetime>
+                                    </div>
+                                </div>
+                            </div>
                             <div class="buttons" id="buttons">
                                 <div class="col-sm-offset-5 col-xs-offset-3 col-md-offset-5">
                                     <button class="btn btn-success btn-sm" type="button" @click="filterResult" >

@@ -15,7 +15,6 @@
         <form class="form-horizontal" action="" method="post" data-id="{{.UserId}}"
               id='create_form' @submit.prevent="checkForm">
             {{/*                错误信息提示*/}}
-            {{template "../common/errors.html" .}}
             <fieldset>
                 <div class="col-sm-6 col-sm-offset-2 col-xs-12">
 
@@ -96,7 +95,7 @@
                             <div class="input-group">
                                 <span class="input-group-addon"><i class="fa fa-clock-o bigger-110"></i>
                                 </span>
-                                <datetime v-model="user.EntryTime"  type="datetime" format="yyyy-MM-dd HH:mm"></datetime>
+                                <datetime v-model="user.EntryTime" type="datetime" format="yyyy-MM-dd HH:mm"></datetime>
                             </div>
 
                         </div>
@@ -135,7 +134,6 @@
                 Department: '',
                 EntryTime: '', //入职时间
             },
-            errors: [], //错误
             companyOptions: [],
             departmentOptions: [],
             Id: '',
@@ -147,8 +145,6 @@
         methods: {
             //对表单的数据进行验证
             checkForm: function () {
-                this.errors = [];
-                let _this = this;
                 let url, method;
                 if (this.Id === '') {
                     url = "/user";
@@ -160,11 +156,6 @@
                 // let entryTime = this.user.EntryTime;
                 if (this.validateSubmit()) {
                     this.$submitFormData(method, url, this.user).then(res => {
-                            if (res.length !== 0) {
-                                $.each(res, function (key, value) {
-                                    _this.errors.push(key + ':' + value);
-                                });
-                            }
                         },
                         error => {
                             console.log(error);
@@ -176,19 +167,19 @@
             validateSubmit: function () {
                 let regPhone = /^1[3456789]\d{9}$/;
                 if (!this.user.Name) {
-                    this.errors.push("姓名必填项");
+                    toastr.error("姓名必填项");
                     return false;
                 }
                 if (!this.user.Email) {
-                    this.errors.push("邮箱必填项");
+                    toastr.error("邮箱必填项");
                     return false;
                 }
                 if (!this.user.Phone) {
-                    this.errors.push("电话必填项");
+                    toastr.error("电话必填项");
                     return false;
                 }
                 if (this.user.Company === '') {
-                    this.errors.push("所属公司不能为空");
+                    toastr.error("所属公司不能为空");
                     return false;
                 }
                 if (this.user.Id === '') {
@@ -201,22 +192,22 @@
                     }
                 }
                 if (!regPhone.test(this.user.Phone)) {
-                    this.errors.push('请输入有效的手机号码');
+                    toastr.error('请输入有效的手机号码');
                     return false;
                 }
                 return true;
             },
             validatePassword: function () {
                 if (!this.user.Pwd) {
-                    this.errors.push('密码必填项');
+                    toastr.error('密码必填项');
                     return false;
                 }
                 if (!this.user.confirmPassword) {
-                    this.errors.push("确认密码必填项");
+                    toastr.error("确认密码必填项");
                     return false;
                 }
                 if (!(this.user.Pwd === this.user.confirmPassword)) {
-                    this.errors.push('两次输入的密码不一致');
+                    toastr.error('两次输入的密码不一致');
                     return false;
                 }
                 return true;

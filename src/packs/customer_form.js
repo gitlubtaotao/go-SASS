@@ -2,7 +2,6 @@ var app = new Vue({
     el: '#create_form',
     delimiters: ['{', '}'],
     data: {
-        errors: [],
         customer: {
             Name: '',
             Telephone: '',
@@ -87,7 +86,6 @@ var app = new Vue({
             }
         },
         submitForm: function () {
-            let _this = this;
             let url, method;
             if (this.Id === '') {
                 url = this.Url;
@@ -99,12 +97,6 @@ var app = new Vue({
             if (this.validateForm()) {
                 this.defaultValue();
                 this.$submitFormData(method, url, this.customer).then(res => {
-                        if (res.length !== 0) {
-                            $.each(res, function (key, value) {
-                                console.log(value);
-                                _this.errors.push(key + ':' + value);
-                            });
-                        }
                     },
                     error => {
                         console.log(error);
@@ -113,37 +105,36 @@ var app = new Vue({
         },
         //验证表单是否通过
         validateForm: function () {
-            this.errors = [];
             if (!this.customer.Name) {
-                this.errors.push("客户名称不能为空");
+                toastr.error("客户名称不能为空");
                 return false;
             }
             if (!this.customer.Telephone) {
-                this.errors.push('联系电话不能为空');
+                toastr.error('联系电话不能为空');
                 return false;
             }
             if (!this.customer.Email) {
-                this.errors.push('邮箱不能为空');
+                toastr.error('邮箱不能为空');
                 return false;
             }
             if (!this.customer.AccountPeriod) {
-                this.errors.push("账期不能为空");
+                toastr.error("账期不能为空");
                 return false;
             }
             if (!this.customer.Company) {
-                this.errors.push("所属公司不能为空");
+                toastr.error("所属公司不能为空");
                 return false;
             }
             if (!this.customer.CompanyType) {
-                this.errors.push("类型不能为空");
+                toastr.error("类型不能为空");
                 return false;
             }
             if (!this.customer.SaleUser && this.Url === "/customer") {
-                this.errors.push("业务员不能为空");
+                toastr.error("业务员不能为空");
                 return false;
             }
             if (!this.customer.AuditUser) {
-                this.errors.push("审核者不能为空");
+                toastr.error("审核者不能为空");
                 return false;
             }
             return true;

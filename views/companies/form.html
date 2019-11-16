@@ -13,7 +13,6 @@
     <div class="row">
         <div class="space-12"></div>
         <form class="form-horizontal" action="/company" method="post" id="create_form" @submit.prevent="submitForm">
-            {{template "../common/errors.html" .}}
             <fieldset>
                 <div class="col-sm-6 col-sm-offset-2 col-xs-12">
                     <div class="form-group">
@@ -85,7 +84,6 @@
         el: '#create_form',
         delimiters: ['{', '}'],
         data: {
-            errors: [],
             company: {
                 Id: '',
                 Name: "",
@@ -118,21 +116,15 @@
                 if (!this.validateForm()) {
                     return
                 }
-                let _this = this;
                 let method, url = "";
-                if (_this.company.Id === '') {
+                if (this.company.Id === '') {
                     method = "post";
                     url = "/company"
                 } else {
                     method = "put";
-                    url = "/company/" + _this.company.Id
+                    url = "/company/" + this.company.Id
                 }
-                this.$submitFormData(method, url, _this.company).then(res => {
-                        if (res.length !== 0) {
-                            $.each(res, function (key, value) {
-                                _this.errors.push(key + ':' + value);
-                            });
-                        }
+                this.$submitFormData(method, url, this.company).then(res => {
                     },
                     error => {
                         console.log(error);
@@ -140,17 +132,16 @@
 
             },
             validateForm: function () {
-                this.errors = [];
                 if (!this.company.Name) {
-                    this.errors.push("公司名称不能为空");
+                    toastr.error("公司名称不能为空");
                     return false;
                 }
                 if (!this.company.Telephone) {
-                    this.errors.push("公司座机不能为空");
+                    toastr.error("公司座机不能为空");
                     return false
                 }
                 if (!this.company.Email) {
-                    this.errors.push("公司邮箱不能为空");
+                    toastr.error("公司邮箱不能为空");
                     return false
                 }
                 return true

@@ -8,7 +8,8 @@ var app = new Vue({
             AccountPeriod: '', IsVip: '',
             Status: '', business_type_name__contains: '',
             AuditUser: '', CreateUser: '',
-            SaleUser: '', Company: ''
+            SaleUser: '', Company: '',
+            created_at__gte: '',created_at__lte: '',
         },
         select2Data: [],
         companyOptions: [],
