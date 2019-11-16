@@ -152,13 +152,12 @@ func UpdateUserById(m *User) (err error) {
 func GetUserCols() ([]string, []CustomerSlice) {
 	attributes := []CustomerSlice{
 		{"key": "Company.Name", "value": "所属公司", "class": "col-xs-1"},
-		{"key": "Company.Email", "value": "公司邮箱", "class": "col-xs-2"},
 		{"key": "Name", "value": "姓名", "class": "col-xs-1"},
 		{"key": "Email", "value": "邮箱", "class": "col-xs-1"},
 		{"key": "Phone", "value": "电话", "class": ""},
 		{"key": "Gender", "value": "性别", "class": "col-xs-1"},
 		{"key": "EntryTime", "value": "入职时间", "class": "col-xs-1"},
-		{"key": "Department.Name", "value": "部门", "class": "col-xs-1"},
+		{"key": "Department", "value": "部门", "class": "col-xs-1"},
 		{"key": "Id", "value": "Id", "class": ""},
 	}
 	var fields []string

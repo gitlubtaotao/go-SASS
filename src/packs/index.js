@@ -41,7 +41,7 @@ var app = new Vue({
         //获取所有的数据
         getList: function () {
             let _this = this;
-            this.$indexData(this.url, {"query": this.getQueryStr(),page: this.page}).then(res => {
+            this.$indexData(this.url, {"query": this.getFilerResult(),page: this.page}).then(res => {
                     _this.actions = res.actions;
                     _this.colNames = res.colNames;
                     _this.pageCount = res.countPage;
@@ -60,7 +60,7 @@ var app = new Vue({
             this.getList();
             toastr.success("刷新数据成功");
         },
-        getQueryStr: function () {
+        getFilerResult: function () {
             let str = [];
             $.each(this.index, function (k, v) {
                 if (v !== "") {

@@ -143,19 +143,21 @@ func (this *BaseController) DownLoad(data []interface{}, cols []models.CustomerS
 			value := v.(map[string]interface{})
 			name := iv["key"].(string)
 			cell = row.AddCell()
-			//logs.Info(value[name])
-			if reflect.TypeOf(value[name]).Kind() == reflect.Ptr {
-				cell.Value = models.Struct2Map(value[name])["Name"].(string)
-			} else if reflect.TypeOf(value[name]).Kind() == reflect.String {
-				if value[name] != "" {
-					cell.Value = value[name].(string)
+			if reflect.TypeOf(value[name]) != nil {
+				if reflect.TypeOf(value[name]).Kind() == reflect.Ptr {
+					cell.Value = models.Struct2Map(value[name])["Name"].(string)
+				} else if reflect.TypeOf(value[name]).Kind() == reflect.String {
+					if value[name] != "" {
+						cell.Value = value[name].(string)
+					}
+				} else if reflect.TypeOf(value[name]).Kind() == reflect.Int {
+					cell.Value = strconv.Itoa(value[name].(int))
+				} else if reflect.TypeOf(value[name]).Kind() == reflect.Int64 {
+					cell.Value = strconv.FormatInt(int64(value[name].(int64)), 10)
+				} else if reflect.TypeOf(value[name]).Kind() == reflect.Bool{
+					cell.Value = strconv.FormatBool(value[name].(bool))
+				}else{
 				}
-			} else if reflect.TypeOf(value[name]).Kind() == reflect.Int {
-				cell.Value = strconv.Itoa(value[name].(int))
-			} else if reflect.TypeOf(value[name]).Kind() == reflect.Int64 {
-				cell.Value = strconv.FormatInt(int64(value[name].(int64)), 10)
-			} else if reflect.TypeOf(value[name]).Kind() == reflect.Bool{
-				cell.Value = strconv.FormatBool(value[name].(bool))
 			}
 		}
 	}

@@ -35,7 +35,7 @@ func GetDepartmentCols() ([]string, []CustomerSlice) {
 	var fields []string
 	colNames := []CustomerSlice{
 		{"key": "Name", "value": "部门名称", "class": ""},
-		{"key": "Company.Name", "value": "所属公司", "class": ""},
+		{"key": "Company", "value": "所属公司", "class": ""},
 		{"key": "CreatedAt", "value": "创建时间", "class": ""},
 	}
 	return fields, colNames
