@@ -38,6 +38,9 @@ func init() {
 	beego.Router("/supplier/:id",&controllers.SupplierController{},"put:Put;get:GetOne;delete:Delete")
 	beego.AutoRouter(&controllers.SupplierController{})
 	
+	beego.Router("/contact",&controllers.ContactController{},"get:GetAll;post:Post")
+	beego.Router("/contact/:id",&controllers.ContactController{},"put:Put;get:GetOne;delete:Delete")
+	beego.AutoRouter(&controllers.ContactController{})
 	
 }
 //过滤器的使用

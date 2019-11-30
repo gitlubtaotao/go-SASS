@@ -60,7 +60,7 @@ indexExtend.install = function (Vue, options) {
                 }
             }).catch(function (error) {
                 console.log(error);
-                reject(error)
+                toastr.error(error);
             });
         });
     }

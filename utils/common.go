@@ -7,7 +7,7 @@ import (
 	"time"
 )
 
-func init() {
+func Initialize() {
 	_ = beego.AddFuncMap("ShowAssets", ShowAssets)
 	err := beego.AddFuncMap("ShowSaleUser", ShowSaleUser)
 	err = beego.AddFuncMap("RandNumber",RandNumber)

@@ -1,6 +1,7 @@
 package models
 
 import (
+	"github.com/astaxie/beego"
 	"github.com/astaxie/beego/orm"
 	"reflect"
 )
@@ -85,4 +86,10 @@ func Struct2Map(obj interface{}) map[string]interface{} {
 		data[fname] = s.FieldByName(fname).Interface()
 	}
 	return  data
+}
+
+//获取数据库的表名
+func TableName(name string) string {
+	prefix := beego.AppConfig.String("db_dt_prefix")
+	return prefix + name
 }

@@ -3,6 +3,7 @@ package models
 import (
 	"errors"
 	"fmt"
+	"github.com/astaxie/beego/logs"
 	"github.com/astaxie/beego/validation"
 	"quickstart/utils"
 	"reflect"
@@ -25,15 +26,17 @@ type Customer struct {
 	UpdatedAt        time.Time `orm:"auto_now;type(datetime)"`
 	CompanyType      int       `orm:"size(32);default(1)"`
 	Aging            int
-	Amount           int      `orm:"digits(12);decimals(4)"`
-	AccountPeriod    string   `orm:"size(32);"`
-	IsVip            bool     `orm:"default(false)"`
-	Status           string   `orm:"size(32);default(init);"`
-	AuditUser        *User    `orm:"rel(fk);index"`
-	CreateUser       *User    `orm:"rel(fk);index"`
-	SaleUser         *User    `orm:"rel(fk);index;NULL"`
-	Company          *Company `orm:"rel(fk);index" json:"Company"`
-	BusinessTypeName string   `orm:"size(256)"`
+	Amount           int        `orm:"digits(12);decimals(4)"`
+	AccountPeriod    string     `orm:"size(32);"`
+	IsVip            bool       `orm:"default(false)"`
+	Status           string     `orm:"size(32);default(init);"`
+	AuditUser        *User      `orm:"rel(fk);index"`
+	CreateUser       *User      `orm:"rel(fk);index"`
+	SaleUser         *User      `orm:"rel(fk);index;NULL"`
+	Company          *Company   `orm:"rel(fk);index" json:"Company"`
+	BusinessTypeName string     `orm:"size(256)"`
+	Contacts         []*Contact `orm:"reverse(many)"`
+	//Contacts         []*cooperator.Contact `orm:"reverse(many)"`
 }
 
 func init() {
@@ -71,13 +74,17 @@ func GetAllCustomer(query map[string]string, fields []string, sortby []string, o
 		// rewrite dot-notation to Object__Attribute
 		k = strings.Replace(k, ".", "__", -1)
 		if v != "" {
-			qs = qs.Filter(k, v)
-			
+			if k == "company_type" {
+				logs.Info(query, "sdsds")
+			} else {
+				qs = qs.Filter(k, v)
+			}
 		}
 	}
+	//查询不同的客户类型
 	if typeValue == "customer" {
 		qs = qs.Filter("company_type__in", 0, 1, 3)
-	} else {
+	} else if typeValue == "supplier" {
 		qs = qs.Filter("company_type__in", 2, 3)
 	}
 	// order by:

@@ -6,9 +6,9 @@ var app = new Vue({
         index: {
             name__icontains: "", Department: '', email__contains: '', telephone__icontains: '',
             Company: '', Gender: '', phone__contains: '', entry_time__lte: '',entry_time__gte: '',
-            created_at__lte: "",created_at__gte: '',
+            created_at__lte: "",created_at__gte: '',Customer: '',
         },
-        url: '', DepartmentArray: [], CompanyArray: [],
+        url: '', DepartmentArray: [], CompanyArray: [],CustomerArray: []
     },
     mounted: function () {
         this.setUrl();
@@ -23,6 +23,14 @@ var app = new Vue({
             }
             this.DepartmentArray = this.$select2Department({"query": str})
         },
+        clickCustomer: function(search){
+            console.log(search);
+            let str = '';
+            if(search){
+                str+=("name__icontains:"+search)
+            }
+            this.CustomerArray = this.$select2Cooperator({query: str,typeValue: 'all'})
+        },
         clickCompany: function (search) {
             let str = "";
             if (search) {
@@ -32,7 +40,7 @@ var app = new Vue({
         },
         setUrl: function () {
             let url = location.pathname;
-            this.url = url.slice(0, url.length - 6);
+            this.url = url.replace(/\/index/,"")
         },
         clickCallback: function (pageNum) {
             this.page = pageNum;

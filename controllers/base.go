@@ -1,11 +1,11 @@
 package controllers
 
-import "C"
 import (
 	"bytes"
 	"fmt"
 	"github.com/astaxie/beego"
 	"github.com/astaxie/beego/logs"
+	"github.com/beego/i18n"
 	"github.com/lhtzbj12/sdrms/enums"
 	"github.com/tealeg/xlsx"
 	"html/template"
@@ -28,6 +28,32 @@ type BaseController struct {
 	actionName     string
 	currentUser    models.User
 	namespace      string //命名空间
+	i18n.Locale
+}
+var langTypes []*langType // Languages are supported.
+// langType represents a language type.
+type langType struct {
+	Lang, Name string
+}
+
+//初始化locales
+func InitLocales() {
+	langs := strings.Split(beego.AppConfig.String("lang::types"), "|")
+	names := strings.Split(beego.AppConfig.String("lang::names"), "|")
+	langTypes = make([]*langType, 0, len(langs))
+	for i, v := range langs {
+		langTypes = append(langTypes, &langType{
+			Lang: v,
+			Name: names[i],
+		})
+	}
+	for _, lang := range langs {
+		logs.Trace("Loading language: " + lang)
+		if err := i18n.SetMessage(lang, "conf/"+"locale_"+lang+".ini"); err != nil {
+			logs.Error("Fail to set message file: " + err.Error())
+			return
+		}
+	}
 }
 
 //Prepare before action
@@ -49,6 +75,7 @@ func (this *BaseController) Prepare() {
 //Finish after method
 func (this *BaseController) Finish() {
 }
+
 
 //检查用户是否进行登录
 func (this *BaseController) checkLogin() {
@@ -175,4 +202,9 @@ func (this *BaseController) DownLoad(data []interface{}, cols []models.CustomerS
 		fmt.Printf(err.Error())
 	}
 }
+
+
+
+
+
 

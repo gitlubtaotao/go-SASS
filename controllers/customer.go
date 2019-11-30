@@ -4,6 +4,7 @@ import "C"
 import (
 	"encoding/json"
 	"errors"
+	"github.com/astaxie/beego/logs"
 	"quickstart/models"
 	"strconv"
 	"strings"
@@ -121,7 +122,12 @@ func (c *CustomerController) GetAll() {
 		}
 	}
 	_, colNames := models.GetCustomerCols()
-	l, countPage, err := models.GetAllCustomer(query, fields, sortby, order, offset, limit, "customer")
+	typeValue := "customer"
+	if c.GetString("typeValue") != "" {
+		 typeValue = ""
+	}
+	logs.Info(typeValue,limit)
+	l, countPage, err := models.GetAllCustomer(query, fields, sortby, order, offset, limit, typeValue)
 	mapValue := models.SetPaginator(countPage)
 	if err != nil {
 		c.jsonResult(500, err.Error(), "")

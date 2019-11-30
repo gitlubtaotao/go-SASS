@@ -1,0 +1,198 @@
+<div class="breadcrumbs ace-save-state " id="breadcrumbs">
+    <ul class="breadcrumb">
+        {{template "layouts/breadcrumb.html"}}
+        <li class="">
+            <a href="/contact/index">联系人信息</a>
+        </li>
+        <li class="active">
+            {{.PageTitle}}
+        </li>
+    </ul>
+</div>
+<div class="page-content">
+    <div class="row">
+        <div class="space-12"></div>
+        <form class="form-horizontal" action="" method="post"
+              id='create_form' @submit.prevent="checkForm">
+            <fieldset>
+                <div class="col-sm-6 col-sm-offset-2 col-xs-12">
+                    <div class="form-group">
+                        <label class="control-label col-sm-4">姓名</label>
+                        <div class="col-sm-8">
+                            <input class="form-control" v-model.trim="contact.Name" name="Name"
+                                   placeholder="请输入姓名" required>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label col-sm-4">邮箱</label>
+                        <div class="col-sm-8">
+                            <input class="form-control" type="email" v-model.trim="contact.Email" name="Email"
+                                   placeholder="请输入邮箱" required>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label col-sm-4">电话</label>
+                        <div class="col-sm-8">
+                            <div class="input-group">
+                            <span class="input-group-addon">
+                                <i class="ace-icon fa fa-phone"></i>
+                            </span>
+                                <input class="form-control" v-model.trim="contact.Phone" type="tel" name="Phone" placeholder="请输入电话" required>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label col-sm-4">微信号</label>
+                        <div class="col-sm-8">
+                            <input class="form-control" type="text" v-model.trim="contact.WeiXinNo" name="WeiXinNo"
+                                   placeholder="请输入微信号">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label col-sm-4">QQ号</label>
+                        <div class="col-sm-8">
+                            <input class="form-control" type="text" v-model.trim="contact.QqNo" name="QqNo"
+                                   placeholder="请输入QQ号">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label col-sm-4">家庭地址</label>
+                        <div class="col-sm-8">
+                            <input class="form-control" type="text" v-model.trim="contact.Address" name="Address"
+                                   placeholder="请输入家庭地址">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label col-sm-4">合作单位</label>
+                        <div class="col-sm-8">
+                            <vue-select class="vue-select2" name="select2" label="Name"
+                                        :options="CustomerArray" v-model.trim="contact.Customer"
+                                        @search="selectData">
+                            </vue-select>
+                        </div>
+                    </div>
+                </div>
+            </fieldset>
+            <div class="space-6"></div>
+            <div class="clearfix form-group ">
+                <div class="col-sm-offset-5 col-xs-offset-3">
+                    <button class="btn btn-success btn-sm " type="submit" @submit="checkForm">
+                        <i class="ace-icon fa fa-check bigger-110"></i>
+                        保存
+                    </button>
+                    <button class="btn btn-sm" type="reset">
+                        <i class="ace-icon fa fa-undo bigger-110"></i>
+                        取消
+                    </button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+<script>
+    var app = new Vue({
+        el: '#create_form',
+        delimiters: ['{', '}'],
+        data: {
+            contact: {
+                Name: '',//姓名
+                Email: '',//邮箱
+                Phone: '',//电话
+                Address: '',
+                WeiXinNo: "",
+                QqNo: '',
+                Customer: '',// 所属公司
+            },
+            CustomerArray: [],
+            Id: '',
+        },
+        mounted: function () {
+            this.selectData();
+            this.initData();
+        },
+        methods: {
+            //对表单的数据进行验证
+            checkForm: function () {
+                let url, method;
+                if (this.Id === '') {
+                    url = "/contact";
+                    method = 'post';
+                } else {
+                    url = "/contact/" + this.Id;
+                    method = 'put'
+                }
+                // let entryTime = this.user.EntryTime;
+                if (this.validateSubmit()) {
+                    this.$submitFormData(method, url, this.contact).then(res => {
+                        },
+                        error => {
+                            console.log(error);
+                        });
+                }
+            },
+
+            //提交表单前进行验证
+            validateSubmit: function () {
+                let regPhone = /^1[3456789]\d{9}$/;
+                if (!this.contact.Name) {
+                    toastr.error("姓名必填项");
+                    return false;
+                }
+                if (!this.contact.Email) {
+                    toastr.error("邮箱必填项");
+                    return false;
+                }
+                if (!this.contact.Phone) {
+                    toastr.error("电话必填项");
+                    return false;
+                }
+                if (this.contact.Customer === '') {
+                    toastr.error("合作单位不能为空");
+                    return false;
+                }
+                if (!regPhone.test(this.contact.Phone)) {
+                    toastr.error('请输入有效的手机号码');
+                    return false;
+                }
+                return true;
+            },
+            //所属公司下拉数据
+            selectData: function (search) {
+                let options = {};
+                if (search) {
+                    options["query"] = "name__icontains:" + search;
+                }
+                options["typeValue"] = 'all';
+                this.CustomerArray = this.$select2Cooperator(options);
+            },
+            //修改时初始化数据
+            initData: function () {
+                let id = "{{.Id}}";
+                let _this = this;
+                if (id !== "" && typeof (id) !== 'undefined') {
+                    this.$showInitData("/contact/" + id).then(res => {
+                            _this.contact = res;
+                            _this.Id = res.Id;
+
+                        },
+                        error => {
+                            console.log(error);
+                        });
+                }
+            },
+            selectDepartment: function (search) {
+                let company = this.user.Company;
+                if (company === "") {
+                    return
+                }
+                let str = "company.id:" + company.Id;
+                if (search) {
+                    str += ",name__icontains:" + search;
+                }
+                this.departmentOptions = this.$select2Department({query: str});
+            }
+        }
+    });
+
+
+</script>
