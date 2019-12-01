@@ -1,7 +1,16 @@
-# go-quick-start
-第一个golang 项目
+# go-SASS
+Freight forwarding company order operating system
 
-***使用beego+Vue+Boostrap等框架*** 
-***使用webpacker管理静态资源***
+**ENV: beego+Vue+Boostrap+Webpacker Frame WORK**
 
-**订单管理系统**
+**Install**
+
+***git clone https://github.com/gitlubtaotao/go-SASS.git***
+
+***cd go/src/quickstart***
+
+***go build***
+
+***bee run***
+
+***http://localhost:8080***
