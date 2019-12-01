@@ -3,10 +3,10 @@
         <div class="widget-main">
             <h4 class="header red lighter bigger">
                 <i class="ace-icon fa fa-key"></i>
-                重置密码
+                {{i18n .Lang "login.reset_password"}}
             </h4>
             <div class="space-6"></div>
-            <p>输入有效邮箱</p>
+            <p>{{i18n .Lang "login.email_hodler"}}</p>
             <form action="" method="post">
                 <fieldset>
                     <label class="block clearfix">
@@ -18,7 +18,7 @@
                     <div class="clearfix">
                         <button type="button" class="width-35 pull-right btn btn-sm btn-danger">
                             <i class="ace-icon fa fa-lightbulb-o"></i>
-                            <span class="bigger-110">发送</span>
+                            <span class="bigger-110">{{i18n .Lang "login.send"}}</span>
                         </button>
                     </div>
                 </fieldset>
@@ -26,7 +26,7 @@
         </div>
         <div class="toolbar center">
             <a href="#" data-target="#login-box" class="back-to-login-link">
-                返回
+                {{i18n .Lang "back"}}
                 <i class="ace-icon fa fa-arrow-right"></i>
             </a>
         </div>

@@ -9,7 +9,7 @@
         <a href="/" class="navbar-brand">
             <small>
                 <i class="fa fa-leaf"></i>
-                订单管理系统
+                {{i18n .Lang "appName"}}
             </small>
         </a>
     </div>
@@ -18,7 +18,7 @@
             <li class="danger dropdown-modal">
                 <a class="dropdown-toggle" href="/login_out">
                     <i class="ace-icon fa fa-power-off icon-animated-vertical"></i>
-                    <span class="">退出</span>
+                    <span class="">{{i18n .Lang "quit"}}</span>
                 </a>
             </li>
             <li class="light-blue">
@@ -29,6 +29,18 @@
                         Jason
                     </span>
                 </a>
+            </li>
+            <li class="green dropdown-modal">
+                <a data-toggle="dropdown" class="dropdown-toggle" href="#">
+                    <i class="ace-icon fa fa-cogs"></i>
+                    {{i18n .Lang .CurLang}}
+                </a>
+                <ul class=" dropdown-navbar dropdown-menu  dropdown-close">
+                    {{range .RestLangs}}
+                        <li class=" dropdown-header"><a href="javascript:void(0);" data-lang="{{.Lang}}"
+                                                        class="lang-changed">{{i18n $.Lang .Name}}</a></li>
+                    {{end}}
+                </ul>
             </li>
         </ul>
     </div>

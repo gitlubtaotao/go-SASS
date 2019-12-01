@@ -6,7 +6,7 @@
             margin: 100px auto !important;
         }
     </style>
-    <title>订单管理系统</title>
+    <title>{{i18n .Lang "appName"}}</title>
     {{template "login/header.html" .}}
 </head>
 <body class="login-layout blur-login">
@@ -18,9 +18,9 @@
                     <div class="center">
                         <h1>
                             <i class="ace-icon fa fa-leaf green"></i>
-                            <span class="white" id="id-text2">订单管理系统</span>
+                            <span class="white" id="id-text2">{{i18n .Lang "appName"}}</span>
                         </h1>
-                        <h4 class="light-blue" id="id-company-text">© 徐涛涛</h4>
+                        <h4 class="light-blue" id="id-company-text">© {{i18n .Lang "author"}}</h4>
                         <div class="space-6"></div>
                         <div class="position-relative">
                             {{/*  用户登录模块                          */}}

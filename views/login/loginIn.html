@@ -3,7 +3,7 @@
         <div class="widget-main">
             <h4 class="header blue lighter bigger">
                 <i class="ace-icon fa fa-coffee green"></i>
-                输入账号和密码
+                {{i18n .Lang "login.placeholder"}}
             </h4>
             <div class="space-6"></div>
             <form class="" name="login" method="post" action="/login" id="login_in" @submit.prevent="submitForm">
@@ -12,37 +12,56 @@
                     <label class="block clearfix">
                                                 <span class="block input-icon input-icon-right">
                                                 <input type="text" class="form-control" name="userName"
-                                                       value="{{.userName}}" v-model="userName" placeholder="请输入邮箱或者手机号码">
+                                                       value="{{.userName}}" v-model="userName"
+                                                       placeholder="{{i18n .Lang "login.account_holder"}}">
                                                   <i class="ace-icon fa fa-user"></i>
                                                 </span>
                     </label>
                     <label class="block clearfix">
 														<span class="block input-icon input-icon-right">
 															<input type="password" class="form-control"
-                                                                   placeholder="请输入密码" name="password" v-model="Password">
+                                                                   placeholder="{{i18n .Lang "login.password_holder"}}" name="password"
+                                                                   v-model="Password">
 															<i class="ace-icon fa fa-lock"></i>
 														</span>
                     </label>
                     <div class="space"></div>
-                    <div class="clearfix"></div>
-                    <label class="inline">
-                        <input type="checkbox" name="remember" class="ace" v-model="Remember"
-                               value="true" {{.remember}} >
-                        <span class="lbl">记住我</span>
-                    </label>
-                    <button type="submit"
-                            class="width-35 pull-right btn btn-sm btn-primary">
-                        <i class="ace-icon fa fa-key"></i>
-                        <span class="bigger-110">登录</span>
-                    </button>
+                    <div class="clearfix">
+                        <label class="inline pull-left" >
+                            <input type="checkbox" name="remember" class="ace" v-model="Remember"
+                                   value="true" {{.remember}} >
+                            <span class="lbl">{{i18n .Lang "login.remember"}}</span>
+                        </label>
+                        <button type="submit"
+                                class="width-35 pull-right btn btn-sm btn-primary">
+                            <i class="ace-icon fa fa-key"></i>
+                            <span class="bigger-110">{{i18n .Lang "login.login"}}</span>
+                        </button>
+                    </div>
+                    <div class="space-4"></div>
                 </fieldset>
             </form>
+            <div class="social-or-login center">
+                <span class="bigger-110">{{i18n .Lang "change_lang"}}</span>
+
+            </div>
+            <div class="span-6"></div>
+            <div class="row" style="margin-top: 10px;">
+                <a href="javascript:void(0);" class="btn btn-success btn-sm btn-white lang-changed"
+                   data-lang="{{.Lang}}"
+                >{{i18n .Lang .CurLang}}</a>
+                {{range .RestLangs}}
+                    <span>/</span>
+                    <a href="javascript:void(0);" data-lang="{{.Lang}}"
+                       class="lang-changed btn-default btn-sm btn-white btn">{{i18n $.Lang .Name}}</a>
+                {{end}}
+            </div>
         </div>
         <div class="toolbar clearfix">
             <div>
                 <a href="#" data-target="#forgot-box" class="forgot-password-link">
                     <i class="ace-icon fa fa-arrow-left"></i>
-                    忘记密码？
+                    {{i18n .Lang "login.forget_password"}}
                 </a>
             </div>
         </div>

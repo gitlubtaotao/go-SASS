@@ -1,8 +1,11 @@
 package utils
 
 import (
+	"github.com/astaxie/beego"
+	"github.com/astaxie/beego/logs"
 	"github.com/astaxie/beego/orm"
-	"quickstart/controllers"
+	"github.com/beego/i18n"
+	"strings"
 )
 
 //数据库连接
@@ -17,6 +20,33 @@ func DataBaseConnection() {
 
 //初始化App
 func InitApp() {
-	controllers.InitLocales()
-	Initialize()
+	initLocales()
+	InitMap()
+}
+
+var LangTypes []*LangType // Languages are supported.
+// langType represents a language type.
+type LangType struct {
+	Lang, Name string
+}
+
+//初始化locales
+func initLocales() {
+	langs := strings.Split(beego.AppConfig.String("lang::types"), "|")
+	names := strings.Split(beego.AppConfig.String("lang::names"), "|")
+	LangTypes = make([]*LangType, 0, len(langs))
+	for i, v := range langs {
+		LangTypes = append(LangTypes, &LangType{
+			Lang: v,
+			Name: names[i],
+		})
+	}
+	for _, lang := range langs {
+		logs.Trace("Loading language: " + lang)
+		//moreFile :=  "conf/"+"locale_model_"+lang+".ini"
+		if err := i18n.SetMessage(lang, "conf/"+"locale_"+lang+".ini","conf/"+"locale_model_"+lang+".ini"); err != nil {
+			logs.Error("Fail to set message file: " + err.Error())
+			return
+		}
+	}
 }

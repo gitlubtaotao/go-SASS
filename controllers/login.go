@@ -77,8 +77,9 @@ func (c *LoginController) Post() {
 
 //LoginOut 退出登录
 func (c *LoginController) LoginOut() {
-	c.DelSession("userName")
+	c.DelSession("currentName")
 	c.DelSession("currentUser")
+	c.currentUser = models.User{}
 	c.pageLogin()
 }
 

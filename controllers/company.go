@@ -3,6 +3,8 @@ package controllers
 import (
 	"encoding/json"
 	"errors"
+	"github.com/beego/i18n"
+	"quickstart/utils"
 	"strings"
 	
 	"quickstart/models"
@@ -27,7 +29,8 @@ func (c *CompanyController) URLMapping() {
 func (this *CompanyController) New() {
 	this.namespace = "company"
 	this.Data["Namespace"] = "company"
-	this.Data["PageTitle"] = "新增公司"
+	this.Data["PageTitle"] = utils.LocaleS(i18n.Tr(this.Lang,"new"),
+		i18n.Tr(this.Lang,"module_name.company"))
 	this.setTpl("companies/form.html")
 }
 
@@ -57,7 +60,7 @@ func (c *CompanyController) Post() {
 func (c *CompanyController) Index() {
 	c.Data["JsName"] = "company_index"
 	c.Data["Namespace"] = "company"
-	c.Data["PageTitle"] = "公司信息"
+	c.Data["PageTitle"] = i18n.Tr(c.Lang,"module_name.company")
 	c.setTpl("companies/index.html")
 }
 
@@ -119,7 +122,7 @@ func (c *CompanyController) GetAll() {
 	if v, err := c.GetInt64("limit"); err == nil {
 		limit = v
 	}
-	colNames := models.GetCompanyCols()
+	colNames := models.GetCompanyCols(c.Lang)
 	companies, countPage, err := models.GetAllCompany(query, fields, sortBy, order, offset, limit)
 	if err != nil {
 		c.jsonResult(500, err.Error(), "")
@@ -134,15 +137,15 @@ func (c *CompanyController) GetAll() {
 		"countPage": mapValue,
 		"data":      companies,
 		"colNames":  colNames,
-		"actions":   companyActions(),
+		"actions":   c.companyActions(),
 	}
 	c.jsonResult(200, "", result)
 }
 
-func companyActions() []models.CustomerSlice {
+func (c *CompanyController)companyActions() []models.CustomerSlice {
 	actions := []models.CustomerSlice{
-		{"name": "修改", "url": "/company/edit/:id", "remote": false},
-		{"name": "删除", "url": "/company/:id", "remote": true, "method": "delete"},
+		{"name": i18n.Tr(c.Lang,"edit"), "url": "/company/edit/:id", "remote": false},
+		{"name": i18n.Tr(c.Lang,"delete"), "url": "/company/:id", "remote": true, "method": "delete"},
 	}
 	return actions
 }
@@ -194,7 +197,7 @@ func (this *CompanyController) Edit() {
 	idStr := this.Ctx.Input.Params()["0"]
 	this.namespace = "company"
 	this.Data["Namespace"] = "company"
-	this.Data["PageTitle"] = "修改公司信息"
+	this.Data["PageTitle"] = utils.LocaleS(i18n.Tr(this.Lang,"edit"),i18n.Tr(this.Lang,"module_name.company"))
 	this.Data["Id"] = idStr
 	this.setTpl("companies/form.html")
 }

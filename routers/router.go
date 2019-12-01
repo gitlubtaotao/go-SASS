@@ -45,7 +45,7 @@ func init() {
 }
 //过滤器的使用
 var filerFunc = func(ctx *context.Context) {
-	userName := ctx.Input.Session("userName")
+	userName := ctx.Input.Session("currentName")
 	if userName == nil {
 		ctx.Redirect(302,"/login")
 	}

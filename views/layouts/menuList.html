@@ -2,32 +2,32 @@
     <li class="" id="home">
         <a href="/">
             <i class="menu-icon fa fa-tachometer"></i>
-            <span class="menu-text">首页</span>
+            <span class="menu-text">{{i18n .Lang "home"}}</span>
         </a>
     </li>
     <li id="company">
         <a href="#" class="dropdown-toggle">
             <i class="menu-icon fa fa-home"></i>
-            <span class="menu-text">公司管理</span>
+            <span class="menu-text">{{i18n .Lang "menu.company"}}</span>
             <b class="arrow fa fa-angle-down"></b>
         </a>
         <ul class="submenu nav-show" style="display: none">
             <li class="" id="CompanyController">
                 <a href="/company/index">
                     <i class="menu-icon fa fa-caret-right"></i>
-                    公司信息
+                    {{i18n .Lang "module_name.company"}}
                 </a>
                 <b class="arrow"></b>
             </li>
             <li class="" id="DepartmentController">
                 <a href="/department/index">
                     <i class="menu-icon fa fa-caret-right"></i>
-                    部门信息
+                    {{i18n .Lang "module_name.department"}}
                 </a>
             </li>
             <li class="" id="UserController"><a href="/user/index">
                     <i class="menu-icon fa fa-caret-right"></i>
-                    员工信息
+                    {{i18n .Lang "module_name.employee"}}
                 </a>
                 <b class="arrow"></b>
             </li>
@@ -36,27 +36,27 @@
     <li id="customer_manage">
         <a href="#" class="dropdown-toggle">
             <i class="menu-icon fa fa-users"></i>
-            <span class="menu-text">合作单位</span>
+            <span class="menu-text">{{i18n .Lang "menu.cooperator"}}</span>
             <b class="arrow fa fa-angle-down"></b>
         </a>
         <ul class="submenu nav-show" style="display: none">
             <li class="" id="CustomerController">
                 <a href="/customer/index">
                     <i class="menu-icon fa fa-caret-right"></i>
-                    客户信息
+                    {{i18n .Lang "module_name.customer"}}
                 </a>
                 <b class="arrow"></b>
             </li>
             <li class="" id="SupplierController">
                 <a href="/supplier/index">
                     <i class="menu-icon fa fa-caret-right"></i>
-                    供应商信息
+                    {{i18n .Lang "module_name.supplier"}}
                 </a>
             </li>
             <li class="" id="ContactController">
                 <a href="/contact/index">
                     <i class="menu-icon fa fa-caret-right"></i>
-                    联系人信息
+                    {{i18n .Lang "module_name.contact"}}
                 </a>
             </li>
         </ul>
@@ -64,13 +64,13 @@
     <li class="" id="order_manage">
         <a href="#" class="dropdown-toggle">
             <i class="menu-icon fa fa-book"></i>
-            <span class="menu-text">订单管理</span>
+            <span class="menu-text">{{i18n .Lang "menu.order"}}</span>
             <b class="arrow fa fa-angle-down"></b>
         </a>
         <ul class="submenu nav-show " style="display: none;">
             <li class="" id="OrderController"><a href="/order/index">
                     <i class="menu-icon fa fa-caret-right"></i>
-                    订单操作
+                    {{i18n .Lang "module_name.order"}}
                 </a>
                 <b class="arrow"></b>
             </li>

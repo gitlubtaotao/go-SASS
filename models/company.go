@@ -6,6 +6,7 @@ import (
 	"github.com/astaxie/beego/logs"
 	"github.com/astaxie/beego/orm"
 	"github.com/astaxie/beego/validation"
+	"github.com/beego/i18n"
 	"log"
 	"quickstart/utils"
 	"reflect"
@@ -193,15 +194,17 @@ func DeleteCompany(id int64) (err error) {
 }
 
 //获取对应的列
-func GetCompanyCols() (array []CustomerSlice) {
-	colNames := []CustomerSlice{
-		{"key": "Name", "value": "公司姓名", "class": "col-xs-1"},
-		{"key": "Telephone", "value": "公司电话", "class": "col-xs-1"},
-		{"key": "Address", "value": "公司地址", "class": "col-xs-2"},
-		{"key": "Email", "value": "公司邮箱", "class": "col-xs-1"},
-		{"key": "Website", "value": "公司网站", "class": ""},
-		{"key": "Remarks", "value": "公司备注", "class": ""},
-		{"key": "CreatedAt", "value": "创建时间", "class": ""},
+func GetCompanyCols(lang string) (array []CustomerSlice) {
+	colNames := make([]CustomerSlice, 0)
+	exceptColumns := []string{"Id", "CompanyType"}
+	for _, column := range StrutFields(new(Company)) {
+		if !ArrayExistItem(column, exceptColumns) {
+			format := "company." + column
+			hash := map[string]interface{}{
+				"key": column, "value": i18n.Tr(lang, format), "class": "",
+			}
+			colNames = append(colNames, hash)
+		}
 	}
 	return colNames
 }
