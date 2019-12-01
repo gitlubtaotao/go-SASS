@@ -11,6 +11,8 @@ Freight forwarding company order operating system
 
 ***go build***
 
+***yarn install***
+
 ***bee run***
 
 ***http://localhost:8080***
