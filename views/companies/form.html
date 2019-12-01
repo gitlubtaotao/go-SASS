@@ -83,6 +83,13 @@
     var app = new Vue({
         el: '#create_form',
         delimiters: ['{', '}'],
+        i18n: new VueI18n({
+            locale: getCookie('lang'),
+            messages: {
+                "zh-CN":{blank: "%{name} 不能为空"},
+                'en-US':{blank: "%{name} Not Blank"}
+            }
+        }),
         data: {
             company: {
                 Id: '',
@@ -133,15 +140,15 @@
             },
             validateForm: function () {
                 if (!this.company.Name) {
-                    toastr.error("公司名称不能为空");
+                    toastr.error(this.$i18n.t('blank',{name:'{{i18n .Lang "company.Name"}}'}));
                     return false;
                 }
                 if (!this.company.Telephone) {
-                    toastr.error("公司座机不能为空");
+                    toastr.error(this.$i18n.t('blank',{name:'{{i18n .Lang "company.Telephone"}}'}));
                     return false
                 }
                 if (!this.company.Email) {
-                    toastr.error("公司邮箱不能为空");
+                    toastr.error(this.$i18n.t('blank',{name:'{{i18n .Lang "company.Email"}}'}));
                     return false
                 }
                 return true

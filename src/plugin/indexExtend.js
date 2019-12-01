@@ -43,7 +43,7 @@ indexExtend.install = function (Vue, options) {
                 data: data
             }).then(function (response) {
                 if (response.data.code === 200) {
-                    toastr.success("保存成功");
+                    toastr.success(response.data.msg);
                     resolve([])
                 } else {
                     let str = '';

@@ -2,7 +2,7 @@
     <table :id="options.id" class="table table-bordered table-hover table-responsive">
         <thead>
         <tr>
-            <th v-if="showActions()">操作</th>
+            <th v-if="showActions()">{{$t('operation')}}</th>
             <th v-for="(item,index) in colNames" :class="item.class" v-if="item.key !=='Id'">{{item.value}}</th>
         </tr>
         </thead>
@@ -13,7 +13,7 @@
                    @click="clickMethod(actions[0],record.Id,index)">{{actions[0]['name']}}</a>
                 <div v-if="otherActions.length > 0" class="btn-group">
                     <button data-toggle="dropdown" class="btn btn-sm btn-info dropdown-toggle btn-white">
-                        更多
+                        {{$t("more")}}
                         <i class="ace-icon fa fa-angle-down icon-on-right"></i>
                     </button>
                     <ul class="dropdown-menu">
@@ -29,6 +29,21 @@
     </table>
 </template>
 <script>
+
+    function getCookie(cname) {
+        let name = cname + "=";
+        let ca = document.cookie.split(';');
+        for(let i = 0; i < ca.length; i++) {
+            let c = ca[i];
+            while (c.charAt(0) === ' ') {
+                c = c.substring(1);
+            }
+            if (c.indexOf(name)  === 0) {
+                return c.substring(name.length, c.length);
+            }
+        }
+        return "";
+    }
     export default {
         props: {
             colNames: {
@@ -48,6 +63,13 @@
             actions: {
                 type: Array,
                 required: true
+            }
+        },
+        i18n: {
+            locale: getCookie('lang'),
+            messages: {
+                'zh-CN': {more: '更多', operation: '操作'},
+                'en-US': {more: 'More', operation: 'Operation'},
             }
         },
         computed: {
@@ -114,7 +136,7 @@
                         console.log(error);
                     });
                 }
-            }
+            },
         },
     };
 </script>
@@ -122,7 +144,8 @@
     a {
         cursor: pointer;
     }
-    td,th{
+
+    td, th {
         font-size: 12px;
     }
 

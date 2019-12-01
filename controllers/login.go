@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"github.com/astaxie/beego/logs"
 	"github.com/astaxie/beego/orm"
+	"github.com/beego/i18n"
 	"golang.org/x/crypto/bcrypt"
 	"quickstart/models"
 	"time"
@@ -27,19 +28,19 @@ func (c *LoginController) Get() {
 }
 
 //Post 提交数据
+type Login struct {
+	UserName string
+	Password string
+	Remember bool
+}
 func (c *LoginController) Post() {
-	type Login struct {
-		UserName string
-		Password string
-		Remember bool
-	}
 	v := Login{}
 	_ = json.Unmarshal(c.Ctx.Input.RequestBody, &v)
 	Account := v.UserName
 	Password := v.Password
 	//验证账号和密码是否为空
 	if Account == "" || Password == "" {
-		c.jsonResult(500,"账号或者密码不能为空","")
+		c.jsonResult(500,i18n.Tr(c.Lang,"login.account_nil"),"")
 	}
 	//验证登录的账号是手机或者邮箱
 	o := orm.NewOrm()
@@ -53,13 +54,13 @@ func (c *LoginController) Post() {
 		err = o.Read(&user, "Phone")
 		logs.Info(err)
 		if err != nil {
-			c.jsonResult(500,"账号或者密码错误","")
+			c.jsonResult(500,i18n.Tr(c.Lang,"login.account_error"),"")
 		}
 	}
 	//验证密码是否正确
 	status := c.validatePassword(Password, user.EncodePassword)
 	if !status {
-		c.jsonResult(500,"账号或者密码错误","")
+		c.jsonResult(500,i18n.Tr(c.Lang,"login.account_error"),"")
 	}
 	remember := v.Remember
 	if remember {
@@ -72,7 +73,7 @@ func (c *LoginController) Post() {
 	} else {
 		url = "/"
 	}
-	c.jsonResult(200,"",url)
+	c.jsonResult(200,i18n.Tr(c.Lang,"login.success"),url)
 }
 
 //LoginOut 退出登录

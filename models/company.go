@@ -38,17 +38,18 @@ func init() {
 }
 
 //创建用户对应的验证
-func (c *Company) Validate() (b bool, err map[string]interface{}) {
+func (c *Company) Validate(lang string) (b bool, err map[string]interface{}) {
 	status := true
 	var returnErr map[string]interface{}
 	returnErr = make(map[string]interface{})
 	valid := validation.Validation{}
-	valid.Required(c.Name, "name")
-	valid.MaxSize(c.Name, 128, "max name")
-	valid.Required(c.Telephone, "telephone")
-	valid.Tel(c.Telephone, "telephone format")
-	valid.Required(c.Email, "email")
-	valid.Email(c.Email, "email format")
+	valid.Required(c.Name, i18n.Tr(lang,"company.Name")).Message(i18n.Tr(lang,"error.required"))
+	valid.MaxSize(c.Name, 128, i18n.Tr(lang,"company.Name")).Message(i18n.Tr(lang,"error.max_size")+",%d",
+		128)
+	valid.Required(c.Telephone, i18n.Tr(lang,"company.Telephone")).Message(i18n.Tr(lang,"error.required"))
+	valid.Tel(c.Telephone, i18n.Tr(lang,"company.Telephone")).Message(i18n.Tr(lang,"error.phone"))
+	valid.Required(c.Email, i18n.Tr(lang,"company.Email")).Message(i18n.Tr(lang,"error.required"))
+	valid.Email(c.Email, i18n.Tr(lang,"company.Email")).Message(i18n.Tr(lang,"error.email"))
 	logs.Error(valid.HasErrors())
 	if valid.HasErrors() {
 		status = false

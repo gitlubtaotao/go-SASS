@@ -58,6 +58,7 @@
     "vee-validate": "^3.0.7",
     "vue": "^2.6.10",
     "vue-datetime": "^1.0.0-beta.11",
+    "vue-i18n": "^8.15.1",
     "vue-select": "^3.2.0",
     "vuejs-paginate": "^2.1.0",
     "weekstart": "^1.0.1"

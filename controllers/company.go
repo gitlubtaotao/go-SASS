@@ -44,10 +44,10 @@ func (this *CompanyController) New() {
 func (c *CompanyController) Post() {
 	company := models.Company{}
 	_ = json.Unmarshal(c.Ctx.Input.RequestBody, &company)
-	status, errors := company.Validate()
+	status, errors := company.Validate(c.Lang)
 	if status {
 		if _, err := models.AddCompany(&company); err == nil {
-			c.jsonResult(200, "", "OK")
+			c.jsonResult(200, i18n.Tr(c.Lang,"flash.save_success"), "OK")
 		} else {
 			c.jsonResult(500, err.Error(), "")
 		}
@@ -163,10 +163,10 @@ func (c *CompanyController) Put() {
 	id, _ := strconv.ParseInt(idStr, 0, 64)
 	v := models.Company{Id: id}
 	_ = json.Unmarshal(c.Ctx.Input.RequestBody, &v)
-	status, errors := v.Validate()
+	status, errors := v.Validate(c.Lang)
 	if status {
 		if err := models.UpdateCompanyById(&v); err == nil {
-			c.jsonResult(200, "", "OK")
+			c.jsonResult(200, i18n.Tr(c.Lang,"flash.save_success"), "OK")
 		} else {
 			c.jsonResult(500, err.Error(), "")
 		}

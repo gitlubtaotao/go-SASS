@@ -1,6 +1,6 @@
 <template>
     <div>
-        <p>下载</p>
+        <p>{{$t('download')}}</p>
         <ul>
             <li>
                 <a href="javascript:void(0);"
@@ -18,6 +18,21 @@
     </div>
 </template>
 <script>
+    function getCookie(cname) {
+        let name = cname + "=";
+        let ca = document.cookie.split(';');
+        for (let i = 0; i < ca.length; i++) {
+            let c = ca[i];
+            while (c.charAt(0) === ' ') {
+                c = c.substring(1);
+            }
+            if (c.indexOf(name) === 0) {
+                return c.substring(name.length, c.length);
+            }
+        }
+        return "";
+    }
+
     export default {
         props: {
             page: {
@@ -29,6 +44,13 @@
                 default: ''
             }
         },
+        i18n: {
+            locale: getCookie('lang'),
+            messages: {
+                'zh-CN': {download: '更多'},
+                'en-US': {download: 'Download'},
+            }
+        },
         data() {
             return {
                 checked: false,
@@ -38,7 +60,7 @@
         methods: {
             downloadXls: function () {
                 let url = location.pathname.replace(/\/index/, "");
-                url+=("?query="+this.clickHandler+"&page="+this.page+"&format=xls");
+                url += ("?query=" + this.clickHandler + "&page=" + this.page + "&format=xls");
                 window.location = url;
             },
             downloadPdf: function () {
