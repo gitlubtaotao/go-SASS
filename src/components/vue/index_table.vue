@@ -68,8 +68,10 @@
         i18n: {
             locale: getCookie('lang'),
             messages: {
-                'zh-CN': {more: '更多', operation: '操作'},
-                'en-US': {more: 'More', operation: 'Operation'},
+                'zh-CN': {more: '更多', operation: '操作',"delete_success": "删除成功",
+                    'confirm_delete': "确定删除该记录?"},
+                'en-US': {more: 'More', operation: 'Operation','delete_success': 'Successfully Deleted',
+                    'confirm_delete': 'OK to delete this record?'},
             }
         },
         computed: {
@@ -120,14 +122,15 @@
             //删除对应的记录
             destroyMethod: function (url, index) {
                 let _this = this;
-                if (confirm("确定删除该记录？")) {
+                let title=this.$i18n.t("confirm_delete");
+                if (confirm(title)) {
                     axios.delete(url, {
                         headers: {'X-Requested-With': 'XMLHttpRequest'},
                         dataType: 'json',
                     }).then(function (response) {
                         console.log(response);
                         if (response.data.code === 200) {
-                            toastr.success("删除成功");
+                            toastr.success(_this.$i18n.t("delete_success"));
                             _this.objects.splice(index, 1)
                         } else {
                             toastr.error(response.data);

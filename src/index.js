@@ -3,7 +3,6 @@ import $ from 'jquery';
 import {Settings} from "luxon";
 window.$ = $;
 require("./plugin/datapicker");
-
 $(document).ready(function () {
     //选择语言
     $(document).on('click', '.lang-changed', function () {

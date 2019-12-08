@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"github.com/astaxie/beego/logs"
 	"github.com/astaxie/beego/validation"
+	"github.com/beego/i18n"
 	"quickstart/utils"
 	"reflect"
 	"strings"
@@ -66,7 +67,7 @@ func GetCustomerById(id int64) (v *Customer, err error) {
 // GetAllCustomer retrieves all Customer matches certain condition. Returns empty list if
 // no records exist
 func GetAllCustomer(query map[string]string, fields []string, sortby []string, order []string,
-	offset int64, limit int64, typeValue string) (ml []interface{}, countPage int64, err error) {
+	offset int64, limit int64, typeValue string,lang string) (ml []interface{}, countPage int64, err error) {
 	o := orm.NewOrm()
 	qs := o.QueryTable(new(Customer))
 	// query k=v
@@ -139,16 +140,16 @@ func GetAllCustomer(query map[string]string, fields []string, sortby []string, o
 				m[fname] = val.FieldByName(fname).Interface()
 			}
 			if ArrayExistItem("Status", fields) {
-				m["Status"] = v.ShowStatus(true).(string)
+				m["Status"] = v.ShowStatus(true,lang).(string)
 			}
 			if ArrayExistItem("IsVip", fields) {
-				m["IsVip"] = v.ShowVip(true).(string)
+				m["IsVip"] = v.ShowVip(true,lang).(string)
 			}
 			if ArrayExistItem("CompanyType", fields) {
-				m["CompanyType"] = v.ShowCompanyType(true).(string)
+				m["CompanyType"] = v.ShowCompanyType(true,lang).(string)
 			}
 			if ArrayExistItem("AccountPeriod", fields) {
-				m["AccountPeriod"] = v.ShowPeriod(true).(string)
+				m["AccountPeriod"] = v.ShowPeriod(true,lang).(string)
 			}
 			if ArrayExistItem("CreatedAt", fields) {
 				m["CreatedAt"] = utils.LongTime(v.CreatedAt)
@@ -190,40 +191,33 @@ func DeleteCustomer(id int64) (err error) {
 	return
 }
 
-func GetCustomerCols() ([]string, []CustomerSlice) {
-	var fields []string
-	colNames := []CustomerSlice{
-		{"key": "Name", "value": "公司名称", "class": ""},
-		{"key": "Telephone", "value": "公司电话", "class": ""},
-		{"key": "Email", "value": "公司邮箱", "class": ""},
-		{"key": "CompanyType", "value": "类型", "class": ""},
-		{"key": "AccountPeriod", "value": "账期", "class": ""},
-		{"key": "Aging", "value": "账龄", "class": ""},
-		{"key": "Amount", "value": "额度", "class": ""},
-		{"key": "IsVip", "value": "是否VIP", "class": ""},
-		{"key": "BusinessTypeName", "value": "业务类型", "class": ""},
-		{"key": "Status", "value": "状态", "class": ""},
-		{"key": "CreatedAt", "value": "创建时间", "class": ""},
-		{"key": "AuditUser", "value": "审核者", "class": ""},
-		{"key": "CreateUser", "value": "创建者", "class": ""},
-		{"key": "SaleUser", "value": "业务员", "class": ""},
-		{"key": "Company", "value": "所属公司", "class": ""},
+func GetCustomerCols(lang string) []CustomerSlice {
+	colNames := make([]CustomerSlice, 0)
+	exceptColumns := []string{"Id","UpdatedAt"}
+	for _, column := range StrutFields(new(Customer)) {
+		if !ArrayExistItem(column, exceptColumns) {
+			format := "customer." + column
+			hash := map[string]interface{}{
+				"key": column, "value": i18n.Tr(lang, format), "class": "",
+			}
+			colNames = append(colNames, hash)
+		}
 	}
-	return fields, colNames
+	return  colNames
 }
 
 //状态数组
-func CustomerStatusArray() []CustomerSlice {
+func CustomerStatusArray(lang string) []CustomerSlice {
 	data := []CustomerSlice{
-		{"label": "等待审核", "code": "init"},
-		{"label": "审核通过", "code": "pass"},
-		{"label": "审核失败", "code": "fail"},
+		{"label": i18n.Tr(lang,"customer.status/init"), "code": "init"},
+		{"label": i18n.Tr(lang,"customer.status/pass"), "code": "pass"},
+		{"label": i18n.Tr(lang,"customer.status/fail"), "code": "fail"},
 	}
 	return data
 }
 
-func (c *Customer) ShowStatus(isString bool) interface{} {
-	data := CustomerStatusArray()
+func (c *Customer) ShowStatus(isString bool,lang string) interface{} {
+	data := CustomerStatusArray(lang)
 	for _, v := range data {
 		if v["code"] == c.Status {
 			if isString {
@@ -233,21 +227,21 @@ func (c *Customer) ShowStatus(isString bool) interface{} {
 			}
 		}
 	}
-	return "等待审核"
+	return i18n.Tr(lang,"customer.status/init")
 }
 
 //获取对应的账期
-func CustomerAccountPeriodArray() []CustomerSlice {
+func CustomerAccountPeriodArray(lang string) []CustomerSlice {
 	data := []CustomerSlice{
-		{"label": "月结", "code": "month"},
-		{"label": "票结", "code": "ticket"},
+		{"label": i18n.Tr(lang,"customer.accountPeriod/month"), "code": "month"},
+		{"label": i18n.Tr(lang,"customer.accountPeriod/ticket"), "code": "ticket"},
 	}
 	return data
 }
 
 //显示账期
-func (c *Customer) ShowPeriod(isString bool) interface{} {
-	data := CustomerAccountPeriodArray()
+func (c *Customer) ShowPeriod(isString bool,lang string) interface{} {
+	data := CustomerAccountPeriodArray(lang)
 	for _, v := range data {
 		if v["code"] == c.AccountPeriod {
 			if isString {
@@ -259,18 +253,18 @@ func (c *Customer) ShowPeriod(isString bool) interface{} {
 	}
 	return ""
 }
-func CustomerTransportTypeArray() []CustomerSlice {
+func CustomerTransportTypeArray(lang string) []CustomerSlice {
 	data := []CustomerSlice{
-		{"label": "客户", "code": 1},
-		{"label": "供应商", "code": 2},
-		{"label": "客户&供应商", "code": 3},
+		{"label": i18n.Tr(lang,"customer.companyType/1"), "code": 1},
+		{"label": i18n.Tr(lang,"customer.companyType/2"), "code": 2},
+		{"label": i18n.Tr(lang,"customer.companyType/3"), "code": 3},
 	}
 	return data
 }
 
 //显示对应的公司类型
-func (c *Customer) ShowCompanyType(isString bool) interface{} {
-	data := CustomerTransportTypeArray()
+func (c *Customer) ShowCompanyType(isString bool,lang string) interface{} {
+	data := CustomerTransportTypeArray(lang)
 	for _, v := range data {
 		if v["code"] == c.CompanyType {
 			if isString {
@@ -282,15 +276,15 @@ func (c *Customer) ShowCompanyType(isString bool) interface{} {
 	}
 	return ""
 }
-func CustomerIsVipArray() []CustomerSlice {
+func CustomerIsVipArray(lang string) []CustomerSlice {
 	data := []CustomerSlice{
-		{"label": "是", "code": true,},
-		{"label": "否", "code": false},
+		{"label": i18n.Tr(lang,"customer.isVip/true"), "code": true,},
+		{"label": i18n.Tr(lang,"customer.isVip/false"), "code": false},
 	}
 	return data
 }
-func (c *Customer) ShowVip(isString bool) interface{} {
-	data := CustomerStatusArray()
+func (c *Customer) ShowVip(isString bool,lang string) interface{} {
+	data := CustomerStatusArray(lang)
 	for _, v := range data {
 		if c.IsVip == v["code"] {
 			if isString {
@@ -304,21 +298,20 @@ func (c *Customer) ShowVip(isString bool) interface{} {
 }
 
 //创建客户对应的验证
-func (c *Customer) Validate() (b bool, err map[string]interface{}) {
+func (c *Customer) Validate(lang string) (b bool, err map[string]interface{}) {
 	b = true
 	valid := validation.Validation{}
-	valid.Required(c.Name, "客户名称")
-	valid.MaxSize(c.Name, 128, "最大值")
-	valid.Required(c.Telephone, "联系电话")
-	valid.Required(c.Telephone, "联系电话")
-	valid.Tel(c.Telephone, "联系电话格式")
-	valid.Required(c.Email, "邮箱")
-	valid.Email(c.Email, "邮箱格式")
-	valid.Required(c.AccountPeriod, "账期")
-	valid.Required(c.Company, "所属公司")
-	valid.Required(c.AuditUser, "审核者")
-	valid.Required(c.SaleUser, "业务员")
-	valid.Required(c.CreateUser, "创建者")
+	valid.Required(c.Name, i18n.Tr(lang,"customer.Name"))
+	valid.MaxSize(c.Name, 128, i18n.Tr(lang,"error.max"))
+	valid.Required(c.Telephone, i18n.Tr(lang,"customer.Telephone"))
+	valid.Tel(c.Telephone, i18n.Tr(lang,"error.phone"))
+	valid.Required(c.Email,i18n.Tr(lang,"customer.Email") )
+	valid.Email(c.Email, i18n.Tr(lang,"error.email"))
+	valid.Required(c.AccountPeriod, i18n.Tr(lang,"customer.AccountPeriod"))
+	valid.Required(c.Company, i18n.Tr(lang,"customer.Company"))
+	valid.Required(c.AuditUser, i18n.Tr(lang,"customer.AuditUser"))
+	valid.Required(c.SaleUser, i18n.Tr(lang,"customer.SaleUser"))
+	valid.Required(c.CreateUser, i18n.Tr(lang,"customer.CreateUser"))
 	err = make(map[string]interface{})
 	if valid.HasErrors() {
 		b = false

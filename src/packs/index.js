@@ -10,6 +10,10 @@ var app = new Vue({
         },
         url: '', DepartmentArray: [], CompanyArray: [],CustomerArray: []
     },
+    i18n: new VueI18n({
+        locale: getCookie('lang'),
+        messages: Messages,
+    }),
     mounted: function () {
         this.setUrl();
         this.getList();
@@ -66,7 +70,7 @@ var app = new Vue({
         //过滤部分数据
         filterResult: function () {
             this.getList();
-            toastr.success("刷新数据成功");
+            toastr.success(this.$i18n.t("refresh"));
         },
         getFilerResult: function () {
             let str = [];
@@ -84,7 +88,7 @@ var app = new Vue({
                 _this.$data.index[k] = '';
             });
             this.getList();
-            toastr.success("刷新数据成功");
+            toastr.success(this.$i18n.t("refresh"));
 
         },
     }

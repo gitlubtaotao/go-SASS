@@ -9,7 +9,7 @@
 <div class="page-header">
     <div class="col-sm-12 col-xs-6">
         <div class="btn-group">
-            <a href="/user/new" class="btn btn-sm btn-primary"> 新增员工</a>
+            <a href="/user/new" class="btn btn-sm btn-primary">{{LocaleS (i18n .Lang "new") (i18n .Lang "module_name.employee") }}</a>
         </div>
     </div>
     <div class="clearfix"></div>
@@ -19,7 +19,7 @@
         <div class="col-xs-12 col-sm-12 col-md-12 widget-container-col ui-sortable">
             <div class="widget-box ui-sortable-handle" id="widget-box-1">
                 <div class="widget-header">
-                    <h5 class="widget-title">查询条件</h5>
+                    <h5 class="widget-title">{{i18n .Lang "search_filter"}}</h5>
                     <div class="widget-toolbar">
                         <a href="#" data-action="collapse">
                             <i class="ace-icon fa fa-chevron-up"></i>
@@ -32,48 +32,48 @@
                               action="/user" method="get">
                             <div class="form-group">
                                 <div class="col-sm-3 col-xs-12 col-md-3">
-                                    <label class="control-label col-sm-4">姓名</label>
+                                    <label class="control-label col-sm-4">{{i18n .Lang "user.Name"}}</label>
                                     <div class="col-sm-8">
-                                        <input class="form-control" value="" placeholder="请输入姓名"
+                                        <input class="form-control" value="" placeholder="{{i18n .Lang "user.Name"}}"
                                                name="Name" v-model.trim="index.name__icontains">
                                     </div>
                                 </div>
                                 <div class="col-sm-3 col-xs-12 col-md-3">
-                                    <label class="control-label col-sm-4">邮箱</label>
+                                    <label class="control-label col-sm-4">{{i18n .Lang "user.Email"}}</label>
                                     <div class="col-sm-8">
-                                        <input class="form-control" value="" placeholder="请输入邮箱"
+                                        <input class="form-control" value="" placeholder="{{i18n .Lang "user.Email"}}"
                                                name="Email" v-model.trim="index.email__contains">
                                     </div>
                                 </div>
                                 <div class="col-sm-3 col-xs-12 col-md-3">
-                                    <label class="control-label col-sm-4">电话</label>
+                                    <label class="control-label col-sm-4">{{i18n .Lang "user.Phone"}}</label>
                                     <div class="col-sm-8">
-                                        <input class="form-control" value="" placeholder="请输入电话"
+                                        <input class="form-control" value="" placeholder="{{i18n .Lang "user.Phone"}}"
                                                name="Telephone" v-model.trim="index.phone__contains">
                                     </div>
                                 </div>
                                 <div class="col-sm-3 col-xs-12 col-md-3">
-                                    <label class="control-label col-sm-4">所属公司</label>
+                                    <label class="control-label col-sm-4">{{i18n .Lang "user.Company"}}</label>
                                     <div class="col-sm-8">
                                         <vue-select v-model.trim="index.Company" id="company_id" label="Name"
-                                                    :placeholder="'请选择所属公司'" :reduce="Name => Name.Id"
+                                                    :placeholder="''" :reduce="Name => Name.Id"
                                                     :options="CompanyArray"
                                                     @search:focus="clickCompany" @search="clickCompany">
                                         </vue-select>
                                     </div>
                                 </div>
                                 <div class="col-sm-3 col-xs-12 col-md-3">
-                                    <label class="control-label col-sm-4">所属部门</label>
+                                    <label class="control-label col-sm-4">{{i18n .Lang "user.Department"}}</label>
                                     <div class="col-sm-8">
                                         <vue-select v-model.trim="index.Department" id="company_id" label="Name"
-                                                    :placeholder="'请选择所属公司'" :reduce="Name => Name.Id"
+                                                    :placeholder="''" :reduce="Name => Name.Id"
                                                     :options="DepartmentArray"
                                                     @search:focus="clickDepartment" @search="clickDepartment">
                                         </vue-select>
                                     </div>
                                 </div>
                                 <div class="col-sm-6 col-xs-12 col-md-6">
-                                    <label class="control-label col-sm-2">入职时间</label>
+                                    <label class="control-label col-sm-2">{{i18n .Lang "user.EntryTime"}}</label>
                                     <div class="col-sm-5 col-md-5">
                                         <datetime v-model="index.entry_time__gte" type="datetime"
                                                   input-class="form-control" format="yyyy-MM-dd HH:mm"></datetime>
@@ -89,12 +89,12 @@
                                 <div class="col-sm-offset-5 col-xs-offset-3 col-md-offset-5">
                                     <button class="btn btn-success btn-sm" type="button" @click="filterResult">
                                         <i class="ace-icon fa fa-search bigger-110"></i>
-                                        查询
+                                        {{i18n .Lang "search"}}
                                     </button>
 
                                     <button class="btn btn-sm btn-danger" type="button" @click="refreshResult">
                                         <i class="ace-icon fa fa-refresh bigger-110"></i>
-                                        清空查询
+                                        {{i18n .Lang "clear"}}
                                     </button>
                                 </div>
                             </div>

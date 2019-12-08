@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"github.com/astaxie/beego/logs"
 	"github.com/astaxie/beego/validation"
+	"github.com/beego/i18n"
 	"log"
 	"quickstart/utils"
 	"reflect"
@@ -124,6 +125,9 @@ func GetAllUser(query map[string]string, fields []string, sortby []string, order
 			if ArrayExistItem("EntryTime", fields) {
 				m["EntryTime"] = utils.LongTime(v.EntryTime)
 			}
+			if ArrayExistItem("UpdatedAt", fields) {
+				m["UpdatedAt"] = utils.LongTime(v.UpdatedAt)
+			}
 			m["Company.Name"] = v.Company.Name
 			m["Company.Email"] = v.Company.Email
 			ml = append(ml, m)
@@ -149,19 +153,19 @@ func UpdateUserById(m *User) (err error) {
 }
 
 //获取用户对应的colNames
-func GetUserCols() ([]string, []CustomerSlice) {
-	attributes := []CustomerSlice{
-		{"key": "Company.Name", "value": "所属公司", "class": "col-xs-1"},
-		{"key": "Name", "value": "姓名", "class": "col-xs-1"},
-		{"key": "Email", "value": "邮箱", "class": "col-xs-1"},
-		{"key": "Phone", "value": "电话", "class": ""},
-		{"key": "Gender", "value": "性别", "class": "col-xs-1"},
-		{"key": "EntryTime", "value": "入职时间", "class": "col-xs-1"},
-		{"key": "Department", "value": "部门", "class": "col-xs-1"},
-		{"key": "Id", "value": "Id", "class": ""},
+func GetUserCols(lang string) (cols []CustomerSlice) {
+	colNames := make([]CustomerSlice,0)
+	exceptColumns := []string{"Id","CreatedAt","EncodePassword","Pwd"}
+	for _,column := range	StrutFields(new(User)){
+		if !ArrayExistItem(column,exceptColumns){
+			format := "user."+column
+			hash := map[string]interface{}{
+				"key": column,"value": i18n.Tr(lang,format),"class": "",
+			}
+			colNames = append(colNames,hash)
+		}
 	}
-	var fields []string
-	return fields, attributes
+	return colNames
 }
 
 // DeleteUser deletes User by Id and returns error if
@@ -181,15 +185,14 @@ func DeleteUser(id int64) (err error) {
 
 //创建用户的对应validate
 
-func (u *User) Validate() (b bool, errors map[string]interface{}) {
+func (u *User) Validate(lang string) (b bool, errors map[string]interface{}) {
 	valid := validation.Validation{}
-	valid.Required(u.Name, "name")
-	valid.MaxSize(u.Name, 128, "name max")
-	valid.Phone(u.Phone, "phone")
-	valid.Email(u.Email, "email")
-	valid.MaxSize(u.Email, 128, "email max")
-	valid.Required(u.EncodePassword, "password")
-	valid.Required(u.Company, "company")
+	valid.Required(u.Name, i18n.Tr(lang,"user.Name")).Message(i18n.Tr(lang,"error.required"))
+	valid.MaxSize(u.Name, 128, i18n.Tr(lang,"user.Name")).Message(i18n.Tr(lang,"error.max_size")+",%d",128)
+	valid.Phone(u.Phone, i18n.Tr(lang,"user.Phone")).Message(i18n.Tr(lang,"error.phone"))
+	valid.Email(u.Email, i18n.Tr(lang,"user.Email")).Message(i18n.Tr(lang,"error.email"))
+	valid.Required(u.EncodePassword,i18n.Tr(lang,"user.Pwd")).Message(i18n.Tr(lang,"error.required"))
+	valid.Required(u.Company, i18n.Tr(lang,"user.Company")).Message(i18n.Tr(lang,"error.required"))
 	var returnErr map[string]interface{}
 	returnErr = make(map[string]interface{})
 	status := true

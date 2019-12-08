@@ -1,8 +1,8 @@
 <div class="breadcrumbs ace-save-state " id="breadcrumbs">
     <ul class="breadcrumb">
-        {{template "layouts/breadcrumb.html"}}
+        {{template "layouts/breadcrumb.html".}}
         <li class="">
-            <a href="/user/index">员工信息</a>
+            <a href="/user/index">{{i18n .Lang "module_name.employee"}}</a>
         </li>
         <li class="active">
             {{.PageTitle}}
@@ -19,50 +19,50 @@
                 <div class="col-sm-6 col-sm-offset-2 col-xs-12">
 
                     <div class="form-group">
-                        <label class="control-label col-sm-4">姓名</label>
+                        <label class="control-label col-sm-4">{{i18n .Lang "user.Name"}}</label>
                         <div class="col-sm-8">
                             <input class="form-control" v-model.trim="user.Name" name="Name" value="{{.User.Name}}"
-                                   placeholder="请输入公司名称" required>
+                                   placeholder="{{i18n .Lang "user.Name"}}" required>
                         </div>
                     </div>
                     <div class="form-group">
-                        <label class="control-label col-sm-4">邮箱</label>
+                        <label class="control-label col-sm-4">{{i18n .Lang "user.Email"}}</label>
                         <div class="col-sm-8">
                             <input class="form-control" type="email" v-model.trim="user.Email" name="Email"
                                    value="{{.User.Email}}"
-                                   placeholder="请输入邮箱" required>
+                                   placeholder="{{i18n .Lang "user.Email"}}" required>
                         </div>
                     </div>
                     <div class="form-group">
-                        <label class="control-label col-sm-4">电话</label>
+                        <label class="control-label col-sm-4">{{i18n .Lang "user.Phone"}}</label>
                         <div class="col-sm-8">
                             <div class="input-group">
                             <span class="input-group-addon">
                                 <i class="ace-icon fa fa-phone"></i>
                             </span>
                                 <input class="form-control" v-model.trim="user.Phone" type="tel" name="Phone"
-                                       value="{{.User.Phone}}" placeholder="请输入电话" required>
+                                       value="{{.User.Phone}}" placeholder="{{i18n .Lang "user.Phone"}}" required>
                             </div>
                         </div>
                     </div>
                     <div class="form-group">
-                        <label class="control-label col-sm-4">密码</label>
+                        <label class="control-label col-sm-4">{{i18n .Lang "user.Pwd"}}</label>
                         <div class="col-sm-8">
                             <input class="form-control" type="password" v-model.trim="user.Pwd" name="Password"
                                    value="{{.User.Pwd}}"
-                                   placeholder="请输入新密码" autocapitalize="off" id="new-password" required>
+                                   placeholder="{{i18n .Lang "user.Pwd"}}" autocapitalize="off" id="new-password" required>
                         </div>
                     </div>
                     <div class="form-group">
-                        <label class="control-label col-sm-4">确认密码</label>
+                        <label class="control-label col-sm-4">{{i18n .Lang "user.ConfirmPwd"}}</label>
                         <div class="col-sm-8">
                             <input class="form-control" type="password" v-model.trim="user.confirmPassword"
                                    name="ConfirmPassword" value="{{.User.Pwd}}"
-                                   placeholder="请再次输入密码" autocomplete="off">
+                                   placeholder="{{i18n .Lang "user.ConfirmPwd"}}" autocomplete="off">
                         </div>
                     </div>
                     <div class="form-group">
-                        <label class="control-label col-sm-4">性别</label>
+                        <label class="control-label col-sm-4">{{i18n .Lang "user.Gender"}}</label>
                         <div class="col-sm-8">
                             <vue-select class="vue-select2" name="select2" label="Name"
                                         :options="['男','女']" v-model.trim="user.Gender"
@@ -71,7 +71,7 @@
                         </div>
                     </div>
                     <div class="form-group">
-                        <label class="control-label col-sm-4">所属公司</label>
+                        <label class="control-label col-sm-4">{{i18n .Lang "user.Company"}}</label>
                         <div class="col-sm-8">
                             <vue-select class="vue-select2" name="select2" label="Name"
                                         :options="companyOptions" v-model.trim="user.Company"
@@ -80,7 +80,7 @@
                         </div>
                     </div>
                     <div class="form-group">
-                        <label class="control-label col-sm-4">所属部门</label>
+                        <label class="control-label col-sm-4">{{i18n .Lang "user.Department"}}</label>
                         <div class="col-sm-8">
                             <vue-select class="vue-select2" name="select2" label="Name"
                                         :options="departmentOptions" v-model.trim="user.Department"
@@ -90,7 +90,7 @@
                     </div>
 
                     <div class="form-group">
-                        <label class="control-label col-sm-4">入职时间</label>
+                        <label class="control-label col-sm-4">{{i18n .Lang "user.EntryTime"}}</label>
                         <div class="col-sm-8">
                             <div class="input-group">
                                 <span class="input-group-addon"><i class="fa fa-clock-o bigger-110"></i>
@@ -107,11 +107,11 @@
                 <div class="col-sm-offset-5 col-xs-offset-3">
                     <button class="btn btn-success btn-sm " type="submit" @submit="checkForm">
                         <i class="ace-icon fa fa-check bigger-110"></i>
-                        保存
+                        {{i18n .Lang "save"}}
                     </button>
                     <button class="btn btn-sm" type="reset">
                         <i class="ace-icon fa fa-undo bigger-110"></i>
-                        取消
+                        {{i18n .Lang "cancel"}}
                     </button>
                 </div>
             </div>
@@ -138,6 +138,10 @@
             departmentOptions: [],
             Id: '',
         },
+        i18n: new VueI18n({
+           locale: getCookie('lang'),
+           messages: Messages,
+        }),
         mounted: function () {
             this.selectData();
             this.initData();
@@ -167,19 +171,19 @@
             validateSubmit: function () {
                 let regPhone = /^1[3456789]\d{9}$/;
                 if (!this.user.Name) {
-                    toastr.error("姓名必填项");
+                    toastr.error(this.$i18n.t('blank',{name:'{{i18n .Lang "user.Name"}}'}));
                     return false;
                 }
                 if (!this.user.Email) {
-                    toastr.error("邮箱必填项");
+                    toastr.error(this.$i18n.t('blank',{name:'{{i18n .Lang "user.Email"}}'}));
                     return false;
                 }
                 if (!this.user.Phone) {
-                    toastr.error("电话必填项");
+                    toastr.error(this.$i18n.t('blank',{name:'{{i18n .Lang "user.Phone"}}'}));
                     return false;
                 }
                 if (this.user.Company === '') {
-                    toastr.error("所属公司不能为空");
+                    toastr.error(this.$i18n.t('blank',{name:'{{i18n .Lang "user.Company"}}'}));
                     return false;
                 }
                 if (this.user.Id === '') {
@@ -192,22 +196,22 @@
                     }
                 }
                 if (!regPhone.test(this.user.Phone)) {
-                    toastr.error('请输入有效的手机号码');
+                    toastr.error(this.$i18n.t('phone_valid'));
                     return false;
                 }
                 return true;
             },
             validatePassword: function () {
                 if (!this.user.Pwd) {
-                    toastr.error('密码必填项');
+                    toastr.error(this.$i18n.t('blank',{name:'{{i18n .Lang "user.Pwd"}}'}));
                     return false;
                 }
                 if (!this.user.confirmPassword) {
-                    toastr.error("确认密码必填项");
+                    toastr.error(this.$i18n.t('blank',{name:'{{i18n .Lang "user.ConfirmPwd"}}'}));
                     return false;
                 }
                 if (!(this.user.Pwd === this.user.confirmPassword)) {
-                    toastr.error('两次输入的密码不一致');
+                    toastr.error(this.$i18n.t('password_not_eq'));
                     return false;
                 }
                 return true;

@@ -4,7 +4,9 @@ import (
 	"encoding/json"
 	"errors"
 	"github.com/astaxie/beego/logs"
+	"github.com/beego/i18n"
 	"quickstart/models"
+	"quickstart/utils"
 	"strconv"
 	"strings"
 )
@@ -37,7 +39,7 @@ func (c *SupplierController) Post() {
 	user := new(models.User)
 	user.Id = c.currentUser.Id
 	v.CreateUser = user
-	status, errs := v.Validate()
+	status, errs := v.Validate(c.Lang)
 	if status {
 		if _, err := models.AddCustomer(&v); err == nil {
 			c.jsonResult(200, "", "OK")
@@ -109,16 +111,15 @@ func (c *SupplierController) GetAll() {
 	if v, err := c.GetInt64("limit"); err == nil {
 		limit = v
 	}
-	_, colNames := models.GetCustomerCols()
+	colNames := models.GetCustomerCols(c.Lang)
 	l, countPage, err := models.GetAllCustomer(query, fields, sortBy,
-		order, offset, limit,
-		"supplier")
+		order, offset, limit, "supplier", c.Lang)
 	if err != nil {
 		c.jsonResult(500, err.Error(), "")
 	} else {
 		if c.GetString("format") != "" {
 			c.DownLoad(l, colNames)
-		}else {
+		} else {
 			mapValue := models.SetPaginator(countPage)
 			result := map[string]interface{}{
 				"countPage": mapValue,
@@ -155,7 +156,7 @@ func (c *SupplierController) Put() {
 	v := models.Customer{Id: id}
 	err := json.Unmarshal(c.Ctx.Input.RequestBody, &v)
 	logs.Error(err)
-	status, errs := v.Validate()
+	status, errs := v.Validate(c.Lang)
 	if status {
 		if err = models.UpdateCustomerById(&v); err == nil {
 			c.jsonResult(200, "", "OK")
@@ -188,20 +189,20 @@ func (c *SupplierController) Delete() {
 func (c *SupplierController) Index() {
 	c.Data["JsName"] = "customer_index"
 	c.Data["Namespace"] = "customer_manage"
-	c.Data["PageTitle"] = "供应商信息"
+	c.Data["PageTitle"] = i18n.Tr(c.Lang,"module_name.supplier")
 	c.setTpl("customer/index.html")
 }
 func (c *SupplierController) Edit() {
 	c.Data["JsName"] = "customer_form"
 	idStr := c.Ctx.Input.Params()["0"]
 	c.Data["Namespace"] = "customer_manage"
-	c.Data["PageTitle"] = "修改供应商信息"
+	c.Data["PageTitle"] = utils.LocaleS(i18n.Tr(c.Lang,"edit"),i18n.Tr(c.Lang,"module_name.supplier"))
 	c.Data["Id"] = idStr
 	c.setTpl("customer/form.html")
 }
 func (c *SupplierController) New() {
 	c.Data["JsName"] = "customer_form"
 	c.Data["Namespace"] = "customer_manage"
-	c.Data["PageTitle"] = "新增供应商信息"
+	c.Data["PageTitle"] = utils.LocaleS(i18n.Tr(c.Lang,"new"),i18n.Tr(c.Lang,"module_name.supplier"))
 	c.setTpl("customer/form.html")
 }

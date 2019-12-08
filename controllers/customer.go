@@ -5,7 +5,9 @@ import (
 	"encoding/json"
 	"errors"
 	"github.com/astaxie/beego/logs"
+	"github.com/beego/i18n"
 	"quickstart/models"
+	"quickstart/utils"
 	"strconv"
 	"strings"
 )
@@ -39,7 +41,7 @@ func (c *CustomerController) Post() {
 	user := new(models.User)
 	user.Id = c.currentUser.Id
 	v.CreateUser = user
-	status, errs := v.Validate()
+	status, errs := v.Validate(c.Lang)
 	if status {
 		if _, err := models.AddCustomer(&v); err == nil {
 			c.jsonResult(200, "", "OK")
@@ -121,13 +123,13 @@ func (c *CustomerController) GetAll() {
 			query[k] = v
 		}
 	}
-	_, colNames := models.GetCustomerCols()
+	colNames := models.GetCustomerCols(c.Lang)
+	logs.Info(colNames)
 	typeValue := "customer"
 	if c.GetString("typeValue") != "" {
-		 typeValue = ""
+		 typeValue = "customer"
 	}
-	logs.Info(typeValue,limit)
-	l, countPage, err := models.GetAllCustomer(query, fields, sortby, order, offset, limit, typeValue)
+	l, countPage, err := models.GetAllCustomer(query, fields, sortby, order, offset, limit, typeValue,c.Lang)
 	mapValue := models.SetPaginator(countPage)
 	if err != nil {
 		c.jsonResult(500, err.Error(), "")
@@ -140,16 +142,16 @@ func (c *CustomerController) GetAll() {
 			"countPage": mapValue,
 			"data":      l,
 			"colNames":  colNames,
-			"actions":   customerActions(),
+			"actions":   c.customerActions(),
 		}
 		c.jsonResult(200, "", result)
 	}
 }
-func customerActions() []models.CustomerSlice {
+func (c *CustomerController)customerActions() []models.CustomerSlice {
 	actions := []models.CustomerSlice{
-		{"name": "修改", "url": "/customer/edit/:id", "remote": false},
-		{"name": "详情", "url": "/customer/show/:id", "remote": false},
-		{"name": "删除", "url": "/customer/:id", "remote": true, "method": "delete"},
+		{"name": i18n.Tr(c.Lang,"edit"), "url": "/customer/edit/:id", "remote": false},
+		{"name": i18n.Tr(c.Lang,"view"), "url": "/customer/show/:id", "remote": false},
+		{"name": i18n.Tr(c.Lang,"delete"), "url": "/customer/:id", "remote": true, "method": "delete"},
 	}
 	return actions
 }
@@ -167,7 +169,7 @@ func (c *CustomerController) Put() {
 	id, _ := strconv.ParseInt(idStr, 0, 64)
 	v := models.Customer{Id: id}
 	_ = json.Unmarshal(c.Ctx.Input.RequestBody, &v)
-	status, errs := v.Validate()
+	status, errs := v.Validate(c.Lang)
 	if status {
 		if err := models.UpdateCustomerById(&v); err == nil {
 			c.jsonResult(200, "", "OK")
@@ -199,50 +201,51 @@ func (c *CustomerController) Delete() {
 func (c *CustomerController) Get() {
 	c.Data["JsName"] = "customer_index"
 	c.Data["Namespace"] = "customer_manage"
-	c.Data["PageTitle"] = "客户信息"
+	c.Data["PageTitle"] = i18n.Tr(c.Lang,"module_name.customer")
 	c.setTpl("customer/index.html")
 }
 func (c *CustomerController) Index() {
 	c.Data["JsName"] = "customer_index"
 	c.Data["Namespace"] = "customer_manage"
-	c.Data["PageTitle"] = "客户信息"
+	c.Data["PageTitle"] = i18n.Tr(c.Lang,"module_name.customer")
 	c.setTpl("customer/index.html")
 	
 }
 func (c *CustomerController) New() {
 	c.Data["JsName"] = "customer_form"
 	c.Data["Namespace"] = "customer_manage"
-	c.Data["PageTitle"] = "新增客户信息"
+	c.Data["PageTitle"] = utils.LocaleS(i18n.Tr(c.Lang,"new"),i18n.Tr(c.Lang,"module_name.customer"))
 	
 	c.setTpl("customer/form.html")
 }
 func (c *CustomerController) Edit() {
 	c.Data["JsName"] = "customer_form"
 	c.Data["Namespace"] = "customer_manage"
-	c.Data["PageTitle"] = "修改客户信息"
+	c.Data["PageTitle"] = utils.LocaleS(i18n.Tr(c.Lang,"edit"),i18n.Tr(c.Lang,"module_name.customer"))
 	idStr := c.Ctx.Input.Params()["0"]
 	c.Data["Id"] = idStr
 	c.setTpl("customer/form.html")
 }
 
 func (c *CustomerController) Status() {
+	lang := c.Lang
 	actionType := c.GetString("actionType")
 	var result []models.CustomerSlice
 	returnJson := make(map[string]interface{})
 	switch actionType {
 	case "Status":
-		result = models.CustomerStatusArray()
+		result = models.CustomerStatusArray(lang)
 	case "AccountPeriod":
-		result = models.CustomerAccountPeriodArray()
+		result = models.CustomerAccountPeriodArray(lang)
 	case "CompanyType":
-		result = models.CustomerTransportTypeArray()
+		result = models.CustomerTransportTypeArray(lang)
 	case "IsVip":
-		result = models.CustomerIsVipArray()
+		result = models.CustomerIsVipArray(lang)
 	default:
-		returnJson["Status"] = models.CustomerStatusArray()
-		returnJson["AccountPeriod"] = models.CustomerAccountPeriodArray()
-		returnJson["CompanyType"] = models.CustomerTransportTypeArray()
-		returnJson["IsVip"] = models.CustomerIsVipArray()
+		returnJson["Status"] = models.CustomerStatusArray(lang)
+		returnJson["AccountPeriod"] = models.CustomerAccountPeriodArray(lang)
+		returnJson["CompanyType"] = models.CustomerTransportTypeArray(lang)
+		returnJson["IsVip"] = models.CustomerIsVipArray(lang)
 	}
 	if actionType != "all" {
 		c.jsonResult(200, "", result)

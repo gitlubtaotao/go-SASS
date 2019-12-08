@@ -1,7 +1,7 @@
 @import "datepicker.css";
 
 .table-responsive{
-    overflow-x: inherit ;
+    overflow-x: auto ;
 }
 .pagination{
     margin: 0 !important;

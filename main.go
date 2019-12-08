@@ -8,6 +8,7 @@ import (
 	_ "quickstart/routers"
 	
 	_ "quickstart/models"
+	_ "quickstart/models/setting"
 	
 	"github.com/astaxie/beego/logs"
 	
@@ -32,6 +33,6 @@ func init() {
 	//链接redis
 	redis.RedisNewClient()
 	//链接数据库
-	utils.DataBaseConnection()
+	utils.DataBaseConnection("go_quick_start")
 	utils.InitApp()
 }

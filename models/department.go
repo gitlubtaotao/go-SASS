@@ -3,6 +3,7 @@ package models
 import (
 	"errors"
 	"fmt"
+	"github.com/beego/i18n"
 	"quickstart/utils"
 	"reflect"
 	"strings"
@@ -31,15 +32,20 @@ func AddDepartment(m *Department) (id int64, err error) {
 	return
 }
 
-func GetDepartmentCols() ([]string, []CustomerSlice) {
-	var fields []string
-	colNames := []CustomerSlice{
-		{"key": "Name", "value": "部门名称", "class": ""},
-		{"key": "Company", "value": "所属公司", "class": ""},
-		{"key": "CreatedAt", "value": "创建时间", "class": ""},
-	}
-	return fields, colNames
+func GetDepartmentCols(lang string) []CustomerSlice {
 	
+	colNames := make([]CustomerSlice,0)
+	exceptColumns := []string{"Id"}
+	for _,column := range	StrutFields(new(Department)){
+		if !ArrayExistItem(column,exceptColumns){
+			format := "department."+column
+			hash := map[string]interface{}{
+				"key": column,"value": i18n.Tr(lang,format),"class": "",
+			}
+			colNames = append(colNames,hash)
+		}
+	}
+	return  colNames
 }
 
 // GetDepartmentById retrieves Department by Id. Returns error if
@@ -121,6 +127,9 @@ func GetAllDepartment(query map[string]string, fields []string, sortby []string,
 			}
 			if ArrayExistItem("CreatedAt", fields) {
 				m["CreatedAt"] = utils.LongTime(v.CreatedAt)
+			}
+			if ArrayExistItem("UpdatedAt",fields){
+				m["UpdatedAt"] = utils.LongTime(v.UpdatedAt)
 			}
 			ml = append(ml, m)
 		}

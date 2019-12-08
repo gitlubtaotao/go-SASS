@@ -2,7 +2,7 @@
     <ul class="breadcrumb">
         {{template "layouts/breadcrumb.html" .}}
         <li class="">
-            <a href="/customer/index">客户信息</a>
+            <a href="/customer/index">{{i18n .Lang "module_name.customer"}}</a>
         </li>
         <li class="active">
             {{.PageTitle}}
@@ -17,51 +17,51 @@
             <fieldset>
                 <div class="col-sm-6 col-xs-12 col-md-5">
                     <div class="form-group">
-                        <label class="control-label col-sm-4">客户名称</label>
+                        <label class="control-label col-sm-4">{{i18n .Lang "customer.Name"}}</label>
                         <div class="col-sm-8">
                             <input class="form-control" name="Name" v-model.trim="customer.Name"
-                                   placeholder="请输入部门名称" required>
+                                   placeholder="{{i18n .Lang "customer.Name"}}" required>
                         </div>
                     </div>
                     <div class="form-group">
-                        <label class="control-label col-sm-4">联系电话</label>
+                        <label class="control-label col-sm-4">{{i18n .Lang "customer.Telephone"}}</label>
                         <div class="col-sm-8">
                             <input class="form-control" name="Telephone" v-model.trim="customer.Telephone"
-                                   placeholder="请输入联系电话" required>
+                                   placeholder="{{i18n .Lang "customer.Telephone"}}" required>
                         </div>
                     </div>
                     <div class="form-group">
-                        <label class="control-label col-sm-4">邮箱信息</label>
+                        <label class="control-label col-sm-4">{{i18n .Lang "customer.Email"}}</label>
                         <div class="col-sm-8">
                             <input class="form-control" name="Email" v-model.trim="customer.Email"
-                                   placeholder="请输入邮箱" type="email" required>
+                                   placeholder="{{i18n .Lang "customer.Email"}}" type="email" required>
                         </div>
                     </div>
                     <div class="form-group">
-                        <label class="control-label col-sm-4">通讯地址</label>
+                        <label class="control-label col-sm-4">{{i18n .Lang "customer.Address"}}</label>
                         <div class="col-sm-8">
                             <input class="form-control" name="Address" v-model.trim="customer.Address"
-                                   placeholder="请输入通讯地址">
+                                   placeholder="{{i18n .Lang "customer.Address"}}">
                         </div>
                     </div>
                     <div class="form-group">
-                        <label class="control-label col-sm-4">公司网站</label>
+                        <label class="control-label col-sm-4">{{i18n .Lang "customer.Website"}}</label>
                         <div class="col-sm-8">
                             <input class="form-control" name="Email" v-model.trim="customer.Website"
-                                   placeholder="请输入公司网站" type="url">
+                                   placeholder="{{i18n .Lang "customer.Website"}}" type="url">
                         </div>
                     </div>
                     <div class="form-group">
-                        <label class="control-label col-sm-4">业务类型</label>
+                        <label class="control-label col-sm-4">{{i18n .Lang "customer.BusinessTypeName"}}</label>
                         <div class="col-sm-8">
                             <input class="form-control" name="BusinessTypeName" v-model.trim="customer.BusinessTypeName"
-                                   placeholder="请输入业务类型">
+                                   placeholder="{{i18n .Lang "customer.BusinessTypeName"}}">
                         </div>
                     </div>
 
 
                     <div class="form-group">
-                        <label class="control-label col-sm-4">所属公司</label>
+                        <label class="control-label col-sm-4">{{i18n .Lang "customer.Company"}}</label>
                         <div class="col-sm-8">
                             <vue-select class="vue-select2" name="select2" label="Name"
                                         :options="CompanyOptions" v-model.trim="customer.Company"
@@ -73,7 +73,7 @@
                 </div>
                 <div class="col-sm-6 col-xs-12 col-md-5">
                     <div class="form-group">
-                        <label class="control-label col-sm-4">账期</label>
+                        <label class="control-label col-sm-4">{{i18n .Lang "customer.AccountPeriod"}}</label>
                         <div class="col-sm-8">
                             <vue-select class="vue-select2" name="select2" label="label"
                                         :options="AccountPeriodOptions" v-model.trim="customer.AccountPeriod"
@@ -82,23 +82,23 @@
                         </div>
                     </div>
                     <div class="form-group">
-                        <label class="control-label col-sm-4">账龄</label>
+                        <label class="control-label col-sm-4">{{i18n .Lang "customer.Aging"}}</label>
                         <div class="col-sm-8">
                             <input class="form-control" type="number" value="" name="Aging"
                                    v-model.trim="customer.Aging"
-                                   placeholder="请输入账龄">
+                                   placeholder="{{i18n .Lang "customer.Aging"}}">
                         </div>
                     </div>
                     <div class="form-group">
-                        <label class="control-label col-sm-4">额度</label>
+                        <label class="control-label col-sm-4">{{i18n .Lang "customer.Amount"}}</label>
                         <div class="col-sm-8">
                             <input class="form-control" type="number" value="" name="Amount"
                                    v-model.trim="customer.Amount"
-                                   placeholder="请输入额度">
+                                   placeholder="{{i18n .Lang "customer.Amount"}}">
                         </div>
                     </div>
                     <div class="form-group">
-                        <label class="control-label col-sm-4">类型</label>
+                        <label class="control-label col-sm-4">{{i18n .Lang "customer.CompanyType"}}</label>
                         <div class="col-sm-8">
                             <vue-select class="vue-select2" name="select2" label="label"
                                         :options="CompanyTypeOptions" v-model.trim="customer.CompanyType"
@@ -107,7 +107,7 @@
                         </div>
                     </div>
                     <div class="form-group">
-                        <label class="control-label col-sm-4">VIP客户</label>
+                        <label class="control-label col-sm-4">{{i18n .Lang "customer.IsVip"}}</label>
                         <div class="col-sm-8">
                             <vue-select class="vue-select2" name="select2" label="label"
                                         v-model.trim="customer.IsVip"
@@ -117,20 +117,18 @@
                     </div>
                     {{if .ControllerName | ShowSaleUser}}
                         <div class="form-group">
-                            <label class="control-label col-sm-4">业务人员</label>
+                            <label class="control-label col-sm-4">{{i18n .Lang "customer.SaleUser"}}</label>
                             <div class="col-sm-8">
                                 <vue-select v-model.trim="customer.SaleUser" id="sale_user"
-                                            :placeholder="'请选择业务人员'"
                                             @search:focus="clickUser" @search="clickUser" :options="userOptions"
                                             label="Name" required></vue-select>
                             </div>
                         </div>
                     {{end}}
                     <div class="form-group">
-                        <label class="control-label col-sm-4">审核人员</label>
+                        <label class="control-label col-sm-4">{{i18n .Lang "customer.AuditUser"}}</label>
                         <div class="col-sm-8">
                             <vue-select v-model.trim="customer.AuditUser" id="audit_user"
-                                        :placeholder="'请选择审核者'"
                                         @search:focus="clickUser" :options="userOptions"
                                         @search="clickUser" label="Name" required></vue-select>
                         </div>
@@ -143,11 +141,11 @@
                 <div class="col-sm-offset-5 col-xs-offset-3">
                     <button class="btn btn-success btn-sm " type="submit">
                         <i class="ace-icon fa fa-check bigger-110"></i>
-                        保存
+                        {{i18n .Lang "save"}}
                     </button>
                     <button class="btn btn-sm" type="reset">
                         <i class="ace-icon fa fa-undo bigger-110"></i>
-                        取消
+                        {{i18n .Lang "cancel"}}
                     </button>
                 </div>
             </div>

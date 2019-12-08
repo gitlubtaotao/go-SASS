@@ -14,6 +14,7 @@ func InitMap() {
 	err = beego.AddFuncMap("RandNumber", RandNumber)
 	_ = beego.AddFuncMap("i18n", i18n.Tr)
 	_ = beego.AddFuncMap("LocaleS", LocaleS)
+	
 	logs.Error(err)
 	
 }
@@ -43,6 +44,7 @@ func RandNumber() int {
 func LongTime(t time.Time) string {
 	return t.Format("2006-01-02 15:04:05")
 }
+//封装两
 func LocaleS(args ...string) string {
 	logs.Info(args)
 	stringA := make([]string, 1, len(args)+1)

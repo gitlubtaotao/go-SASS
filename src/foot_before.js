@@ -2,8 +2,11 @@
 
 window.Vue = require('vue');
 window.axios = require('axios');
-import {selectApi,getCookie} from './plugin/data_api';
+//require
+require('./plugin/message');
 
+//import
+import {selectApi,getCookie} from './plugin/data_api';
 import Paginate from 'vuejs-paginate';
 import vueSelect from 'vue-select';
 import indexTable from './components/vue/index_table';
@@ -15,8 +18,8 @@ import {Settings} from 'luxon'
 import downloadExtend from "./components/vue/download_extend";
 import VueI18n from 'vue-i18n'
 import toastr from 'toastr';
-Settings.defaultLocale = getCookie('lang');
 
+Settings.defaultLocale = getCookie('lang');
 Vue.component('datetime', Datetime);
 Vue.component('paginate', Paginate);
 Vue.component('vue-select', vueSelect);

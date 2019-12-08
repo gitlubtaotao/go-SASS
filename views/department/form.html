@@ -2,7 +2,7 @@
     <ul class="breadcrumb">
         {{template "layouts/breadcrumb.html" .}}
         <li class="">
-            <a href="/department/index">部门信息</a>
+            <a href="/department/index">{{i18n .Lang "module_name.department"}}</a>
         </li>
         <li class="active">
             {{.PageTitle}}
@@ -18,14 +18,14 @@
                 <div class="col-sm-6 col-sm-offset-2 col-xs-12">
 
                     <div class="form-group">
-                        <label class="control-label col-sm-4">部门名称</label>
+                        <label class="control-label col-sm-4">{{i18n .Lang "department.Name"}}</label>
                         <div class="col-sm-8">
                             <input class="form-control" name="Name" v-model.trim="department.Name"
-                                   placeholder="请输入部门名称" required>
+                                   placeholder="{{i18n .Lang "department.Name"}}" required>
                         </div>
                     </div>
                     <div class="form-group">
-                        <label class="control-label col-sm-4">所属公司</label>
+                        <label class="control-label col-sm-4">{{i18n .Lang "department.Company"}}</label>
                         <div class="col-sm-8">
                             <vue-select class="vue-select2" name="select2" label="Name"
                                         :options="options" v-model.trim="department.Company"
@@ -40,11 +40,11 @@
                 <div class="col-sm-offset-5 col-xs-offset-3">
                     <button class="btn btn-success btn-sm " type="submit">
                         <i class="ace-icon fa fa-check bigger-110"></i>
-                        保存
+                        {{i18n .Lang "save"}}
                     </button>
                     <button class="btn btn-sm" type="reset">
                         <i class="ace-icon fa fa-undo bigger-110"></i>
-                        取消
+                        {{i18n .Lang "cancel"}}
                     </button>
                 </div>
             </div>
@@ -69,6 +69,10 @@
             this.selectData();
             this.initData();
         },
+        i18n: new  VueI18n({
+           locale: getCookie('lang'),
+           messages: {"zh-CN":{blank: "%{name}不能为空"},'en-US':{blank:"%{name} Not Blank"}}
+        }),
         methods: {
             initData: function () {
                 let _this = this;
@@ -112,11 +116,11 @@
             validateForm: function () {
                 this.errors = [];
                 if (this.department.Name === '') {
-                    toastr.error("部门名称不能为空");
+                    toastr.error(this.$i18n.t("blank",{name: '{{i18n .Lang ".department.Name"}}'}));
                     return false;
                 }
                 if (this.department.Company === '') {
-                    toastr.error("所属公司不能为空");
+                    toastr.error(this.$i18n.t("blank",{name: '{{i18n .Lang ".department.Company"}}'}));
                     return false;
                 }
                 return true;

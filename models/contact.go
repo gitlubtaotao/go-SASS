@@ -17,8 +17,8 @@ type Contact struct {
 	Name      string    `orm:"size(128);unique" description:"联系人姓名"`
 	Email     string    `orm:"size(64);unique" description:"邮箱"`
 	Phone     string    `orm:"size(64);unique"`
-	WeiXinNo  string    `orm:"size(64);unique;NULL"`
-	QqNo      string    `orm:"size(64);unique:NULL"`
+	WeiXinNo  string    `orm:"size(64);unique"`
+	QqNo      string    `orm:"size(64);unique"`
 	Address   string    `orm:"size(256);null"`
 	Customer  *Customer `orm:"rel(fk);index" json:"Customer"`
 	CreatedAt time.Time `orm:"auto_now_add;type(datetime)" json:"CreatedAt"`

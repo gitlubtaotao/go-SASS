@@ -4,7 +4,9 @@ import (
 	"encoding/json"
 	"errors"
 	"github.com/astaxie/beego/logs"
+	"github.com/beego/i18n"
 	"quickstart/models"
+	"quickstart/utils"
 	"strconv"
 	"strings"
 	
@@ -41,10 +43,10 @@ func (c *UserController) Post() {
 	v.EncodePassword = encodePassword
 	v.Pwd = ""
 	//插入数据前进行验证
-	valid, vErrors := v.Validate()
+	valid, vErrors := v.Validate(c.Lang)
 	if valid {
 		if _, err := models.AddUser(&v); err == nil {
-			c.jsonResult(200, "", "OK")
+			c.jsonResult(200, i18n.Tr(c.Lang, "flash.save_success"), "OK")
 		} else {
 			c.jsonResult(500, err.Error(), "")
 		}
@@ -96,7 +98,7 @@ func (c *UserController) GetAll() {
 	if v := c.GetString("fields"); v != "" {
 		fields = strings.Split(v, ",")
 	}
-	_, colNames := models.GetUserCols()
+	colNames := models.GetUserCols(c.Lang)
 	// limit: 10 (default is 10)
 	if v, err := c.GetInt64("limit"); err == nil {
 		limit = v
@@ -137,22 +139,22 @@ func (c *UserController) GetAll() {
 	}
 	if c.GetString("format") != "" {
 		c.DownLoad(l, colNames)
-	}else {
+	} else {
 		mapValue := models.SetPaginator(countPage)
 		result := map[string]interface{}{
 			"countPage": mapValue,
 			"data":      l,
 			"colNames":  colNames,
-			"actions":   UserActions(),
+			"actions":   c.UserActions(),
 		}
 		c.jsonResult(200, "", result)
 	}
 }
 
-func UserActions() []models.CustomerSlice {
+func (c *UserController)UserActions() []models.CustomerSlice {
 	actions := []models.CustomerSlice{
-		{"name": "修改", "url": "/user/edit/:id", "remote": false},
-		{"name": "删除", "url": "/user/:id", "remote": true, "method": "delete"},
+		{"name": i18n.Tr(c.Lang,"edit"), "url": "/user/edit/:id", "remote": false},
+		{"name": i18n.Tr(c.Lang,"delete"), "url": "/user/:id", "remote": true, "method": "delete"},
 	}
 	return actions
 }
@@ -173,10 +175,10 @@ func (c *UserController) Put() {
 	encodePassword := c.generatePassword(v.Pwd)
 	v.EncodePassword = encodePassword
 	v.Pwd = ""
-	valid, vErrors := v.Validate()
+	valid, vErrors := v.Validate(c.Lang)
 	if valid {
 		if err := models.UpdateUserById(&v); err == nil {
-			c.jsonResult(200, "", "OK")
+			c.jsonResult(200, i18n.Tr(c.Lang, "flash.save_success"), "OK")
 		} else {
 			c.jsonResult(500, err.Error(), "")
 		}
@@ -205,7 +207,7 @@ func (c *UserController) Delete() {
 //用户列表
 func (c *UserController) Index() {
 	c.Data["Namespace"] = "company"
-	c.Data["PageTitle"] = "员工信息"
+	c.Data["PageTitle"] = i18n.Tr(c.Lang, "module_name.employee")
 	c.Data["JsName"] = "index"
 	c.setTpl("user/index.html")
 }
@@ -214,7 +216,7 @@ func (c *UserController) Index() {
 func (c *UserController) New() {
 	c.namespace = "company"
 	c.Data["Namespace"] = "company"
-	c.Data["PageTitle"] = "新增员工信息"
+	c.Data["PageTitle"] = utils.LocaleS(i18n.Tr(c.Lang, "new"), i18n.Tr(c.Lang, "module_name.employee"))
 	c.setTpl("user/form.html")
 }
 
@@ -222,7 +224,7 @@ func (c *UserController) New() {
 
 func (c *UserController) Edit() {
 	c.Data["Namespace"] = "company"
-	c.Data["PageTitle"] = "修改员工信息"
+	c.Data["PageTitle"] = utils.LocaleS(i18n.Tr(c.Lang, "edit"), i18n.Tr(c.Lang, "module_name.employee"))
 	//获取 :Id
 	idStr := c.Ctx.Input.Params()["0"]
 	c.Data["Id"] = idStr

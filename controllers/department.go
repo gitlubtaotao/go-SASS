@@ -4,7 +4,9 @@ import (
 	"encoding/json"
 	"errors"
 	"github.com/astaxie/beego/logs"
+	"github.com/beego/i18n"
 	"quickstart/models"
+	"quickstart/utils"
 	"strconv"
 	"strings"
 )
@@ -33,12 +35,11 @@ func (c *DepartmentController) URLMapping() {
 func (c *DepartmentController) Post() {
 	var v models.Department
 	err := json.Unmarshal(c.Ctx.Input.RequestBody, &v)
-	logs.Info(err)
-	logs.Info(v.CreatedAt)
+	logs.Error(err)
 	if _, err := models.AddDepartment(&v); err == nil {
 		c.Ctx.Output.SetStatus(201)
 		c.Data["json"] = "OK"
-		c.jsonResult(200, "", "OK")
+		c.jsonResult(200, i18n.Tr(c.Lang, "flash.save_success"), "OK")
 	} else {
 		c.jsonResult(500, err.Error(), "")
 	}
@@ -88,7 +89,7 @@ func (c *DepartmentController) GetAll() {
 	if v := c.GetString("fields"); v != "" {
 		fields = strings.Split(v, ",")
 	}
-	_, colNames := models.GetDepartmentCols()
+	colNames := models.GetDepartmentCols(c.Lang)
 	// limit: 10 (default is 10)
 	if v, err := c.GetInt64("limit"); err == nil {
 		limit = v
@@ -131,16 +132,16 @@ func (c *DepartmentController) GetAll() {
 			"countPage": mapValue,
 			"data":      l,
 			"colNames":  colNames,
-			"actions":   departmentActions(),
+			"actions":   c.departmentActions(),
 		}
 		c.jsonResult(200, "", result)
 	}
 }
 
-func departmentActions() []models.CustomerSlice {
+func (c *DepartmentController) departmentActions() []models.CustomerSlice {
 	actions := []models.CustomerSlice{
-		{"name": "修改", "url": "/department/edit/:id", "remote": false},
-		{"name": "删除", "url": "/department/:id", "remote": true, "method": "delete"},
+		{"name": i18n.Tr(c.Lang, "edit"), "url": "/department/edit/:id", "remote": false},
+		{"name": i18n.Tr(c.Lang, "delete"), "url": "/department/:id", "remote": true, "method": "delete"},
 	}
 	return actions
 }
@@ -159,7 +160,7 @@ func (c *DepartmentController) Put() {
 	v := models.Department{Id: id}
 	_ = json.Unmarshal(c.Ctx.Input.RequestBody, &v)
 	if err := models.UpdateDepartmentById(&v); err == nil {
-		c.jsonResult(200, "", "OK")
+		c.jsonResult(200, i18n.Tr(c.Lang, "flash.save_success"), "OK")
 	} else {
 		c.jsonResult(500, err.Error(), "")
 	}
@@ -186,7 +187,7 @@ func (c *DepartmentController) Index() {
 	c.namespace = "company"
 	c.Data["JsName"] = "index"
 	c.Data["Namespace"] = "company"
-	c.Data["PageTitle"] = "部门信息"
+	c.Data["PageTitle"] = i18n.Tr(c.Lang, "module_name.department")
 	c.setTpl("department/index.html")
 }
 
@@ -194,7 +195,7 @@ func (c *DepartmentController) Index() {
 func (c *DepartmentController) New() {
 	c.namespace = "company"
 	c.Data["Namespace"] = "company"
-	c.Data["PageTitle"] = "新增部门信息"
+	c.Data["PageTitle"] = utils.LocaleS(i18n.Tr(c.Lang, "new"), i18n.Tr(c.Lang, "module_name.department"))
 	c.setTpl("department/form.html")
 }
 
@@ -203,7 +204,7 @@ func (c *DepartmentController) Edit() {
 	idStr := c.Ctx.Input.Params()["0"]
 	c.namespace = "company"
 	c.Data["Namespace"] = "company"
-	c.Data["PageTitle"] = "修改部门信息"
+	c.Data["PageTitle"] = utils.LocaleS(i18n.Tr(c.Lang, "edit"), i18n.Tr(c.Lang, "module_name.department"))
 	c.Data["Id"] = idStr
 	c.setTpl("department/form.html")
 }

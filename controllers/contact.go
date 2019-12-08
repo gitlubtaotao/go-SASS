@@ -3,7 +3,9 @@ package controllers
 import (
 	"encoding/json"
 	"errors"
+	"github.com/beego/i18n"
 	"quickstart/models"
+	"quickstart/utils"
 	"strconv"
 	"strings"
 )
@@ -189,13 +191,13 @@ func (c *ContactController) Delete() {
 func (c *ContactController) Index() {
 	c.Data["JsName"] = "index"
 	c.Data["Namespace"] = "customer_manage"
-	c.Data["PageTitle"] = "联系人信息"
+	c.Data["PageTitle"] = i18n.Tr(c.Lang,"module_name.contact")
 	c.setTpl("contact/index.html")
 }
 func (c *ContactController) Edit() {
 	c.Data["JsName"] = "index"
 	c.Data["Namespace"] = "customer_manage"
-	c.Data["PageTitle"] = "修改联系人信息"
+	c.Data["PageTitle"] = utils.LocaleS(i18n.Tr(c.Lang,"edit"),i18n.Tr(c.Lang,"module_name.contact"))
 	idStr := c.Ctx.Input.Params()["0"]
 	c.Data["Id"] = idStr
 	c.setTpl("contact/form.html")
@@ -204,6 +206,6 @@ func (c *ContactController) Edit() {
 func (c *ContactController) New() {
 	c.Data["JsName"] = ""
 	c.Data["Namespace"] = "customer_manage"
-	c.Data["PageTitle"] = "新增联系信息"
+	c.Data["PageTitle"] = utils.LocaleS(i18n.Tr(c.Lang,"edit"),i18n.Tr(c.Lang,"module_name.contact"))
 	c.setTpl("contact/form.html")
 }

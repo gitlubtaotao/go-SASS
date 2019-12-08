@@ -16,6 +16,10 @@ var app = new Vue({
         companyOptions: [],
         userOptions: [],
     },
+    i18n: new VueI18n({
+        locale: getCookie('lang'),
+        messages: Messages,
+    }),
     mounted: function () {
         this.getList();
     },
@@ -74,7 +78,7 @@ var app = new Vue({
         //过滤部分数据
         filterResult: function () {
             this.getList();
-            toastr.success("刷新数据成功");
+            toastr.success(this.$i18n.t("refresh"));
         },
         //对form 表单对数据进行过滤
         getFilerResult: function () {
@@ -93,7 +97,7 @@ var app = new Vue({
                 _this.$data.customer[k] = "";
             });
             this.getList();
-            toastr.success("刷新数据成功");
+            toastr.success(this.$i18n.t("refresh"));
         },
     }
 });
