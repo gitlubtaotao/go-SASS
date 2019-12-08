@@ -42,18 +42,18 @@ func SendMail(from string, password string, to []string, body map[string]string,
 		"Subject: " + subject + "\r\n" + "ContentType:" + contentType + "\r\n\r\n" + body["content"])
 	err := smtp.SendMail(address, auth, from, to, msg)
 	if err != nil {
-		logs.Error(err.Error())
-		return false, err.Error()
+		return false,err.Error()
 	}
 	return true, message
 }
+
 
 /*
 发送附件的邮件形式
 将内容以html的格式进行发送
 */
 func SendMailAttach(from, password string, to []string, body map[string]string,
-	file string, html string, cc []string) (status bool, message string) {
+	file string, cc []string) (status bool, message string) {
 	e := email.NewEmail()
 	emailConfig := getSetting()
 	if from == "" {
@@ -87,11 +87,11 @@ func SendMailAttach(from, password string, to []string, body map[string]string,
 	if err != nil {
 		return false, err.Error()
 	}
-	auth := smtp.PlainAuth("", from, password, emailConfig.Address)
 	address := emailConfig.Address + ":" + strconv.Itoa(int(emailConfig.Port))
+	auth := smtp.PlainAuth("", from, password, emailConfig.Address)
 	err = e.Send(address, auth)
 	if err != nil {
-		logs.Error(err)
+		logs.Error(err.Error())
 		return false, err.Error()
 	}
 	return true, ""
